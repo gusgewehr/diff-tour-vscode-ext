@@ -54,6 +54,11 @@
         {
           "id": "difftour.changes",
           "name": "Changes"
+        },
+        {
+          "id": "difftour.smallChange",
+          "name": "Small change",
+          "when": "difftour.hasSmallChange"
         }
       ]
     },

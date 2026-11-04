@@ -4,6 +4,7 @@ import { readSettings } from './settings';
 import { ChangeModel, Deps, Entry, choose, setCurrentModel, showPicker } from './pick';
 import { ChangesTree } from './views/changesTree';
 import type { Target } from './git/changes';
+import { SmallChange } from './small/smallChange';
 
 export function activate(context: vscode.ExtensionContext): void {
   const deps: Deps = {
@@ -20,8 +21,10 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('difftour.tourChange', () => showPicker(model, deps));
   reg('difftour.refreshChanges', () => model.refresh());
   reg('difftour.internal.choose', (entry: Entry) => choose(entry, deps, model).catch(err));
-  // Stubs: replaced in Phases 3, 4 and 5.
-  reg('difftour.internal.openSmallChange', (t: Target) => vscode.window.showInformationMessage(`Small change: ${t.label}, ${t.files} files (${range(t)}). The standard diff opens here in Phase 3.`));
+  const small = new SmallChange(() => model.cwd, () => deps.settings().minFiles);
+  small.register(context);
+  // Stubs: replaced in Phases 4 and 5.
+  reg('difftour.internal.openSmallChange', (t: Target) => small.open(t).catch(err));
   reg('difftour.internal.startTour', (t: Target) => vscode.window.showInformationMessage(`Tour: ${t.label}, ${t.files} files (${range(t)}). Tour writing arrives in Phase 4.`));
   reg('difftour.internal.openSavedTour', (p: string) => vscode.window.showInformationMessage(`Saved tour: ${p}. The tour document arrives in Phase 5.`));
 

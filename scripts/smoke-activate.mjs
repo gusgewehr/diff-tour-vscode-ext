@@ -19,14 +19,17 @@ class EventEmitter {
 }
 const base = {
   commands: { registerCommand: (id) => { commands.push(id); return dispose; }, executeCommand: async () => undefined },
-  window: { createTreeView: (id) => { views.push(id); return { message: '', dispose() {} }; } },
+  window: { createStatusBarItem: () => ({ show() {}, hide() {}, dispose() {} }), createTreeView: (id) => { views.push(id); return { message: '', dispose() {} }; } },
   workspace: {
     workspaceFolders: undefined,
+    registerTextDocumentContentProvider: () => dispose,
     getConfiguration: () => ({ get: (_k, d) => d }),
     onDidChangeConfiguration: () => dispose,
     onDidChangeWorkspaceFolders: () => dispose,
   },
   env: { language: 'en' },
+  extensions: { getExtension: () => undefined },
+  StatusBarAlignment: { Left: 1, Right: 2 },
   EventEmitter,
   TreeItem: class { constructor(label, collapsibleState) { this.label = label; this.collapsibleState = collapsibleState; } },
   ThemeIcon: class { constructor(id) { this.id = id; } },
@@ -45,9 +48,9 @@ try {
   await new Promise((r) => setTimeout(r, 50));
 } catch (e) { failed = `exception: ${e?.stack ?? e}`; }
 
-const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.startTour', 'difftour.internal.openSavedTour'];
-const missing = want.filter((c) => !commands.includes(c)).concat(views.includes('difftour.changes') ? [] : ['view difftour.changes']);
+const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.openSavedTour'];
+const missing = want.filter((c) => !commands.includes(c)).concat(['difftour.changes', 'difftour.smallChange'].filter((v) => !views.includes(v)).map((v) => `view ${v}`));
 if (failed || missing.length) {
   console.error(`smoke FAILED: ${failed} missing: ${missing.join(', ')}`);
   process.exitCode = 1;
-} else console.log('smoke ok: 6 commands, 1 view');
+} else console.log('smoke ok: 7 commands, 2 views');
