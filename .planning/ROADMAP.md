@@ -13,7 +13,8 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
 - [x] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
  (completed 2026-11-04)
-- [x] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment (completed 2026-11-04)
+- [x] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment
+ (completed 2026-11-04)
 - [x] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
 - [ ] **Phase 9: Brazilian Portuguese (pt-BR) localization** - Tours, CLI messages and the whole extension UI in pt-BR
 
@@ -226,6 +227,18 @@ Plans:
   4. Every runtime string in the extension host (notifications, QuickPick, tree items, status bar, errors) goes through vscode.l10n and has a pt-BR translation (l10n/bundle.l10n.pt-br.json); English stays the default
   5. Writing, Tour and Flow webviews render their fixed UI strings (stage names, buttons, labels, "Stop and predict…", basis tags, etc.) in the extension's display language
 
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 09-01-PLAN.md — CLI pt-BR (i18n table, Parse/Detect, LLM language rule) + extension languageFromLocale
+- [ ] 09-02-PLAN.md — Extension host l10n: package.nls*, l10n shim, runtime strings, pt-BR bundle, coverage test
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 09-03-PLAN.md — Webview string table (Writing, Tour, Flow) embedded via data-strings
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -238,5 +251,5 @@ Plans:
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
 | 7. Webview tour blocks | 3/3 | Complete    | 2026-11-04 |
 | 8. Flow bar | 1/1 | Complete    | 2026-11-04 |
-| 9. Brazilian Portuguese (pt-BR) localization | 0/0 | Not started | - |
+| 9. Brazilian Portuguese (pt-BR) localization | 0/3 | Planned | - |
 
