@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Roadmap created
-last_updated: "2026-11-04T06:05:46.770Z"
+status: ready_to_plan
+stopped_at: Phase 4 complete (3/3) — ready to discuss Phase 05
+last_updated: 2026-11-04T06:12:30.856Z
 last_activity: 2026-11-04 -- Phase 4 planning complete
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 10
   percent: 38
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-03)
 
 **Core value:** A reviewer can walk an LLM-written tour of a git change inside VS Code, and every piece of code the tour points to opens read-only, side by side, at the exact commit the tour talks about.
-**Current focus:** Phase 04 — cli runner writing progress tour cache
+**Current focus:** Phase 05 — document layout outline tree tour state
 
 ## Current Position
 
-Phase: 04 of 8 (cli runner writing progress tour cache)
-Plan: 3 of 3 complete (phase 4 done)
-Status: Phase 4 complete
-Last activity: 2026-11-04 -- Phase 4 planning complete
+Phase: 05 of 8 (document layout outline tree tour state)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-04
 
 Progress: [██████████] 100%
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 10
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -46,6 +46,7 @@ Progress: [██████████] 100%
 |-------|-------|-------|----------|
 | 2 | 3 | - | - |
 | 3 | 1 | - | - |
+| 4 | 3 | - | - |
 
 ## Accumulated Context
 

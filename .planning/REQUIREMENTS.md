@@ -34,14 +34,14 @@
 
 ### WRITE: writing the tour
 
-- [ ] **WRITE-01**: While a tour is written, user sees a cancellable progress notification and can keep working in the editor
-- [ ] **WRITE-02**: A Writing view shows the 4 stage cards (Export, Write, Check, Show) with done / active / todo states driven by the CLI progress stream
-- [ ] **WRITE-03**: The Writing view shows a READING NOW log, newest first: time · tool · path · tag
-- [ ] **WRITE-04**: The Writing view shows the EXPORT DIRECTORY card explaining what the LLM can read
-- [ ] **WRITE-05**: User can cancel and the CLI and its LLM child processes stop
-- [ ] **WRITE-06**: When done, user gets "Your tour is ready", the tour is cached under the extension's storage, and choosing it again later (SAVED) opens instantly with no LLM call
-- [ ] **WRITE-07**: CLI failures (LLM not signed in, tour still invalid after repairs, git errors) show a readable message with the next action
-- [ ] **WRITE-08**: If a previous tour of the same change exists, user can "Skip to the tour" instead of waiting
+- [x] **WRITE-01**: While a tour is written, user sees a cancellable progress notification and can keep working in the editor
+- [x] **WRITE-02**: A Writing view shows the 4 stage cards (Export, Write, Check, Show) with done / active / todo states driven by the CLI progress stream
+- [x] **WRITE-03**: The Writing view shows a READING NOW log, newest first: time · tool · path · tag
+- [x] **WRITE-04**: The Writing view shows the EXPORT DIRECTORY card explaining what the LLM can read
+- [x] **WRITE-05**: User can cancel and the CLI and its LLM child processes stop
+- [x] **WRITE-06**: When done, user gets "Your tour is ready", the tour is cached under the extension's storage, and choosing it again later (SAVED) opens instantly with no LLM call
+- [x] **WRITE-07**: CLI failures (LLM not signed in, tour still invalid after repairs, git errors) show a readable message with the next action
+- [x] **WRITE-08**: If a previous tour of the same change exists, user can "Skip to the tour" instead of waiting
 
 ### DOC: Document layout and state
 
@@ -139,14 +139,14 @@
 | SMALL-01 | Phase 3 | Complete |
 | SMALL-02 | Phase 3 | Complete |
 | SMALL-03 | Phase 3 | Complete |
-| WRITE-01 | Phase 4 | Pending |
-| WRITE-02 | Phase 4 | Pending |
-| WRITE-03 | Phase 4 | Pending |
-| WRITE-04 | Phase 4 | Pending |
-| WRITE-05 | Phase 4 | Pending |
-| WRITE-06 | Phase 4 | Pending |
-| WRITE-07 | Phase 4 | Pending |
-| WRITE-08 | Phase 4 | Pending |
+| WRITE-01 | Phase 4 | Complete |
+| WRITE-02 | Phase 4 | Complete |
+| WRITE-03 | Phase 4 | Complete |
+| WRITE-04 | Phase 4 | Complete |
+| WRITE-05 | Phase 4 | Complete |
+| WRITE-06 | Phase 4 | Complete |
+| WRITE-07 | Phase 4 | Complete |
+| WRITE-08 | Phase 4 | Complete |
 | DOC-01 | Phase 5 | Pending |
 | DOC-02 | Phase 5 | Pending |
 | DOC-03 | Phase 5 | Pending |
