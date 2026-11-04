@@ -44,6 +44,8 @@ export const EN = {
   noChange: 'no change in these lines',
   addedRemoved: '+{0} −{1} here',
   approximate: 'approximate',
+  annotation: 'NOTE',
+  annotationTitle: 'Note from the tour, not part of the code',
   approximateTitle: 'The tour referenced lines that do not exist at this commit; shown clamped',
   open: 'open ↗',
   openDiff: 'Open read-only diff',

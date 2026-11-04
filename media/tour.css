@@ -1,4 +1,4 @@
-body { font-family: var(--vscode-font-family); color: var(--vscode-foreground); background: var(--vscode-editor-background); margin: 0; padding: 0 24px 80px; }
+body { font-family: var(--vscode-font-family); color: var(--vscode-foreground); background: var(--vscode-editor-background); margin: 0; padding: 0 24px 80px; overflow-x: hidden; }
 main.doc { max-width: 880px; margin: 0 auto; padding-top: 28px; }
 .tour-title { font-family: Newsreader, Georgia, 'Times New Roman', serif; font-size: 34px; line-height: 1.12; font-weight: 500; margin: 0; }
 .refs { color: var(--vscode-descriptionForeground); font-family: var(--vscode-editor-font-family); font-size: 12px; margin-top: 6px; }
@@ -45,9 +45,10 @@ body.vscode-high-contrast .tick, body.vscode-high-contrast-light .tick,
 body.vscode-high-contrast .tick.visited, body.vscode-high-contrast-light .tick.visited { opacity: 1; }
 
 /* code / diff */
-.block.code { border: 1px solid var(--vscode-panel-border); border-radius: 8px; overflow: hidden; }
+/* code blocks use the full window width (two files side by side need it); the prose column stays narrow */
+.block.code { border: 1px solid var(--vscode-panel-border); border-radius: 8px; overflow: hidden; width: calc(100vw - 48px); margin-left: calc((100% - (100vw - 48px)) / 2); box-sizing: border-box; }
 .code-head { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 8px 12px; background: var(--vscode-editorWidget-background); }
-.code-dir, .code-stat, .code-note { color: var(--vscode-descriptionForeground); }
+.code-dir, .code-stat { color: var(--vscode-descriptionForeground); }
 .code-file { font-family: var(--vscode-editor-font-family); font-weight: 600; }
 .badge { font-size: 10.5px; text-transform: uppercase; border-radius: 4px; padding: 1px 6px; }
 .badge.approx { color: var(--vscode-editorWarning-foreground); border: 1px solid currentColor; }
@@ -58,13 +59,27 @@ body.vscode-high-contrast .tick.visited, body.vscode-high-contrast-light .tick.v
 .col-after { color: var(--vscode-charts-green); }
 .code-body { overflow-x: auto; }
 .cell { font-family: var(--vscode-editor-font-family); font-size: var(--vscode-editor-font-size); line-height: 20px; display: flex; min-width: 0; }
-.cell .ln { width: 40px; flex: none; text-align: right; padding-right: 10px; color: var(--vscode-descriptionForeground); user-select: none; }
-.cell .lt { white-space: pre; }
-.cell.del { background: var(--vscode-diffEditor-removedLineBackground); }
-.cell.add { background: var(--vscode-diffEditor-insertedLineBackground); }
-.cell.empty { background: repeating-linear-gradient(135deg, transparent 0 4px, var(--vscode-editorWidget-border) 4px 5px); }
-.code-row.focus .cell { box-shadow: inset 2px 0 0 var(--vscode-focusBorder); background-image: linear-gradient(var(--vscode-editor-selectionBackground), var(--vscode-editor-selectionBackground)); }
-.mark-text { font-style: italic; color: var(--vscode-descriptionForeground); padding-left: 50px; }
+.cell .ln { width: 44px; flex: none; text-align: right; padding-right: 6px; color: var(--vscode-editorLineNumber-foreground, var(--vscode-descriptionForeground)); user-select: none; }
+.cell .sg { width: 16px; flex: none; text-align: center; user-select: none; }
+.cell .lt { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; padding-right: 8px; }
+/* the same colors as VS Code's own diff editor */
+.cell.del { background: var(--vscode-diffEditor-removedLineBackground, rgba(255, 0, 0, .2)); }
+.cell.add { background: var(--vscode-diffEditor-insertedLineBackground, rgba(155, 185, 85, .2)); }
+.cell.del .ln, .cell.del .sg { background: var(--vscode-diffEditorGutter-removedLineBackground, var(--vscode-diffEditor-removedTextBackground, rgba(255, 0, 0, .3))); }
+.cell.add .ln, .cell.add .sg { background: var(--vscode-diffEditorGutter-insertedLineBackground, var(--vscode-diffEditor-insertedTextBackground, rgba(155, 185, 85, .3))); }
+.cell.del .sg { color: var(--vscode-gitDecoration-deletedResourceForeground, var(--vscode-charts-red)); }
+.cell.add .sg { color: var(--vscode-gitDecoration-addedResourceForeground, var(--vscode-charts-green)); }
+.cell.empty { background: repeating-linear-gradient(-45deg, transparent 0 6px, var(--vscode-diffEditor-diagonalFill, rgba(204, 204, 204, .2)) 6px 8px); }
+/* focus range: an accent bar only, so the red/green stays readable */
+.code-row.focus .cell { box-shadow: inset 3px 0 0 var(--vscode-focusBorder); }
+/* annotations from the tour: a callout in the UI font, clearly outside the code */
+.callout { display: flex; gap: 8px; align-items: baseline; font-family: var(--vscode-font-family); font-size: 13px; line-height: 1.45; white-space: normal;
+  padding: 6px 10px; border-left: 3px solid var(--vscode-editorInfo-foreground, var(--vscode-focusBorder)); border-radius: 0 4px 4px 0;
+  background: color-mix(in srgb, var(--vscode-editorInfo-foreground, var(--vscode-focusBorder)) 12%, var(--vscode-editor-background)); color: var(--vscode-foreground); }
+.callout-label { flex: none; font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--vscode-editorInfo-foreground, var(--vscode-focusBorder)); }
+.callout-text { min-width: 0; }
+.block-note { margin: 0; border-radius: 0; border-bottom: 1px solid var(--vscode-panel-border); }
+.mark-cell { padding: 4px 8px 8px 66px; min-width: 0; }
 .code-gap { text-align: center; color: var(--vscode-descriptionForeground); }
 .code-missing { padding: 12px; color: var(--vscode-descriptionForeground); }
 

@@ -8,8 +8,16 @@ import { errorBox, register, type BlockCtx } from './index';
 function cell(c: Row['left']): HTMLElement {
   if (!c) return el('div', 'cell empty');
   const d = el('div', `cell ${c.kind}`);
-  d.append(el('span', 'ln', String(c.n)), el('span', 'lt', c.text));
+  d.append(el('span', 'ln', String(c.n)), el('span', 'sg', c.kind === 'del' ? '−' : c.kind === 'add' ? '+' : ''), el('span', 'lt', c.text));
   return d;
+}
+
+// A tour annotation, styled as a callout so it never reads as code.
+function callout(text: string, cls = ''): HTMLElement {
+  const box = el('div', 'callout' + (cls ? ' ' + cls : ''));
+  box.title = S.annotationTitle;
+  box.append(el('span', 'callout-label', S.annotation), el('span', 'callout-text', text));
+  return box;
 }
 
 function build(d: CodeData, ctx: BlockCtx, note?: string): HTMLElement {
@@ -26,13 +34,13 @@ function build(d: CodeData, ctx: BlockCtx, note?: string): HTMLElement {
     b.title = S.approximateTitle;
     head.append(b);
   }
-  if (note) head.append(el('span', 'code-note', note));
   const open = el('button', 'icon', S.open);
   open.setAttribute('aria-label', S.openDiff);
   open.title = S.openDiff;
   open.addEventListener('click', () => ctx.post({ type: 'openCode', block: ctx.index }));
   head.append(open);
   sec.append(head);
+  if (note) sec.append(callout(note, 'block-note'));
   if (d.missing) { sec.append(el('div', 'code-missing', d.missing)); return sec; }
 
   const cols = d.newFile ? '64px 1fr' : d.deleted ? '1fr 64px' : '1fr 1fr';
@@ -55,9 +63,9 @@ function build(d: CodeData, ctx: BlockCtx, note?: string): HTMLElement {
       for (const m of r.marks) {
         const mr = el('div', 'code-row mark-row');
         mr.style.gridTemplateColumns = cols;
-        const text = el('div', 'cell');
-        text.append(el('span', 'mark-text', '└ ' + m.text));
-        const spacer = el('div', 'cell');
+        const text = el('div', 'mark-cell');
+        text.append(callout(m.text));
+        const spacer = el('div', 'mark-cell');
         mr.append(...(m.side === 'left' ? [text, spacer] : [spacer, text]));
         body.append(mr);
       }
