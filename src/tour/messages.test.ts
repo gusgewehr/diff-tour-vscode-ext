@@ -58,3 +58,14 @@ test('diff block target and primaryCode fallback', () => {
   assert.deepEqual(primaryCode({ title: 't', blocks }), { file: 'a.ts', at: 'head', lines: [12, 12] });
   assert.deepEqual(codeTargetForBlock({ title: 't', blocks: [{ kind: 'diff', diff: { file: 'b' } }] }, 0)?.lines, [1, 1]);
 });
+
+test('copy intent and previousGuess', () => {
+  assert.deepEqual(parseIntent({ type: 'copy', text: 'x', evil: 1 }), { type: 'copy', text: 'x' });
+  for (const t of [undefined, '', 5, 'x'.repeat(100001)]) assert.equal(parseIntent({ type: 'copy', text: t }), undefined);
+  const s = sess();
+  assert.deepEqual(renderMessage(s).blockData, []);
+  s.goto(6); s.setGuess('g'); s.goto(7);
+  assert.equal(renderMessage(s).previousGuess, 'g');
+  s.goto(1);
+  assert.equal(renderMessage(s).previousGuess, undefined);
+});

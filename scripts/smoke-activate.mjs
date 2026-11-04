@@ -11,6 +11,7 @@ const handlers = new Map();
 const execs = [];
 const posts = [];
 const warnings = [];
+const clipboard = [];
 const panel = { title: '', onMsg: undefined, onDispose: undefined };
 const memento = new Map();
 let failed = '';
@@ -27,6 +28,7 @@ const base = {
   commands: { registerCommand: (id, fn) => { commands.push(id); handlers.set(id, fn); return dispose; }, executeCommand: async (...a) => { execs.push(a); return undefined; } },
   window: {
     registerWebviewPanelSerializer: () => dispose,
+    setStatusBarMessage: () => dispose,
     showErrorMessage: async (m) => { console.error('showErrorMessage:', m); },
     showInformationMessage: async () => undefined,
     showWarningMessage: async (m) => { warnings.push(m); },
@@ -55,7 +57,7 @@ const base = {
     onDidChangeConfiguration: () => dispose,
     onDidChangeWorkspaceFolders: () => dispose,
   },
-  env: { language: 'en' },
+  env: { language: 'en', clipboard: { writeText: async (t) => { clipboard.push(t); } } },
   extensions: { getExtension: () => undefined },
   StatusBarAlignment: { Left: 1, Right: 2 },
   EventEmitter,
@@ -79,13 +81,18 @@ try {
   const assert = (await import('node:assert/strict')).default;
   await handlers.get('difftour.internal.openSavedTour')(path.join(root, 'fixtures', 'tours', 'real-9c18e24.json'));
   assert.ok(panel.html.includes('tour.js') && panel.html.includes("script-src 'nonce-"), 'panel html');
+  const settle = () => new Promise((r) => setTimeout(r, 20));
+  await settle();
   const last = () => posts[posts.length - 1];
-  panel.onMsg({ type: 'ready' });
+  panel.onMsg({ type: 'ready' }); await settle();
   assert.equal(last().type, 'render'); assert.equal(last().total, 18); assert.equal(last().index, 0);
-  panel.onMsg({ type: 'next' });
+  assert.ok(Array.isArray(last().blockData) && last().blockData.length === last().step.blocks.length, 'blockData');
+  panel.onMsg({ type: 'next' }); await settle();
   assert.equal(last().index, 1);
+  panel.onMsg({ type: 'copy', text: 'snippet' }); panel.onMsg({ type: 'copy', text: 5 }); await settle();
+  assert.deepEqual(clipboard, ['snippet']);
   const n = posts.length;
-  panel.onMsg({ type: 'goto', index: 'x' }); panel.onMsg({ type: 'bogus' }); panel.onMsg(null);
+  panel.onMsg({ type: 'goto', index: 'x' }); panel.onMsg({ type: 'bogus' }); panel.onMsg(null); await settle();
   assert.equal(posts.length, n, 'invalid messages ignored');
   const key = [...memento.keys()].find((k) => k.startsWith('difftour.state.file-'));
   assert.ok(key, 'state key'); assert.equal(memento.get(key).step, 1);

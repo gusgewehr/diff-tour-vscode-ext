@@ -1,10 +1,11 @@
 import type { At, Step } from './model';
+import type { BlockData } from './enrich';
 import type { TourSession } from './session';
 
 export type Intent =
   | { type: 'ready' } | { type: 'next' } | { type: 'prev' } | { type: 'goto'; index: number } | { type: 'understood' }
   | { type: 'note'; text: string } | { type: 'guess'; text: string } | { type: 'openCode'; block?: number }
-  | { type: 'openFile'; file: string; line: number; end?: number; at?: At };
+  | { type: 'openFile'; file: string; line: number; end?: number; at?: At } | { type: 'copy'; text: string };
 
 const MAX_TEXT = 20000;
 const nat = (v: unknown): v is number => typeof v === 'number' && Number.isInteger(v) && v >= 0;
@@ -17,6 +18,8 @@ export function parseIntent(m: unknown): Intent | undefined {
     case 'goto': return nat(o.index) ? { type: 'goto', index: o.index } : undefined;
     case 'note': case 'guess':
       return typeof o.text === 'string' && o.text.length <= MAX_TEXT ? { type: o.type, text: o.text } : undefined;
+    case 'copy':
+      return typeof o.text === 'string' && o.text.length >= 1 && o.text.length <= 100000 ? { type: 'copy', text: o.text } : undefined;
     case 'openCode':
       if (o.block === undefined) return { type: 'openCode' };
       return nat(o.block) ? { type: 'openCode', block: o.block } : undefined;
@@ -38,20 +41,22 @@ export type TickState = 'current' | 'understood' | 'visited' | 'unvisited';
 export interface RenderMsg {
   type: 'render'; title: string; base: string; head: string; chapterTitle: string; index: number; total: number; step: Step;
   ticks: { state: TickState }[]; understood: boolean; note: string; guess: string; prevTitle?: string; nextTitle?: string;
-  restore: { id: string; path: string };
+  restore: { id: string; path: string }; blockData: (BlockData | null)[]; previousGuess?: string;
 }
 
-export function renderMessage(s: TourSession): RenderMsg {
+export function renderMessage(s: TourSession, blockData: (BlockData | null)[] = []): RenderMsg {
   const st = s.state;
   const i = s.index;
-  return {
+  const r: RenderMsg = {
     type: 'render', title: s.tour.title, base: s.tour.base, head: s.tour.head, chapterTitle: s.current.chapterTitle,
     index: i, total: s.steps.length, step: s.current.step,
     ticks: s.steps.map((_, k) => ({ state: k === i ? 'current' : st.done[k] ? 'understood' : st.visited[k] ? 'visited' : 'unvisited' })),
     understood: !!st.done[i], note: st.notes[i] ?? '', guess: st.guesses[i] ?? '',
     prevTitle: s.steps[i - 1]?.step.title, nextTitle: s.steps[i + 1]?.step.title,
-    restore: { id: s.id, path: s.path },
+    restore: { id: s.id, path: s.path }, blockData,
   };
+  if (s.steps[i - 1]?.step.question) r.previousGuess = st.guesses[i - 1] ?? '';
+  return r;
 }
 
 export interface CodeTarget { file: string; at: At; lines: [number, number] }
