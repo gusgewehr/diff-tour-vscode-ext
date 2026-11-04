@@ -36,6 +36,10 @@ options:
   --dump          print every step to stdout instead of opening the TUI
   --cols, --rows  screen size for --dump (default 100x30)
   --plain         --dump without colors
+  --json          headless mode: one JSON event per stdout line, no TUI
+                  (needs --llm and --lang when no config exists; closing stdin cancels)
+  --llm <name>    LLM for this run: claude-code, codex, gemini, opencode, copilot, pi
+  --count         with --json: print the file count and shas, no generation
   --version       print the version
 `
 
@@ -95,6 +99,9 @@ func run(args []string) error {
 	cols := fs.Int("cols", 100, "")
 	rows := fs.Int("rows", 30, "")
 	showVersion := fs.Bool("version", false, "")
+	jsonOut := fs.Bool("json", false, "")
+	llmFlag := fs.String("llm", "", "")
+	count := fs.Bool("count", false, "")
 	positional, err := parse(fs, args)
 	if err != nil {
 		return err
@@ -105,6 +112,9 @@ func run(args []string) error {
 	}
 
 	cfg, err := config.Load()
+	if *jsonOut { // before any isTerminal() check or setup: no TUI can start
+		return runHeadless(os.Stdout, headlessArgs{positional: positional, cfg: cfg, cfgErr: err, repoDir: *repoDir, lang: *langFlag, llm: *llmFlag, count: *count})
+	}
 	if err != nil {
 		return err
 	}
