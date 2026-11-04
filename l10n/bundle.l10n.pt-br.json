@@ -157,6 +157,6 @@
   "Regenerate tour": "Regerar tour",
   "Regenerate": "Regerar",
   "Regenerate the tour \"{0}\"?": "Regerar o tour \"{0}\"?",
-  "The LLM writes it again from scratch: this takes a few minutes and costs about US$2. Your progress and notes on this tour are cleared.": "O LLM escreve o tour de novo do zero: isso leva alguns minutos e custa cerca de US$2. Seu progresso e suas notas neste tour serão apagados.",
-  "Open a saved tour, or pick one under SAVED, to regenerate it.": "Abra um tour salvo, ou escolha um em SALVOS, para regerá-lo."
+  "Open a saved tour, or pick one under SAVED, to regenerate it.": "Abra um tour salvo, ou escolha um em SALVOS, para regerá-lo.",
+  "The LLM writes it again from scratch, with your current settings and the change as it is now: this takes a few minutes and costs about US$2. The new tour replaces this one, and your progress and notes on it are cleared.": "O LLM escreve o tour de novo do zero, com as suas configurações atuais e a mudança como ela está agora: isso leva alguns minutos e custa cerca de US$2. O tour novo substitui este, e seu progresso e suas notas nele serão apagados."
 }

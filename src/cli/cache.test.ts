@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { saveTour, findExisting } from './cache';
+import { saveTour, findExisting, removeTour } from './cache';
 import { listSavedTours } from '../git/changes';
 import { parseLine, type DoneEvent } from './progress';
 
@@ -33,4 +33,12 @@ test('saveTour + findExisting', async () => {
   assert.equal(await findExisting(dir, { label: 'other', baseSha: 'x', headSha: 'y' }), undefined);
   fs.unlinkSync(p);
   assert.equal(await findExisting(dir, { label: 'feat', baseSha: 'x', headSha: 'y' }), undefined);
+});
+
+test('removeTour deletes the tour and its meta, and tolerates missing files', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dt-'));
+  await saveTour(dir, done, 'feat', s);
+  await removeTour(dir, done.key);
+  assert.deepEqual(fs.readdirSync(dir), []);
+  await removeTour(dir, done.key);
 });

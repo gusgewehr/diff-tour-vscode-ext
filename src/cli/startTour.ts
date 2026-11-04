@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'node:path';
-import type { Settings, Language } from '../settings';
+import type { Settings } from '../settings';
 import type { Target } from '../git/changes';
 import { detectTools, envWithDir } from './detect';
 import { run, cliArgs, type RunHandle } from './runner';
 import { initialState, reduce, currentStage, type ProgressState } from './progress';
-import { findExisting, saveTour } from './cache';
+import { findExisting, saveTour, removeTour } from './cache';
 import { describeError, type ErrorAction } from './errors';
 import { WritingPanel } from '../webview/writing';
 import { missingNotice } from '../pick';
@@ -23,8 +23,8 @@ export interface WriteDeps {
   resetState?(key: string): void;
 }
 
-/** fresh: ignore the CLI cache and write a new tour; lang: keep the language of the tour being regenerated. */
-export interface StartOptions { fresh?: boolean; lang?: Language }
+/** fresh: ignore the CLI cache and write a new tour; replaces: key of the saved tour this one supersedes (removed if the key changed). */
+export interface StartOptions { fresh?: boolean; replaces?: string }
 
 let current: { panel: WritingPanel } | undefined;
 
@@ -38,7 +38,7 @@ export async function startTour(target: Target, d: WriteDeps, opts: StartOptions
     void vscode.window.showInformationMessage(vscode.l10n.t('A tour is already being written.'));
     return;
   }
-  const settings = opts.lang ? { ...d.settings(), language: opts.lang } : d.settings();
+  const settings = d.settings();
   const cwd = d.cwd();
   if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
   const roots = [...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath), d.extensionPath];
@@ -103,6 +103,10 @@ export async function startTour(target: Target, d: WriteDeps, opts: StartOptions
       panel.dispose();
       void vscode.window.showErrorMessage(vscode.l10n.t('Could not save the tour: {0}', (e as Error).message));
       return;
+    }
+    if (opts.replaces && opts.replaces !== result.done.key) {
+      d.resetState?.(opts.replaces);
+      await removeTour(d.savedDir, opts.replaces);
     }
     const wasActive = panel.active;
     panel.dispose();

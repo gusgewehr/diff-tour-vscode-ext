@@ -23,6 +23,11 @@ export async function saveTour(dir: string, done: DoneEvent, label: string, s: P
   return dest;
 }
 
+/** Deletes a saved tour and its meta; missing files are fine. */
+export async function removeTour(dir: string, key: string): Promise<void> {
+  for (const f of [`${key}.json`, `${key}.meta.json`]) await fs.promises.rm(path.join(dir, f), { force: true });
+}
+
 export async function findExisting(dir: string, t: Pick<Target, 'label' | 'baseSha' | 'headSha'>): Promise<TourMeta | undefined> {
   let names: string[];
   try { names = await fs.promises.readdir(dir); } catch { return undefined; }

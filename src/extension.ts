@@ -5,11 +5,11 @@ import { readSettings } from './settings';
 import { setTranslator } from './l10n';
 import { ChangeModel, Deps, Entry, choose, setCurrentModel, showPicker } from './pick';
 import { ChangesTree } from './views/changesTree';
-import type { Target } from './git/changes';
+import { resolveTarget, type Target } from './git/changes';
 import { SmallChange } from './small/smallChange';
 import { startTour, revealWriting, type StartOptions } from './cli/startTour';
 import type { TourMeta } from './cli/cache';
-import type { Language } from './settings';
+import { metaPathFor } from './tour/model';
 import { TourController } from './tour/controller';
 import { registerCodeOpen } from './tour/openCode';
 import { OutlineTree } from './views/outlineTree';
@@ -51,11 +51,12 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('difftour.internal.revealTour', () => tours.reveal());
   reg('difftour.internal.gotoStep', (i: unknown) => { if (typeof i === 'number' && Number.isInteger(i)) tours.goto(i); });
   registerCodeOpen(context, tours, () => model.cwd);
-  // Regenerate the open tour, or a SAVED entry: same change (the toured shas), same language, CLI cache bypassed.
+  // Regenerate the open tour, or a SAVED entry, from scratch: current settings (language, LLM) and the change as it is now.
+  // Branch tours saved ref names, so they pick up new commits; commit and range tours saved shas, so they stay put.
   async function regenerate(arg?: Entry): Promise<void> {
     let meta: TourMeta | undefined;
     if (arg?.kind === 'saved') {
-      try { meta = JSON.parse(fs.readFileSync(arg.path.replace(/.json$/, '.meta.json'), 'utf8')) as TourMeta; } catch { meta = undefined; }
+      try { meta = JSON.parse(fs.readFileSync(metaPathFor(arg.path), 'utf8')) as TourMeta; } catch { meta = undefined; }
     } else meta = tours.session?.meta;
     if (!meta?.baseSha || !meta.headSha) {
       void vscode.window.showInformationMessage(vscode.l10n.t('Open a saved tour, or pick one under SAVED, to regenerate it.'));
@@ -64,11 +65,15 @@ export function activate(context: vscode.ExtensionContext): void {
     const go = vscode.l10n.t('Regenerate');
     const ok = await vscode.window.showWarningMessage(
       vscode.l10n.t('Regenerate the tour "{0}"?', meta.label),
-      { modal: true, detail: vscode.l10n.t('The LLM writes it again from scratch: this takes a few minutes and costs about US$2. Your progress and notes on this tour are cleared.') }, go);
+      { modal: true, detail: vscode.l10n.t('The LLM writes it again from scratch, with your current settings and the change as it is now: this takes a few minutes and costs about US$2. The new tour replaces this one, and your progress and notes on it are cleared.') }, go);
     if (ok !== go) return;
     await model.ensureRoot();
-    const target: Target = { kind: 'range', label: meta.label, base: meta.baseSha, head: meta.headSha, baseSha: meta.baseSha, headSha: meta.headSha, files: meta.files };
-    await vscode.commands.executeCommand('difftour.internal.startTour', target, { fresh: true, lang: (meta.lang || undefined) as Language | undefined });
+    const cwd = model.cwd;
+    if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
+    const base = meta.base || meta.baseSha, head = meta.head || meta.headSha;
+    const named = base !== meta.baseSha || head !== meta.headSha;
+    const target = await resolveTarget(cwd, named ? 'branch' : 'range', meta.label, base, head);
+    await vscode.commands.executeCommand('difftour.internal.startTour', target, { fresh: true, replaces: meta.key });
   }
   const flowBar = new FlowBarView(context.extensionUri, () => tours.session, () => tours.reveal());
   let wasActive = false;
