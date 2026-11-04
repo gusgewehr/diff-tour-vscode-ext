@@ -1,0 +1,14 @@
+src/**
+cli/**
+fixtures/**
+.planning/**
+docs/**
+node_modules/**
+scripts/**
+dist-test/**
+**/*.map
+tsconfig.json
+.gitignore
+CLAUDE.md
+.claude/**
+*.vsix

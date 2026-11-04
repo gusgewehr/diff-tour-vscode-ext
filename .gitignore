@@ -1,1 +1,5 @@
 cli/bin/
+node_modules/
+dist/
+dist-test/
+*.vsix

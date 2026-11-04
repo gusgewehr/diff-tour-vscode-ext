@@ -1,0 +1,156 @@
+{
+  "name": "diff-tour",
+  "displayName": "diff-tour",
+  "publisher": "difftour",
+  "version": "0.1.0",
+  "description": "Walk an LLM-written tour of a git change inside VS Code.",
+  "engines": {
+    "vscode": "^1.110.0"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "categories": [
+    "Other"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "diff-tour runs git and the tour CLI in the workspace."
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "difftour.tourChange",
+        "title": "Tour a change",
+        "category": "diff-tour",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "difftour.refreshChanges",
+        "title": "Refresh changes",
+        "category": "diff-tour",
+        "icon": "$(refresh)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "difftour.tourChange",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "difftour",
+          "title": "Tour",
+          "icon": "media/route.svg"
+        }
+      ]
+    },
+    "views": {
+      "difftour": [
+        {
+          "id": "difftour.changes",
+          "name": "Changes"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "difftour.refreshChanges",
+          "when": "view == difftour.changes",
+          "group": "navigation"
+        },
+        {
+          "command": "difftour.tourChange",
+          "when": "view == difftour.changes",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "diff-tour",
+      "properties": {
+        "difftour.language": {
+          "type": "string",
+          "enum": [
+            "",
+            "en",
+            "ja",
+            "zh",
+            "zh-Hant",
+            "es",
+            "ru"
+          ],
+          "enumDescriptions": [
+            "Auto (from the VS Code display language)",
+            "English",
+            "Japanese",
+            "Chinese (Simplified)",
+            "Chinese (Traditional)",
+            "Spanish",
+            "Russian"
+          ],
+          "default": "",
+          "description": "Language of the generated tour."
+        },
+        "difftour.llm": {
+          "type": "string",
+          "enum": [
+            "claude",
+            "codex",
+            "gemini",
+            "opencode",
+            "copilot",
+            "pi"
+          ],
+          "enumDescriptions": [
+            "Claude Code (the only provider tested in v1)",
+            "Untested in v1",
+            "Untested in v1",
+            "Untested in v1",
+            "Untested in v1",
+            "Untested in v1"
+          ],
+          "default": "claude",
+          "description": "LLM CLI that writes the tour."
+        },
+        "difftour.minFiles": {
+          "type": "integer",
+          "default": 10,
+          "minimum": 1,
+          "description": "Changes with fewer files open in the standard diff without a tour."
+        },
+        "difftour.cliPath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Path to the tour executable. Empty = cli/bin/tour.exe next to the workspace/extension, then `tour` on PATH."
+        },
+        "difftour.baseBranch": {
+          "type": "string",
+          "default": "",
+          "description": "Empty = auto: origin/HEAD, then main, then master."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node22 --external:vscode --sourcemap --outfile=dist/extension.js",
+    "typecheck": "tsc --noEmit",
+    "test": "esbuild \"src/**/*.test.ts\" --bundle --platform=node --format=cjs --target=node22 --external:vscode --outdir=dist-test && node --test \"dist-test/**/*.test.js\"",
+    "smoke": "node scripts/smoke-activate.mjs",
+    "vscode:prepublish": "npm run build",
+    "package": "vsce package --no-dependencies --allow-missing-repository --skip-license -o diff-tour.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/vscode": "1.110.0",
+    "@vscode/vsce": "^4.1.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^6.0.3"
+  }
+}
