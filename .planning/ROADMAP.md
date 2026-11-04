@@ -64,7 +64,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Manifest, build/test tooling, route icon, settings module, git change model with temp-repo tests
+- [x] 02-01-PLAN.md — Manifest, build/test tooling, route icon, settings module, git change model with temp-repo tests
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
