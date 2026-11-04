@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-11-03)
 ## Current Position
 
 Phase: 05 of 8 (document layout outline tree tour state)
-Plan: 05-01 complete; next 05-02
+Plan: 05-02 complete; next 05-03
 Status: Ready to execute
 Last activity: 2026-11-04 -- Phase 5 planning complete
 

@@ -141,7 +141,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 05-02-PLAN.md — Document Webview renderer: layout, sticky nav + ticks, note card, keys with typing guard, block registry (p + fallback), theme CSS
+- [x] 05-02-PLAN.md — Document Webview renderer: layout, sticky nav + ticks, note card, keys with typing guard, block registry (p + fallback), theme CSS
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
