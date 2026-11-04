@@ -57,12 +57,12 @@
 
 ### CODE: read-only code at the toured commit
 
-- [ ] **CODE-01**: Any code reference (file link, code block open icon, `o` key) opens a read-only side-by-side `vscode.diff` of base vs head at the toured SHAs, revealed at the referenced lines
-- [ ] **CODE-02**: New, deleted and unchanged files open with the missing or identical side clearly labelled
-- [ ] **CODE-03**: Code is always read from git at the toured commit, never from the LLM reply, and the working tree is never written
-- [ ] **CODE-04**: The diff tab title shows BEFORE · base / AFTER · head and marks it as a read-only tour copy
-- [ ] **CODE-05**: From an opened file, user can go back to the step (status bar, editor title button, Esc) and go prev/next
-- [ ] **CODE-06**: Opening several files while stepping does not pile up editor tabs (preview tabs reused)
+- [x] **CODE-01**: Any code reference (file link, code block open icon, `o` key) opens a read-only side-by-side `vscode.diff` of base vs head at the toured SHAs, revealed at the referenced lines
+- [x] **CODE-02**: New, deleted and unchanged files open with the missing or identical side clearly labelled
+- [x] **CODE-03**: Code is always read from git at the toured commit, never from the LLM reply, and the working tree is never written
+- [x] **CODE-04**: The diff tab title shows BEFORE · base / AFTER · head and marks it as a read-only tour copy
+- [x] **CODE-05**: From an opened file, user can go back to the step (status bar, editor title button, Esc) and go prev/next
+- [x] **CODE-06**: Opening several files while stepping does not pile up editor tabs (preview tabs reused)
 
 ### BLOCK: Webview tour blocks
 
@@ -156,12 +156,12 @@
 | DOC-07 | Phase 5 | Complete |
 | DOC-08 | Phase 5 | Complete |
 | DOC-09 | Phase 5 | Complete |
-| CODE-01 | Phase 6 | Pending |
-| CODE-02 | Phase 6 | Pending |
-| CODE-03 | Phase 6 | Pending |
-| CODE-04 | Phase 6 | Pending |
-| CODE-05 | Phase 6 | Pending |
-| CODE-06 | Phase 6 | Pending |
+| CODE-01 | Phase 6 | Complete |
+| CODE-02 | Phase 6 | Complete |
+| CODE-03 | Phase 6 | Complete |
+| CODE-04 | Phase 6 | Complete |
+| CODE-05 | Phase 6 | Complete |
+| CODE-06 | Phase 6 | Complete |
 | BLOCK-01 | Phase 7 | Pending |
 | BLOCK-02 | Phase 7 | Pending |
 | BLOCK-03 | Phase 7 | Pending |

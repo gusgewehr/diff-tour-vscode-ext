@@ -11,7 +11,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 3: Small-change rule** - Changes under `minFiles` open in the standard `vscode.diff` with no LLM call (completed 2026-11-04)
 - [x] **Phase 4: CLI runner, Writing progress, tour cache** - Run the fork with a cancellable Writing view and cache the tour (completed 2026-11-04)
 - [x] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
-- [ ] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
+- [x] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs (completed 2026-11-04)
 - [ ] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment
 - [ ] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
 
@@ -207,6 +207,6 @@ Plans:
 | 3. Small-change rule | 1/1 | Complete    | 2026-11-04 |
 | 4. CLI runner, Writing progress, tour cache | 3/3 | Complete    | 2026-11-04 |
 | 5. Document layout, outline tree, tour state | 3/3 | Complete    | 2026-11-04 |
-| 6. difftour: read-only provider + side-by-side diff | 0/TBD | Not started | - |
+| 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
 | 7. Webview tour blocks | 0/TBD | Not started | - |
 | 8. Flow bar | 0/TBD | Not started | - |

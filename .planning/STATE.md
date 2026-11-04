@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Roadmap created
-last_updated: "2026-11-04T06:28:11.863Z"
+status: ready_to_plan
+stopped_at: Phase 6 complete (2/2) — ready to discuss Phase 07
+last_updated: 2026-11-04T06:31:27.986Z
 last_activity: 2026-11-04 -- Phase 6 planning complete
 progress:
   total_phases: 8
   completed_phases: 5
   total_plans: 15
   completed_plans: 15
-  percent: 100
+  percent: 63
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-03)
 
 **Core value:** A reviewer can walk an LLM-written tour of a git change inside VS Code, and every piece of code the tour points to opens read-only, side by side, at the exact commit the tour talks about.
-**Current focus:** Phase 06 — difftour read only provider side by side diff
+**Current focus:** Phase 07 — webview tour blocks
 
 ## Current Position
 
-Phase: 06 of 8 (difftour read only provider side by side diff)
-Plan: 2 of 2 complete
-Status: Phase 6 plans done, awaiting verification
-Last activity: 2026-11-04 -- Phase 6 planning complete
+Phase: 07 of 8 (webview tour blocks)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-04
 
 Progress: [██████████] 100%
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 13
+- Total plans completed: 15
 - Average duration: -
 - Total execution time: 0 hours
 
