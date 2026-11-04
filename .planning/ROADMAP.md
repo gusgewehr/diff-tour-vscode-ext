@@ -11,7 +11,8 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 3: Small-change rule** - Changes under `minFiles` open in the standard `vscode.diff` with no LLM call (completed 2026-11-04)
 - [x] **Phase 4: CLI runner, Writing progress, tour cache** - Run the fork with a cancellable Writing view and cache the tour (completed 2026-11-04)
 - [x] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
-- [x] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs (completed 2026-11-04)
+- [x] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
+ (completed 2026-11-04)
 - [ ] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment
 - [ ] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
 
@@ -179,7 +180,20 @@ Plans:
   4. Example snippets show dashed amber with "Not in this repository…" and Copy, and are never applied to files
   5. Question steps show "Stop and predict…", a textarea and "Show the answer", and the guess appears on the answer step; a reference to missing lines is clamped and flagged approximate
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 07-01-PLAN.md — Host enrichment: hunk alignment (align.ts), flow node->step mapping (flow.ts), StepEnricher (git), copy intent, previousGuess, async render
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07-02-PLAN.md — Webview code/diff side-by-side renderer, target and files blocks, fallback
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 07-03-PLAN.md — quote/list/pre/table/rows/schema, timeline/flow, snippet Copy, question/guess cards; package + reinstall VSIX
 **UI hint**: yes
 
 ### Phase 8: Flow bar
