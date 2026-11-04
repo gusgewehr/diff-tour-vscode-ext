@@ -82,3 +82,4 @@ Stopped at: Completed 08-01-PLAN.md
 Resume file: None
 | 2026-11-04 | fast | Bundle CLI in per-platform VSIXs (0.1.1) | ✅ |
 | 2026-11-04 | fast | Find claude outside PATH + difftour.claudePath (0.1.2) | ✅ |
+| 2026-11-04 | fast | Regenerate tour (--fresh) — 0.2.1 | ✅ |
