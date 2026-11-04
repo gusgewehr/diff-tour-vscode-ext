@@ -81,6 +81,14 @@
 - [x] **FLOW-03**: Clicking a node goes to the next step that shows code of that node's file; if none, or already there, it opens that file read-only at the node's lines
 - [x] **FLOW-04**: The FLOW label is accented when the current step maps to a flow node
 
+### L10N: Brazilian Portuguese
+
+- [ ] **L10N-01**: The fork CLI accepts `--lang pt-BR` and writes the tour in Brazilian Portuguese
+- [ ] **L10N-02**: The fork's user-facing messages (headless error messages, TUI strings) exist in pt-BR
+- [ ] **L10N-03**: `difftour.language` has pt-BR; Auto maps a pt-* VS Code display language to pt-BR
+- [ ] **L10N-04**: All extension-host UI (package.json contributions and runtime strings) is localized to pt-BR with English as default
+- [ ] **L10N-05**: Writing, Tour and Flow webview UI strings are localized to pt-BR
+
 ## v2 Requirements
 
 ### Layouts
@@ -173,6 +181,11 @@
 | FLOW-02 | Phase 8 | Complete |
 | FLOW-03 | Phase 8 | Complete |
 | FLOW-04 | Phase 8 | Complete |
+| L10N-01 | Phase 9 | Pending |
+| L10N-02 | Phase 9 | Pending |
+| L10N-03 | Phase 9 | Pending |
+| L10N-04 | Phase 9 | Pending |
+| L10N-05 | Phase 9 | Pending |
 
 **Coverage:**
 - v1 requirements: 52 total

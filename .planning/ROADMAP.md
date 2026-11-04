@@ -15,6 +15,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
  (completed 2026-11-04)
 - [x] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment (completed 2026-11-04)
 - [x] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
+- [ ] **Phase 9: Brazilian Portuguese (pt-BR) localization** - Tours, CLI messages and the whole extension UI in pt-BR
 
 ## Phase Details
 
@@ -212,6 +213,19 @@ Plans:
 **Plans**: 1/1 plans complete
 **UI hint**: yes
 
+### Phase 9: Brazilian Portuguese (pt-BR) localization
+
+**Goal**: A pt-BR user gets the whole product in Brazilian Portuguese: tours written in pt-BR, CLI messages in pt-BR, and every extension surface (commands, settings, notifications, QuickPick, trees, status bar, Writing/Tour/Flow webviews) in pt-BR.
+**Depends on**: Phase 8
+**Requirements**: L10N-01, L10N-02, L10N-03, L10N-04, L10N-05
+**Success Criteria** (what must be TRUE):
+
+  1. The fork accepts `--lang pt-BR`, its prompts tell the LLM to write the tour in Brazilian Portuguese, and its user-facing messages (headless errors, TUI strings) have pt-BR text
+  2. `difftour.language` offers pt-BR, and Auto picks pt-BR when the VS Code display language is pt-br (or any pt-*)
+  3. Command titles, view names and setting descriptions show in pt-BR when VS Code runs in pt-BR (package.nls.pt-br.json)
+  4. Every runtime string in the extension host (notifications, QuickPick, tree items, status bar, errors) goes through vscode.l10n and has a pt-BR translation (l10n/bundle.l10n.pt-br.json); English stays the default
+  5. Writing, Tour and Flow webviews render their fixed UI strings (stage names, buttons, labels, "Stop and predict…", basis tags, etc.) in the extension's display language
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -224,3 +238,5 @@ Plans:
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
 | 7. Webview tour blocks | 3/3 | Complete    | 2026-11-04 |
 | 8. Flow bar | 1/1 | Complete    | 2026-11-04 |
+| 9. Brazilian Portuguese (pt-BR) localization | 0/0 | Not started | - |
+

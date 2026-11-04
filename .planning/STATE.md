@@ -2,7 +2,7 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: milestone_complete
+status: executing
 stopped_at: Milestone complete (Phase 8 was final phase)
 last_updated: 2026-11-04T06:53:28.039Z
 last_activity: 2026-11-04 -- Phase 8 planning complete
@@ -59,6 +59,10 @@ Progress: [██████████] 100%
 - Claude Code is the only provider tested in v1; VSIX distribution only
 - Flow nodes: fork adds optional file/lines to FlowNode (prompt v7); heuristic mapping only 15%
 - Extension owns tour cache under globalStorageUri; the CLI `done` event carries key, path, SHAs
+
+### Roadmap Evolution
+
+- Phase 9 added: Brazilian Portuguese (pt-BR) localization (tours, CLI messages, whole extension UI)
 
 ### Pending Todos
 
