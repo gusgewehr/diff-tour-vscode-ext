@@ -1,0 +1,765 @@
+{
+  "version": 1,
+  "title": "Coupons at checkout: what a single UPDATE protects, and what it doesn't",
+  "base": "main",
+  "head": "feature/coupons",
+  "chapters": [
+    {
+      "title": "The change under review",
+      "steps": [
+        {
+          "title": "Two commits, one new feature",
+          "blocks": [
+            {
+              "target": true
+            },
+            {
+              "quote": "Apply coupon discounts at checkout and add a coupon API\nPOST /orders/:id/coupon takes a coupon code and attaches a discount to the order. Checkout charges the total minus the discount."
+            },
+            {
+              "p": "Both commits were co-authored by an AI model. So we read the commit message as a claim to check, not as a fact.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "What is this change for?",
+      "steps": [
+        {
+          "title": "Say the purpose before reading a single line",
+          "asks": [
+            "Who creates coupons? There is no API for it."
+          ],
+          "blocks": [
+            {
+              "p": "Before opening any code, a senior says in plain words who stops having a problem. Here: the shop can hand out a code worth a fixed number of yen. A customer attaches it to a cart, and checkout charges less."
+            },
+            {
+              "p": "A coupon is a promise about money. The shop is counting on three limits. We will check each one in later chapters."
+            },
+            {
+              "list": [
+                "A code gives a discount only before its expiry date.",
+                "A code gives a discount at most `max_uses` times in total.",
+                "The amount charged is the total minus the discount, and never below zero."
+              ]
+            },
+            {
+              "p": "Nothing in the change creates coupons. The only `INSERT INTO coupons` is in the test setup. So in production, someone has to write coupon rows by hand. Keep that in mind for later.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The map",
+      "steps": [
+        {
+          "title": "Which files need thought, and which are mechanical",
+          "asks": [
+            "How can you be sure the test edits are only mechanical?"
+          ],
+          "blocks": [
+            {
+              "files": {
+                "roles": [
+                  {
+                    "file": "src/coupons/couponService.ts",
+                    "role": "core",
+                    "note": "apply(): every rule lives here"
+                  },
+                  {
+                    "file": "src/coupons/sqliteCouponRepository.ts",
+                    "role": "core",
+                    "note": "the use-limit UPDATE"
+                  },
+                  {
+                    "file": "db/migrations/002_add_coupons.sql",
+                    "role": "core",
+                    "note": "new table + 2 order columns"
+                  },
+                  {
+                    "file": "src/orders/orderService.ts",
+                    "role": "core",
+                    "note": "one line: the charged amount"
+                  },
+                  {
+                    "file": "src/handlers/applyCoupon.ts",
+                    "role": "core",
+                    "note": "HTTP mapping of the new errors"
+                  },
+                  {
+                    "file": "src/server.ts",
+                    "role": "core",
+                    "note": "new route + body parsing"
+                  },
+                  {
+                    "file": "src/coupons/coupon.ts",
+                    "role": "mechanical",
+                    "note": "type and error classes"
+                  },
+                  {
+                    "file": "src/orders/order.ts",
+                    "role": "mechanical",
+                    "note": "two new fields"
+                  },
+                  {
+                    "file": "src/orders/sqliteOrderRepository.ts",
+                    "role": "mechanical",
+                    "note": "maps the two new columns"
+                  },
+                  {
+                    "file": "src/app.ts",
+                    "role": "mechanical",
+                    "note": "wiring"
+                  },
+                  {
+                    "file": "test/couponService.test.ts",
+                    "role": "test"
+                  },
+                  {
+                    "file": "test/orderService.test.ts",
+                    "role": "test",
+                    "note": "1 new test + discountAmount: 0"
+                  },
+                  {
+                    "file": "test/reconcilePendingPayments.test.ts",
+                    "role": "test",
+                    "note": "only adds discountAmount: 0"
+                  },
+                  {
+                    "file": "test/sqliteOrderRepository.test.ts",
+                    "role": "test",
+                    "note": "only adds discountAmount: 0"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "I checked every edit to existing tests. Each one only adds `discountAmount: 0` to an order literal. No expected value changed. So the old checkout and reconcile behavior is still asserted as before.",
+              "basis": "fact"
+            },
+            {
+              "p": "Where the time goes: most of it on the 18 lines of `apply()` and the one `UPDATE`. A little on the migration and the charged-amount line. The rest gets a quick look."
+            }
+          ]
+        },
+        {
+          "title": "How a request flows, including code that did not change",
+          "asks": [
+            "Why does reconcile not need to know about discounts?"
+          ],
+          "blocks": [
+            {
+              "flow": {
+                "nodes": [
+                  {
+                    "label": "POST /orders/:id/coupon",
+                    "kind": "changed",
+                    "note": "server.ts readJson",
+                    "next": "orderId, body",
+                    "start": true
+                  },
+                  {
+                    "label": "handleApplyCoupon",
+                    "kind": "new",
+                    "note": "handlers/applyCoupon.ts",
+                    "next": "orderId, code"
+                  },
+                  {
+                    "label": "CouponService.apply",
+                    "kind": "new",
+                    "note": "status check, expiry, consumeUse"
+                  },
+                  {
+                    "label": "coupons / orders tables",
+                    "kind": "external",
+                    "note": "SQLite, synchronous driver"
+                  },
+                  {
+                    "label": "POST /orders/:id/checkout",
+                    "kind": "same",
+                    "note": "server.ts",
+                    "start": true
+                  },
+                  {
+                    "label": "OrderService.checkout",
+                    "kind": "changed",
+                    "note": "charges total - discount",
+                    "next": "amount, idempotency key"
+                  },
+                  {
+                    "label": "Payment service",
+                    "kind": "external"
+                  },
+                  {
+                    "label": "reconcilePendingPayments (every 5 min)",
+                    "kind": "same",
+                    "note": "looks up charges by key only",
+                    "start": true
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The two paths meet only through the `orders` row. `apply` writes `coupon_code` and `discount_amount`. Later, `checkout` reads them. The reconcile batch looks up charges by idempotency key and never reads the amount, so it needs no change.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "How it works",
+      "steps": [
+        {
+          "title": "The rule apply() borrows from checkout",
+          "blocks": [
+            {
+              "p": "Before judging `apply()`, look at what checkout already promises. The status check below was the guard against double clicks before this change."
+            },
+            {
+              "code": {
+                "file": "src/orders/orderService.ts",
+                "at": "base",
+                "lines": [
+                  33,
+                  41
+                ],
+                "show": [
+                  30,
+                  49
+                ],
+                "note": "unchanged",
+                "marks": [
+                  {
+                    "line": 33,
+                    "text": "only CART or PAYMENT_FAILED may be charged"
+                  },
+                  {
+                    "line": 40,
+                    "text": "saved before the charge: blocks a 2nd checkout"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "src/coupons/couponService.ts",
+                "lines": [
+                  18,
+                  35
+                ],
+                "marks": [
+                  {
+                    "line": 21,
+                    "text": "same states as checkout"
+                  },
+                  {
+                    "line": 28,
+                    "text": "the only write to coupons"
+                  },
+                  {
+                    "line": 32,
+                    "text": "cap: discount <= total"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "`apply` copies the same status check. So once checkout saves PENDING_PAYMENT, a coupon request gets 409. The discount cannot change while a charge is in flight. That keeps the amount sent to the payment service equal to the amount checkout read.",
+              "basis": "fact"
+            },
+            {
+              "p": "The order of checks is good too. The checks that only read (order exists, status, coupon exists, expiry) run first. The one write, `consumeUse`, runs last, so a rejected request does not burn a use.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "Two customers, one use left",
+          "question": true,
+          "blocks": [
+            {
+              "p": "Coupon `WELCOME` has `max_uses = 10` and `used_count = 9`. Two customers apply it to their own carts at the same moment."
+            },
+            {
+              "p": "`apply()` calls `this.#coupons.get(code)` on line 25 before it consumes a use. Can both customers end up with the discount, leaving `used_count` at 11?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: no. The limit is checked inside the UPDATE",
+          "asks": [
+            "Is a single UPDATE always atomic, in any database?",
+            "Why not check usedCount in apply() as well?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "src/coupons/sqliteCouponRepository.ts",
+                "lines": [
+                  37,
+                  39
+                ],
+                "show": [
+                  31,
+                  40
+                ],
+                "marks": [
+                  {
+                    "line": 37,
+                    "text": "check and increment in one statement"
+                  },
+                  {
+                    "line": 39,
+                    "text": "0 rows changed means the limit was reached"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The `usedCount` read on line 25 is never compared to anything. The limit lives in the `WHERE used_count < max_uses` clause. The test `rejects a coupon that has reached its use limit` checks that the second apply fails and `usedCount` stays 1.",
+              "basis": "fact"
+            },
+            {
+              "timeline": {
+                "lanes": [
+                  "Customer A",
+                  "Customer B",
+                  "coupons row"
+                ],
+                "events": [
+                  {
+                    "lane": "Customer A",
+                    "to": "coupons row",
+                    "text": "UPDATE ... WHERE used_count < max_uses"
+                  },
+                  {
+                    "lane": "coupons row",
+                    "text": "9 → 10, changes = 1",
+                    "mark": "ok"
+                  },
+                  {
+                    "lane": "Customer B",
+                    "to": "coupons row",
+                    "text": "same UPDATE"
+                  },
+                  {
+                    "lane": "coupons row",
+                    "text": "10 < 10 is false, changes = 0",
+                    "mark": "ok"
+                  },
+                  {
+                    "lane": "Customer B",
+                    "text": "CouponUsedUpError → 409",
+                    "mark": "note"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Compare the design it did not choose: read `usedCount`, compare in JavaScript, then `UPDATE used_count = ?`. That opens a gap between the check and the write for a second request to slip in. The conditional UPDATE has no gap, so it would stay correct even with several app processes on one database.",
+              "basis": "inferred"
+            },
+            {
+              "p": "The comment on `consumeUse` claims exactly this, and the claim holds. Checking an AI's comment and finding it true is a fine result too. This pattern has a name: a **conditional update** (an atomic check-and-set).",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "One line at checkout, and why the compiler found every caller",
+          "blocks": [
+            {
+              "code": {
+                "file": "src/orders/orderService.ts",
+                "lines": [
+                  45,
+                  45
+                ],
+                "show": [
+                  43,
+                  49
+                ],
+                "marks": [
+                  {
+                    "line": 45,
+                    "text": "the only behavior change in checkout"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "src/orders/order.ts",
+                "lines": [
+                  10,
+                  12
+                ],
+                "show": [
+                  3,
+                  14
+                ],
+                "marks": [
+                  {
+                    "line": 12,
+                    "text": "required, not optional"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "`discountAmount` is a required number, not `discountAmount?: number`. If it were optional, `total - undefined` would be `NaN` and would go silently to the payment service. Because it is required, the type checker flagged every place that builds an `Order`. That is why the three old test files changed.",
+              "basis": "inferred"
+            },
+            {
+              "code": {
+                "file": "db/migrations/002_add_coupons.sql",
+                "lines": [
+                  9,
+                  10
+                ]
+              }
+            },
+            {
+              "p": "`NOT NULL DEFAULT 0` lets existing rows read back as \"no discount\". The `REFERENCES coupons (code)` really is enforced, because `openDatabase` turns on `PRAGMA foreign_keys` on every connection (`src/db.ts:10`).",
+              "basis": "fact"
+            },
+            {
+              "p": "In one sentence: apply() stores a discount only on a cart that is not being charged, consumes a use with no race between check and write, and checkout charges exactly what was stored.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Where a senior stops",
+      "steps": [
+        {
+          "title": "The customer taps Apply twice",
+          "question": true,
+          "blocks": [
+            {
+              "p": "`WELCOME` has `max_uses = 10`, `used_count = 0`. A customer applies `WELCOME` to cart `o1`. The response is slow, so the app retries the same request. Both requests succeed with 200."
+            },
+            {
+              "p": "What is `used_count` now? And if the customer had applied `SPRING` first and then switched to `WELCOME`, what happens to `SPRING`?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: 2, and SPRING loses a use for good",
+          "asks": [
+            "Why didn't the existing tests catch this?"
+          ],
+          "blocks": [
+            {
+              "timeline": {
+                "lanes": [
+                  "Customer",
+                  "CouponService",
+                  "coupons",
+                  "orders"
+                ],
+                "events": [
+                  {
+                    "lane": "Customer",
+                    "to": "CouponService",
+                    "text": "apply(o1, WELCOME)"
+                  },
+                  {
+                    "lane": "CouponService",
+                    "to": "coupons",
+                    "text": "consumeUse → used 1"
+                  },
+                  {
+                    "lane": "CouponService",
+                    "to": "orders",
+                    "text": "coupon=WELCOME, discount=500"
+                  },
+                  {
+                    "lane": "Customer",
+                    "to": "CouponService",
+                    "text": "retry: apply(o1, WELCOME)"
+                  },
+                  {
+                    "lane": "CouponService",
+                    "text": "status is still CART: passes",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "CouponService",
+                    "to": "coupons",
+                    "text": "consumeUse → used 2",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "CouponService",
+                    "to": "orders",
+                    "text": "same values written again"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Nothing in `apply()` looks at `order.couponCode` before calling `consumeUse`. The status stays CART after an apply, so every repeat passes the check on line 21. One order uses two of the ten slots. With `max_uses = 1`, the retry even returns `coupon_used_up` for the customer's own coupon.",
+              "basis": "fact"
+            },
+            {
+              "p": "Switching codes is worse. `SPRING` was consumed, then line 30 overwrites `couponCode` with `WELCOME`. No code ever gives the `SPRING` use back. A customer who switches codes a few times can drain a limited coupon that nobody actually used.",
+              "basis": "fact"
+            },
+            {
+              "p": "The tests apply each coupon to each order only once (`o1`, then `o2`). So no test covers a second apply on the same order.",
+              "basis": "fact"
+            },
+            {
+              "p": "Weight: **must fix**. It touches money and limits, and a normal client retry triggers it. The `UPDATE` was safe against two customers. The gap is one customer arriving twice, which is an **idempotency** problem.",
+              "basis": "inferred"
+            }
+          ]
+        },
+        {
+          "title": "A fix, and what it still does not cover",
+          "asks": [
+            "Should switching coupons be allowed at all?",
+            "How would you wrap two repository calls in one transaction here?"
+          ],
+          "blocks": [
+            {
+              "snippet": {
+                "label": "Not in this repository: a possible guard in apply(), before consumeUse",
+                "lang": "typescript",
+                "text": "if (order.couponCode === code) return order; // retry: no second use\nif (order.couponCode) {\n  throw new CouponAlreadyAppliedError(order.couponCode); // → 409\n}"
+              }
+            },
+            {
+              "p": "Trace it with values. Retry of `WELCOME` on `o1`: `couponCode === 'WELCOME'` returns early, and `used_count` stays 1. Switch to `SPRING`: rejected, so `SPRING` stays at 0. Retry after a declined card (PAYMENT_FAILED): returns early, and no extra use is consumed.",
+              "basis": "inferred"
+            },
+            {
+              "p": "Two retries arriving together are also covered today. The repositories use the synchronous `DatabaseSync`, and `apply()` never waits on real I/O. So once the body is read, one `apply()` runs to the end before another request's handler continues.",
+              "basis": "inferred"
+            },
+            {
+              "p": "It is not covered once there are several app processes. Then both could read `couponCode` as empty. A full fix also puts `consumeUse` and the order save in one transaction, with `UPDATE orders ... WHERE coupon_code IS NULL`. The transaction also closes a smaller gap. Today, if the save on line 33 throws, the use is already gone.",
+              "basis": "inferred"
+            },
+            {
+              "p": "If the product wants switching, the same transaction must give the old code's use back. That is a product decision. The code should not decide it silently.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "What does expires_at actually hold?",
+          "asks": [
+            "Does SQLite check that a TEXT column holds a valid date?"
+          ],
+          "blocks": [
+            {
+              "p": "The name `expiresAt: Date` suggests a checked value. Follow it back to where it comes from."
+            },
+            {
+              "code": {
+                "file": "src/coupons/sqliteCouponRepository.ts",
+                "lines": [
+                  27,
+                  27
+                ],
+                "show": [
+                  19,
+                  29
+                ],
+                "marks": [
+                  {
+                    "line": 27,
+                    "text": "any TEXT goes in; nothing is checked"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "src/coupons/couponService.ts",
+                "lines": [
+                  27,
+                  27
+                ],
+                "show": [
+                  25,
+                  28
+                ],
+                "marks": [
+                  {
+                    "line": 27,
+                    "text": "Invalid Date <= now is false"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "`expires_at` is a plain `TEXT NOT NULL` with no format check, and coupons are inserted by hand. If someone types `2026/12/31 end`, `new Date` gives an Invalid Date. Any comparison with it is false, so line 27 never throws. **The coupon never expires.**",
+              "basis": "inferred"
+            },
+            {
+              "p": "A value like `2026-12-31 23:59:59` (no `T`, no zone) is read in the server's local time zone, while the test data uses `Z` (UTC). The cut-off moves by the server's offset.",
+              "basis": "inferred"
+            },
+            {
+              "p": "Weight: **suggestion**. A bad row breaks one coupon, not every order, but it breaks it open. Throw in `get()` when `Number.isNaN(expiresAt.getTime())`, so a broken row is rejected instead of honored. Also document the expected format.",
+              "basis": "opinion"
+            },
+            {
+              "p": "The same pattern shows up in the cap. Line 32's `Math.min` keeps `discount_amount <= total_amount`, but the orders table has no CHECK for it. The base migration protected `total_amount >= 0` in the database. Today no code changes `totalAmount` after creation (I searched `src/`), so this is safe now. A `CHECK` would keep it safe for the next change. Weight: suggestion.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "Two questions the repository cannot answer alone",
+          "asks": [
+            "Why not mark the 0-yen order PAID without calling the payment service?"
+          ],
+          "blocks": [
+            {
+              "p": "The test `caps the discount at the order total` gives a 5000-yen coupon to a 3000-yen order. Checkout will then call `charge` with `amount: 0`. Whether the payment service accepts 0 is outside this repository.",
+              "basis": "fact"
+            },
+            {
+              "p": "What our code does if the service refuses is fixed, though. A 4xx other than 402 becomes a plain `Error` (`src/payment/httpGateway.ts:35-36`). Checkout rethrows it and leaves the order PENDING_PAYMENT, and the client gets a 500. Ten minutes later, reconcile finds no charge and sets PAYMENT_FAILED. The customer can retry and hit the same wall every time.",
+              "basis": "fact"
+            },
+            {
+              "p": "Second question: after a declined card, the order is PAYMENT_FAILED and `apply()` allows a coupon. The retry then sends a **different amount** with the **same** key `order-o1`. Whether the payment service accepts that within its 24-hour key window is also outside this repository.",
+              "basis": "fact"
+            },
+            {
+              "p": "Weight: **question**. Before merging, someone should check the payment service docs for `amount: 0` and for reusing a key with a new amount. If either is rejected, skip the charge for 0 yen, or block coupons on PAYMENT_FAILED orders.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Looks risky, but fine here, plus the short list",
+          "asks": [
+            "What would make the apply/checkout race real?"
+          ],
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "Looks risky",
+                  "Why it is fine here",
+                  "Checked at"
+                ],
+                "rows": [
+                  [
+                    "apply and checkout racing on one order",
+                    "Single process, sync DB. Neither path waits on I/O between its read and its write, except the charge, and apply is rejected while PENDING_PAYMENT",
+                    "src/server.ts, src/app.ts:9, couponService.ts:21"
+                  ],
+                  [
+                    "coupon_code foreign key not enforced",
+                    "PRAGMA foreign_keys = ON on every open",
+                    "src/db.ts:10"
+                  ],
+                  [
+                    "Migration half-applied",
+                    "Each file runs in BEGIN/COMMIT",
+                    "src/db.ts:17-24"
+                  ],
+                  [
+                    "SQL injection via the code",
+                    "Values are bound with ?",
+                    "sqliteCouponRepository.ts:20,37"
+                  ],
+                  [
+                    "No auth on the new route",
+                    "Checkout has none either. Pre-existing, not added here",
+                    "base src/server.ts"
+                  ]
+                ]
+              }
+            },
+            {
+              "list": [
+                "Suggestion: `readJson` turns invalid JSON into a 500 (it is inside the try at `src/server.ts:21-30`) and reads a body of any size. Return 400 and cap the size.",
+                "Question: is a use \"used\" when it is applied or when it is paid? Today an abandoned cart keeps its use forever.",
+                "Question: rolling back to main would quietly charge full price on carts that already have a coupon, because the old checkout ignores `discount_amount`.",
+                "Opinion: 404 / 410 / 409 lets anyone probe which codes exist. Consider rate limits if codes are guessable.",
+                "Nit: `InvalidOrderStateError` says \"cannot be checked out\" when the coupon path throws it.",
+                "Nit: `CouponService` takes the concrete `SqliteCouponRepository`, while `OrderService` takes the `OrderRepository` interface.",
+                "Nit: the README still lists only `POST /orders/:id/checkout`."
+              ]
+            },
+            {
+              "p": "In one sentence: the use limit holds against many customers, but not against one customer applying more than once, and expiry and the cap are kept only by app code that trusts its input.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Wrap-up",
+      "steps": [
+        {
+          "title": "Did this change make the codebase better?",
+          "blocks": [
+            {
+              "p": "Mostly yes. The feature is small, follows the existing layers, keeps checkout's status rule, and has a race-free use limit. But it has one must-fix issue: a normal retry can consume extra uses. So the verdict is \"good shape, fix idempotency before merging, and answer the payment questions\".",
+              "basis": "inferred"
+            },
+            {
+              "table": {
+                "head": [
+                  "Label",
+                  "Comment"
+                ],
+                "rows": [
+                  [
+                    "Must",
+                    "`apply()` consumes a use every time it is called, even on an order that already has a coupon. Return early on the same code, reject a different one, and add a test that applies twice."
+                  ],
+                  [
+                    "Suggestion",
+                    "An unparsable `expires_at` makes the coupon never expire. Reject Invalid Date in `get()`, and add a DB CHECK for `discount_amount <= total_amount`."
+                  ],
+                  [
+                    "Question",
+                    "Does the payment service accept `amount: 0`, and a new amount under an idempotency key it has already declined? If not, a fully discounted order loops through 500 and PAYMENT_FAILED."
+                  ],
+                  [
+                    "Praise",
+                    "`consumeUse` checks and increments in one UPDATE, so concurrent customers cannot pass the limit. The comment says why."
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "title": "What you just practiced",
+          "blocks": [
+            {
+              "list": [
+                "We said the purpose and the three promises before reading code, then checked each promise one by one.",
+                "We left the diff to read checkout's status rule, `db.ts`, and the payment gateway, because the new lines only make sense against them.",
+                "We tested an AI's comment (\"concurrent uses cannot exceed the limit\") and found it true. Then we asked a question it did not cover: the same customer, twice.",
+                "We traced concrete values (9 of 10 used, a retry, an Invalid Date, a 0-yen charge) instead of stopping at \"looks right\".",
+                "We split each external question into what our code decides (fact) and what the payment service decides (a question).",
+                "We said \"fine here\" only where we could point to the line that makes it fine."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
