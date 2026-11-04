@@ -108,7 +108,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — Pure core: JSONL reducer, error mapping, runner with stdin-EOF + taskkill cancel, atomic tour cache, fake-tour fixture replay tests
+- [x] 04-01-PLAN.md — Pure core: JSONL reducer, error mapping, runner with stdin-EOF + taskkill cancel, atomic tour cache, fake-tour fixture replay tests
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
