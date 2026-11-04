@@ -19,7 +19,7 @@ class EventEmitter {
 }
 const base = {
   commands: { registerCommand: (id) => { commands.push(id); return dispose; }, executeCommand: async () => undefined },
-  window: { createStatusBarItem: () => ({ show() {}, hide() {}, dispose() {} }), createTreeView: (id) => { views.push(id); return { message: '', dispose() {} }; } },
+  window: { createOutputChannel: () => ({ appendLine() {}, show() {}, dispose() {} }), createStatusBarItem: () => ({ show() {}, hide() {}, dispose() {} }), createTreeView: (id) => { views.push(id); return { message: '', dispose() {} }; } },
   workspace: {
     workspaceFolders: undefined,
     registerTextDocumentContentProvider: () => dispose,
@@ -44,13 +44,13 @@ Module.prototype.require = function (id) { return id === 'vscode' ? mock : origR
 
 try {
   const ext = createRequire(import.meta.url)(path.join(root, 'dist', 'extension.js'));
-  await ext.activate({ subscriptions: [], globalStorageUri: { fsPath: os.tmpdir() }, extensionPath: root });
+  await ext.activate({ subscriptions: [], globalStorageUri: { fsPath: os.tmpdir() }, extensionPath: root, extensionUri: { fsPath: root } });
   await new Promise((r) => setTimeout(r, 50));
 } catch (e) { failed = `exception: ${e?.stack ?? e}`; }
 
-const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.openSavedTour'];
+const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.revealWriting', 'difftour.internal.openSavedTour'];
 const missing = want.filter((c) => !commands.includes(c)).concat(['difftour.changes', 'difftour.smallChange'].filter((v) => !views.includes(v)).map((v) => `view ${v}`));
 if (failed || missing.length) {
   console.error(`smoke FAILED: ${failed} missing: ${missing.join(', ')}`);
   process.exitCode = 1;
-} else console.log('smoke ok: 7 commands, 2 views');
+} else console.log('smoke ok: 8 commands, 2 views');

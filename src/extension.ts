@@ -5,6 +5,7 @@ import { ChangeModel, Deps, Entry, choose, setCurrentModel, showPicker } from '.
 import { ChangesTree } from './views/changesTree';
 import type { Target } from './git/changes';
 import { SmallChange } from './small/smallChange';
+import { startTour, revealWriting } from './cli/startTour';
 
 export function activate(context: vscode.ExtensionContext): void {
   const deps: Deps = {
@@ -15,7 +16,6 @@ export function activate(context: vscode.ExtensionContext): void {
   const model = new ChangeModel(deps);
   setCurrentModel(model);
   const err = (e: unknown) => vscode.window.showErrorMessage(String((e as Error).message ?? e));
-  const range = (t: Target) => `${t.baseSha.slice(0, 7)}..${t.headSha.slice(0, 7)}`;
   const reg = (id: string, fn: (...a: any[]) => unknown) => context.subscriptions.push(vscode.commands.registerCommand(id, fn));
 
   reg('difftour.tourChange', () => showPicker(model, deps));
@@ -23,9 +23,15 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('difftour.internal.choose', (entry: Entry) => choose(entry, deps, model).catch(err));
   const small = new SmallChange(() => model.cwd, () => deps.settings().minFiles);
   small.register(context);
-  // Stubs: replaced in Phases 4 and 5.
+  // openSavedTour remains a stub until Phase 5.
   reg('difftour.internal.openSmallChange', (t: Target) => small.open(t).catch(err));
-  reg('difftour.internal.startTour', (t: Target) => vscode.window.showInformationMessage(`Tour: ${t.label}, ${t.files} files (${range(t)}). Tour writing arrives in Phase 4.`));
+  const output = vscode.window.createOutputChannel('diff-tour');
+  context.subscriptions.push(output);
+  reg('difftour.internal.startTour', (t: Target) => startTour(t, {
+    settings: deps.settings, savedDir: deps.savedDir, extensionPath: deps.extensionPath, extensionUri: context.extensionUri,
+    cwd: () => model.cwd, hideSmall: () => small.hide(), refresh: () => void model.refresh(), output,
+  }).catch(err));
+  reg('difftour.internal.revealWriting', () => revealWriting());
   reg('difftour.internal.openSavedTour', (p: string) => vscode.window.showInformationMessage(`Saved tour: ${p}. The tour document arrives in Phase 5.`));
 
   context.subscriptions.push(

@@ -194,7 +194,7 @@ export async function routeTarget(target: Target, deps: Deps): Promise<void> {
   await vscode.commands.executeCommand('difftour.internal.startTour', target);
 }
 
-async function missingNotice(what: string[], messages: string[], deps: Deps): Promise<void> {
+export async function missingNotice(what: string[], messages: string[], deps: Deps): Promise<void> {
   const choice = await vscode.window.showErrorMessage(messages.join('\n'), 'Open Settings', 'How to install');
   if (choice === 'Open Settings') { await vscode.commands.executeCommand('workbench.action.openSettings', 'difftour.cliPath'); return; }
   if (choice !== 'How to install') return;
