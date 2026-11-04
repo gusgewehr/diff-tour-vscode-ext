@@ -1,0 +1,42 @@
+body { font-family: var(--vscode-font-family); color: var(--vscode-foreground); background: var(--vscode-editor-background); margin: 0; padding: 0 24px 80px; }
+main.doc { max-width: 880px; margin: 0 auto; padding-top: 28px; }
+.tour-title { font-family: Newsreader, Georgia, 'Times New Roman', serif; font-size: 34px; line-height: 1.12; font-weight: 500; margin: 0; }
+.refs { color: var(--vscode-descriptionForeground); font-family: var(--vscode-editor-font-family); font-size: 12px; margin-top: 6px; }
+.chapter { margin-top: 28px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--vscode-descriptionForeground); }
+.step-title { font-family: Newsreader, Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 500; margin: 6px 0 16px; }
+.block { margin: 14px 0; }
+.block.p { display: grid; grid-template-columns: 110px 1fr; gap: 14px; font-family: Newsreader, Georgia, 'Times New Roman', serif; font-size: 17px; line-height: 1.6; }
+.block.p p { margin: 0; }
+.gutter { text-align: right; padding-top: 4px; }
+.basis { font-family: var(--vscode-font-family); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.basis-fact { color: var(--vscode-charts-green); }
+.basis-inferred { color: var(--vscode-charts-yellow); }
+.basis-opinion { color: var(--vscode-charts-purple); }
+code { font-family: var(--vscode-editor-font-family); font-size: .88em; background: var(--vscode-textCodeBlock-background); padding: 1px 4px; border-radius: 3px; }
+.file-link { color: var(--vscode-textLink-foreground); text-decoration: underline; font-family: var(--vscode-editor-font-family); font-size: .88em; }
+.block-fallback { border: 1px dashed var(--vscode-panel-border); border-radius: 4px; padding: 8px 12px; color: var(--vscode-descriptionForeground); font-size: 13px; }
+.note-card { margin-top: 28px; border: 1px solid var(--vscode-panel-border); border-radius: 6px; padding: 10px 14px; }
+.note-card[hidden] { display: none; }
+.note-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; }
+.note-hint { color: var(--vscode-descriptionForeground); font-size: 12px; margin: 2px 0 8px; }
+.note-card textarea { box-sizing: border-box; width: 100%; min-height: 80px; resize: vertical; font-family: var(--vscode-font-family); color: var(--vscode-input-foreground); background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, transparent); padding: 6px; }
+nav.bar { position: fixed; left: 0; right: 0; bottom: 0; height: 58px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 24px; background: var(--vscode-sideBar-background, var(--vscode-editor-background)); border-top: 1px solid var(--vscode-panel-border); }
+.ticks { flex: 1; display: flex; align-items: center; gap: 3px; min-width: 0; }
+.tick { flex: 1 1 0; max-width: 28px; min-width: 3px; height: 6px; padding: 0; border: none; border-radius: 1px; cursor: pointer; background: var(--vscode-descriptionForeground); opacity: .3; }
+.tick.current { height: 10px; background: var(--vscode-foreground); opacity: 1; }
+.tick.understood { background: var(--vscode-textLink-foreground); opacity: 1; }
+.tick.visited { background: var(--vscode-textLink-foreground); opacity: .45; }
+button { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 6px 14px; cursor: pointer; border-radius: 2px; font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+button:hover { background: var(--vscode-button-hoverBackground); }
+button.secondary { background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+button.secondary:hover { background: var(--vscode-button-secondaryHoverBackground); }
+button:disabled { opacity: .5; cursor: default; }
+button.tick:hover { background: var(--vscode-foreground); }
+:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: 1px; }
+body.vscode-light .tick.unvisited { opacity: .45; }
+body.vscode-high-contrast .note-card, body.vscode-high-contrast-light .note-card,
+body.vscode-high-contrast .block-fallback, body.vscode-high-contrast-light .block-fallback,
+body.vscode-high-contrast nav.bar, body.vscode-high-contrast-light nav.bar,
+body.vscode-high-contrast .tick, body.vscode-high-contrast-light .tick { border: 1px solid var(--vscode-contrastBorder); }
+body.vscode-high-contrast .tick, body.vscode-high-contrast-light .tick,
+body.vscode-high-contrast .tick.visited, body.vscode-high-contrast-light .tick.visited { opacity: 1; }
