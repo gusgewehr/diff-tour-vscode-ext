@@ -24,18 +24,28 @@ export class ChangeModel {
   base?: string;
   private gen = 0;
   private loaded?: Promise<void>;
+  private root?: Promise<void>;
   private emitter = new vscode.EventEmitter<void>();
   readonly onDidChange = this.emitter.event;
   constructor(private deps: Deps) {}
 
   ensureLoaded(): Promise<void> { return this.loaded ?? this.refresh(); }
 
+  // resolves once cwd is known, without waiting for gh or branch counts; never rejects
+  ensureRoot(): Promise<void> {
+    if (!this.root) this.refresh().catch(() => {});
+    return this.root!;
+  }
+
   refresh(): Promise<void> {
-    this.loaded = this.load();
+    let rooted!: () => void;
+    this.root = new Promise<void>((r) => { rooted = r; });
+    this.loaded = this.load(rooted);
+    this.loaded.then(rooted, rooted);
     return this.loaded;
   }
 
-  private async load(): Promise<void> {
+  private async load(rooted: () => void): Promise<void> {
     const gen = ++this.gen;
     const s = this.deps.settings();
     this.message = undefined;
@@ -48,6 +58,7 @@ export class ChangeModel {
       this.cwd = undefined; this.groups = []; this.message = 'Open a folder that contains a git repository.';
       this.counting = false; this.emitter.fire(); return;
     }
+    rooted();
     const cwd = this.cwd;
     let base: string;
     try { base = await detectBase(cwd, s.baseBranch); } catch (e) {
