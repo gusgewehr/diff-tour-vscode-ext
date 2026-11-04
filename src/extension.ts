@@ -13,6 +13,8 @@ import { OutlineTree } from './views/outlineTree';
 import { FlowBarView } from './views/flowBarView';
 
 export function activate(context: vscode.ExtensionContext): void {
+  // a VSIX packed on Windows loses the exec bit, so restore it on the bundled CLI
+  if (process.platform !== 'win32') fs.chmod(path.join(context.extensionPath, 'cli', 'bin', 'tour'), 0o755, () => {});
   const deps: Deps = {
     settings: () => readSettings(vscode.workspace.getConfiguration('difftour'), vscode.env.language),
     savedDir: path.join(context.globalStorageUri.fsPath, 'tours'),

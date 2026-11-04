@@ -1,5 +1,7 @@
 src/**
 cli/**
+!cli/bin/tour
+!cli/bin/tour.exe
 fixtures/**
 .planning/**
 docs/**

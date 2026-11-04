@@ -2,7 +2,7 @@
   "name": "diff-tour",
   "displayName": "diff-tour",
   "publisher": "difftour",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Walk an LLM-written tour of a git change inside VS Code.",
   "engines": {
     "vscode": "^1.110.0"
@@ -225,7 +225,7 @@
     "test": "esbuild \"src/**/*.test.ts\" --bundle --platform=node --format=cjs --target=node22 --external:vscode --outdir=dist-test && node --test \"dist-test/**/*.test.js\"",
     "smoke": "node scripts/smoke-activate.mjs",
     "vscode:prepublish": "npm run build",
-    "package": "vsce package --no-dependencies --allow-missing-repository --skip-license -o diff-tour.vsix"
+    "package": "npm run build && node scripts/package.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
