@@ -47,7 +47,7 @@ type Request struct {
 // Progress is how far generation has got.
 type Progress struct {
 	Event  *Event
-	Phase  string // "reading", "repairing"
+	Phase  string // "reading", "checking", "repairing"
 	Repair int
 }
 
@@ -191,6 +191,7 @@ func Generate(ctx context.Context, backend Backend, req Request, workDir string,
 // settle parses a reply and, while validation finds problems, asks for fixes (up to MaxRepairs times per reply).
 func settle(ctx context.Context, backend Backend, req Request, dir, text string, stats *Stats, progress func(Progress), onEvent func(Event)) (*tour.Tour, error) {
 	for repairs := 0; ; repairs++ {
+		progress(Progress{Phase: "checking", Repair: repairs})
 		t, problems := parse(req, text)
 		if len(problems) == 0 {
 			return t, nil

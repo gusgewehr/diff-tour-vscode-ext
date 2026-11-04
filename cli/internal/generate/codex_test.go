@@ -95,10 +95,10 @@ func TestReadCodexStream(t *testing.T) {
 		t.Errorf("failure = %q, warnings = %v", s.failure, s.warnings)
 	}
 	want := []Event{
-		{"read", "change.diff"},
-		{"search", "used_count"},
-		{"read", "head/src/coupon.ts"},
-		{"search", "."},
+		{Kind: "read", Detail: "change.diff"},
+		{Kind: "search", Detail: "used_count"},
+		{Kind: "read", Detail: "head/src/coupon.ts"},
+		{Kind: "search", Detail: "."},
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("events = %v, want %v", got, want)
@@ -129,14 +129,14 @@ func TestReadCodexStreamSandboxBroken(t *testing.T) {
 
 func TestCommandEvent(t *testing.T) {
 	cases := map[string]Event{
-		`/usr/bin/bash -lc 'head -n 40 base/a.go'`:               {"read", "base/a.go"},
-		`/usr/bin/bash -lc "nl -ba head/a.go | sed -n '10,20p'"`: {"read", "head/a.go"},
-		`/usr/bin/bash -lc 'grep -rn "func Apply" head'`:         {"search", "func Apply"},
-		`/usr/bin/bash -lc 'git grep -n coupon'`:                 {"search", "coupon"},
-		`/usr/bin/bash -lc 'find head -name "*.go"'`:             {"search", "head -name *.go"},
-		`/usr/bin/bash -lc 'cat commits.txt && cat change.diff'`: {"read", "commits.txt"},
-		`/usr/bin/bash -lc 'python3 -c "print(1)"'`:              {"read", "python3 -c print(1)"},
-		`/usr/bin/bash -lc 'cat /etc/hostname'`:                  {"read", "/etc/hostname"},
+		`/usr/bin/bash -lc 'head -n 40 base/a.go'`:               {Kind: "read", Detail: "base/a.go"},
+		`/usr/bin/bash -lc "nl -ba head/a.go | sed -n '10,20p'"`: {Kind: "read", Detail: "head/a.go"},
+		`/usr/bin/bash -lc 'grep -rn "func Apply" head'`:         {Kind: "search", Detail: "func Apply"},
+		`/usr/bin/bash -lc 'git grep -n coupon'`:                 {Kind: "search", Detail: "coupon"},
+		`/usr/bin/bash -lc 'find head -name "*.go"'`:             {Kind: "search", Detail: "head -name *.go"},
+		`/usr/bin/bash -lc 'cat commits.txt && cat change.diff'`: {Kind: "read", Detail: "commits.txt"},
+		`/usr/bin/bash -lc 'python3 -c "print(1)"'`:              {Kind: "read", Detail: "python3 -c print(1)"},
+		`/usr/bin/bash -lc 'cat /etc/hostname'`:                  {Kind: "read", Detail: "/etc/hostname"},
 	}
 	for in, want := range cases {
 		if got, ok := commandEvent("/w", in); !ok || got != want {

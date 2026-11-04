@@ -114,7 +114,7 @@ func readPiSample(sample string) (*piStream, []Event) {
 
 func TestPiStream(t *testing.T) {
 	s, events := readPiSample(piSample)
-	want := []Event{{"read", "change.diff"}, {"search", "used_count"}, {"search", "**/*.go"}, {"read", "head/internal"}, {"read", "head/a.go"}}
+	want := []Event{{Kind: "read", Detail: "change.diff"}, {Kind: "search", Detail: "used_count"}, {Kind: "search", Detail: "**/*.go"}, {Kind: "read", Detail: "head/internal"}, {Kind: "read", Detail: "head/a.go"}}
 	if !slices.Equal(events, want) {
 		t.Errorf("events = %v, want %v", events, want)
 	}
@@ -305,7 +305,7 @@ export default function () { writeFileSync(` + fmt.Sprintf("%q", filepath.Join(r
 	if _, err := os.Stat(filepath.Join(dir, "x.txt")); err == nil {
 		t.Error("a file was written")
 	}
-	if !slices.Contains(events, Event{"read", filepath.Join("head", "a.go")}) {
+	if !slices.Contains(events, Event{Kind: "read", Detail: filepath.Join("head", "a.go")}) {
 		t.Errorf("events = %v", events)
 	}
 }

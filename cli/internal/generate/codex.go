@@ -288,27 +288,27 @@ func commandEvent(dir, command string) (Event, bool) {
 		if len(args) == 0 {
 			return Event{}, false
 		}
-		return Event{"read", relative(dir, absIn(dir, args[len(args)-1]))}, true
+		return Event{Kind: "read", Detail: relative(dir, absIn(dir, args[len(args)-1]))}, true
 	case "rg", "grep", "egrep", "ag", "git":
 		if name == "git" {
 			if len(args) == 0 || args[0] != "grep" {
-				return Event{"read", short(command)}, true
+				return Event{Kind: "read", Detail: short(command)}, true
 			}
 			args = args[1:]
 		}
 		if len(args) == 0 {
-			return Event{"search", short(strings.Join(words[1:], " "))}, true
+			return Event{Kind: "search", Detail: short(strings.Join(words[1:], " "))}, true
 		}
-		return Event{"search", args[0]}, true
+		return Event{Kind: "search", Detail: args[0]}, true
 	case "ls", "tree":
 		if len(args) == 0 {
 			args = []string{"."}
 		}
-		return Event{"search", short(strings.Join(args, " "))}, true
+		return Event{Kind: "search", Detail: short(strings.Join(args, " "))}, true
 	case "find", "fd":
-		return Event{"search", short(strings.Join(words[1:], " "))}, true
+		return Event{Kind: "search", Detail: short(strings.Join(words[1:], " "))}, true
 	}
-	return Event{"read", short(strings.Join(words, " "))}, true
+	return Event{Kind: "read", Detail: short(strings.Join(words, " "))}, true
 }
 
 func isShell(path string) bool {

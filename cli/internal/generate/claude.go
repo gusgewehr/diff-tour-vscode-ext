@@ -9,12 +9,14 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // Event is something that happened during generation (for streaming to the screen).
 type Event struct {
 	Kind   string // "read", "search"
 	Detail string
+	Tool   string // tool name as the LLM CLI reports it, e.g. "Read", "Grep", "Glob"; may be empty
 }
 
 type Result struct {
@@ -76,6 +78,8 @@ func (c ClaudeCode) Run(ctx context.Context, dir, prompt string, events func(Eve
 		bin = "claude"
 	}
 	cmd := exec.CommandContext(ctx, bin, claudeArgs()...)
+	cmd.Cancel = func() error { return killTree(cmd) }
+	cmd.WaitDelay = 10 * time.Second
 	cmd.Dir = dir
 	cmd.Stdin = strings.NewReader(prompt)
 	var stderr strings.Builder
@@ -111,9 +115,9 @@ func (c ClaudeCode) Run(ctx context.Context, dir, prompt string, events func(Eve
 				_ = json.Unmarshal(part.Input, &in)
 				switch part.Name {
 				case "Read":
-					events(Event{"read", relative(dir, in.FilePath)})
+					events(Event{Kind: "read", Detail: relative(dir, in.FilePath), Tool: part.Name})
 				case "Grep", "Glob":
-					events(Event{"search", in.Pattern})
+					events(Event{Kind: "search", Detail: in.Pattern, Tool: part.Name})
 				}
 			}
 		case "result":

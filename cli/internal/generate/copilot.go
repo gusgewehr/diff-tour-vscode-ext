@@ -179,9 +179,9 @@ func (s *copilotStream) line(b []byte) {
 			_ = json.Unmarshal(r.Arguments, &in)
 			switch r.Name {
 			case "view":
-				s.events(Event{"read", relative(s.dir, in.Path)})
+				s.events(Event{Kind: "read", Detail: relative(s.dir, in.Path)})
 			case "grep", "rg", "glob":
-				s.events(Event{"search", in.Pattern})
+				s.events(Event{Kind: "search", Detail: in.Pattern})
 			}
 		}
 	case "session.error":

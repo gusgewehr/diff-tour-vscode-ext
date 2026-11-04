@@ -301,9 +301,9 @@ func (s *openCodeStream) line(b []byte) {
 		_ = json.Unmarshal(e.Part.State.Input, &in)
 		switch e.Part.Tool {
 		case "read":
-			s.events(Event{"read", relative(s.dir, in.Path)})
+			s.events(Event{Kind: "read", Detail: relative(s.dir, in.Path)})
 		case "glob", "grep":
-			s.events(Event{"search", in.Pattern})
+			s.events(Event{Kind: "search", Detail: in.Pattern})
 		}
 	case "step_finish":
 		s.cost += e.Part.Cost

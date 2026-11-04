@@ -135,7 +135,7 @@ func readCopilotSample(sample string) (*copilotStream, []Event) {
 
 func TestCopilotStream(t *testing.T) {
 	s, events := readCopilotSample(copilotSample)
-	want := []Event{{"read", "change.diff"}, {"search", "used_count"}, {"search", "head/**/*.go"}}
+	want := []Event{{Kind: "read", Detail: "change.diff"}, {Kind: "search", Detail: "used_count"}, {Kind: "search", Detail: "head/**/*.go"}}
 	if !reflect.DeepEqual(events, want) {
 		t.Errorf("events = %v, want %v", events, want)
 	}

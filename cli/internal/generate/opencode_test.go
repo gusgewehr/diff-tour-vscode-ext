@@ -185,7 +185,7 @@ func readOpenCodeSample(sample string) (*openCodeStream, []Event) {
 
 func TestOpenCodeStream(t *testing.T) {
 	s, events := readOpenCodeSample(openCodeSample)
-	want := []Event{{"read", "change.diff"}, {"search", "used_count"}, {"search", "head/**/*.go"}, {"read", "/etc/hostname"}}
+	want := []Event{{Kind: "read", Detail: "change.diff"}, {Kind: "search", Detail: "used_count"}, {Kind: "search", Detail: "head/**/*.go"}, {Kind: "read", Detail: "/etc/hostname"}}
 	if !slices.Equal(events, want) {
 		t.Errorf("events = %v, want %v", events, want)
 	}

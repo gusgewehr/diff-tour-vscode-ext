@@ -184,7 +184,7 @@ func readGeminiSample(t *testing.T, sample string) (*geminiStream, []Event) {
 
 func TestGeminiStream(t *testing.T) {
 	s, events := readGeminiSample(t, geminiSample)
-	want := []Event{{"read", "change.diff"}, {"search", "used_count"}, {"search", "head/**/*.go"}}
+	want := []Event{{Kind: "read", Detail: "change.diff"}, {Kind: "search", Detail: "used_count"}, {Kind: "search", Detail: "head/**/*.go"}}
 	if !slices.Equal(events, want) {
 		t.Errorf("events = %v, want %v", events, want)
 	}

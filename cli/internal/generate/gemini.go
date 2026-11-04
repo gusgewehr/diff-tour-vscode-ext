@@ -259,9 +259,9 @@ func (s *geminiStream) line(b []byte) {
 		_ = json.Unmarshal(e.Parameters, &in)
 		switch e.ToolName {
 		case "read_file":
-			s.events(Event{"read", relative(s.dir, in.FilePath)})
+			s.events(Event{Kind: "read", Detail: relative(s.dir, in.FilePath)})
 		case "grep_search", "glob":
-			s.events(Event{"search", in.Pattern})
+			s.events(Event{Kind: "search", Detail: in.Pattern})
 		}
 	case "error":
 		s.lastError = strings.TrimSpace(e.Message)

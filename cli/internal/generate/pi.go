@@ -142,9 +142,9 @@ func (s *piStream) line(b []byte) {
 		}
 		switch e.ToolName {
 		case "read", "ls":
-			s.events(Event{"read", relative(s.dir, path)})
+			s.events(Event{Kind: "read", Detail: relative(s.dir, path)})
 		case "grep", "find":
-			s.events(Event{"search", e.Args.Pattern})
+			s.events(Event{Kind: "search", Detail: e.Args.Pattern})
 		}
 	case "message_end":
 		if e.Message.Role != "assistant" {
