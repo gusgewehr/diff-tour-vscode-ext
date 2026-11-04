@@ -58,12 +58,13 @@ export interface CodeTarget { file: string; at: At; lines: [number, number] }
 
 export function codeTargetForBlock(step: Step, block: number): CodeTarget | undefined {
   const b = step.blocks[block];
+  if (b?.kind === 'diff') { const h = b.diff.hunks?.[0] ?? 1; return { file: b.diff.file, at: 'head', lines: [h, h] }; }
   if (!b || b.kind !== 'code') return undefined;
   return { file: b.code.file, at: b.code.at || 'head', lines: b.code.lines };
 }
 
 export function primaryCode(step: Step): CodeTarget | undefined {
   if (step.open) return { file: step.open.file, at: step.open.at || 'head', lines: [step.open.line, step.open.line] };
-  const i = step.blocks.findIndex((b) => b.kind === 'code');
+  const i = step.blocks.findIndex((b) => b.kind === 'code' || b.kind === 'diff');
   return i < 0 ? undefined : codeTargetForBlock(step, i);
 }

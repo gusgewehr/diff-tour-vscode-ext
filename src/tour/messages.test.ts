@@ -51,3 +51,10 @@ test('code targets', () => {
   assert.equal(primaryCode({ title: 'x', blocks: [] }), undefined);
   assert.ok(primaryCode(st));
 });
+
+test('diff block target and primaryCode fallback', () => {
+  const blocks = [{ kind: 'p' as const, p: 'x' }, { kind: 'diff' as const, diff: { file: 'a.ts', hunks: [12, 30] } }];
+  assert.deepEqual(codeTargetForBlock({ title: 't', blocks }, 1), { file: 'a.ts', at: 'head', lines: [12, 12] });
+  assert.deepEqual(primaryCode({ title: 't', blocks }), { file: 'a.ts', at: 'head', lines: [12, 12] });
+  assert.deepEqual(codeTargetForBlock({ title: 't', blocks: [{ kind: 'diff', diff: { file: 'b' } }] }, 0)?.lines, [1, 1]);
+});
