@@ -8,8 +8,8 @@ All fixtures pass `tour.exe --dump --plain --repo <clone> <file>` (tour.Load + V
 | Fixture | Target | baseSha | headSha | Files | Repairs | Cost | Duration | Prompt |
 |---|---|---|---|---|---|---|---|---|
 | real-b146230.json | b146230^..b146230 | bc6d3c41...dd960 | b146230e...f9df | 11 | 0 | $1.94 | 399 s | v6 |
-| real-9cbe3d2.json | 9cbe3d2^..9cbe3d2 | b146230e...f9df | 9cbe3d28...6dd770a396a | 14 | 0 | $1.83 | 396 s | v6 |
-| real-9c18e24.json | 9c18e24^..9c18e24 | c74612e9...f1e9 (c74612e9b7ad3384e3ec604eabafac5b7c4024cf) | 9c18e24a8245ea4aaa4c418bc54a82cc4cec4ab4 | 16 | 0 | $2.24 | 474 s | v7 (flow nodes carry file/lines) |
+| real-9cbe3d2.json | 9cbe3d2^..9cbe3d2 | b146230e...f9df | 9cbe3d28a35a0aaabf23968add06e6dd770a396a | 14 | 0 | $1.83 | 396 s | v6 |
+| real-9c18e24.json | 9c18e24^..9c18e24 | c74612e9b7ad3384e3ec604eabafac5b7c4024cf | 9c18e24a8245ea4aaa4c418bc54a82cc4cec4ab4 | 16 | 0 | $2.24 | 474 s | v7 (flow nodes carry file/lines) |
 
 Full SHAs are in each `.progress.jsonl` done event. d05c686 was dropped (only 5 files); 9cbe3d2 replaced it.
 
