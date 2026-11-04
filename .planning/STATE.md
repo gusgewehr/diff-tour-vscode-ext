@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Roadmap created
-last_updated: "2026-11-04T06:48:27.507Z"
+status: milestone_complete
+stopped_at: Milestone complete (Phase 8 was final phase)
+last_updated: 2026-11-04T06:53:28.039Z
 last_activity: 2026-11-04 -- Phase 8 planning complete
 progress:
   total_phases: 8
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-03)
 
 **Core value:** A reviewer can walk an LLM-written tour of a git change inside VS Code, and every piece of code the tour points to opens read-only, side by side, at the exact commit the tour talks about.
-**Current focus:** Phase 08 — flow bar
+**Current focus:** Milestone complete
 
 ## Current Position
 
-Phase: 08 of 8 (flow bar)
-Plan: 1 of 1 (complete)
-Status: Phase 8 complete
-Last activity: 2026-11-04 -- Phase 8 planning complete
+Phase: 8 of 8 (flow bar)
+Plan: Not started
+Status: Milestone complete
+Last activity: 2026-11-04
 
 Progress: [██████████] 100%
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 19
+- Total plans completed: 20
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -48,6 +48,7 @@ Progress: [██████████] 100%
 | 3 | 1 | - | - |
 | 4 | 3 | - | - |
 | 5 | 3 | - | - |
+| 8 | 1 | - | - |
 
 ## Accumulated Context
 
