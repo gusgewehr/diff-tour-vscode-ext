@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0&amp;display=block"><script src="tour-data.js"></script><script src="tour-more.js"></script><style>html,body{color-scheme:dark;margin:0;height:100%;background:oklch(0.165 0.012 245);overflow:auto;-webkit-font-smoothing:antialiased}a{color:oklch(0.80 0.11 190)}a:hover{color:oklch(0.88 0.09 190)}textarea::placeholder,input::placeholder{color:oklch(0.55 0.012 245)}</style></helmet>
+<div style="color-scheme:dark;width:100vw;height:100vh;min-width:1180px;min-height:740px;display:flex;flex-direction:column;background:oklch(0.205 0.011 245);color:oklch(0.93 0.006 245);font:13px/1.4 'IBM Plex Sans',sans-serif;overflow:hidden;position:relative">
+
+<div style="height:38px;flex:none;display:flex;align-items:center;gap:14px;padding:0 14px;background:oklch(0.165 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div style="display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:oklch(0.32 0.012 245)"></span><span style="width:12px;height:12px;border-radius:50%;background:oklch(0.32 0.012 245)"></span><span style="width:12px;height:12px;border-radius:50%;background:oklch(0.32 0.012 245)"></span></div><div style="flex:1;display:flex;justify-content:center"><div onClick="{{ openQuick }}" style="width:440px;height:24px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid oklch(0.30 0.012 245);border-radius:6px;background:oklch(0.19 0.012 245);font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245);cursor:pointer" style-hover="border-color:oklch(0.80 0.11 190 / .55);color:oklch(0.93 0.006 245)"><span style="font:15px/1 'Material Symbols Outlined'">search</span>diff-tour-example · {{ cmdLabel }}</div></div><sc-if value="{{ isTour }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:2px;padding:2px;border-radius:7px;background:oklch(0.19 0.012 245);border:1px solid oklch(0.30 0.012 245)"><sc-for list="{{ layouts }}" as="l"><span onClick="{{ l.go }}" style="display:flex;align-items:center;gap:6px;padding:4px 9px;border-radius:5px;background:{{ l.bg }};color:{{ l.color }};font:500 12px/1 'IBM Plex Sans',sans-serif;cursor:pointer"><span style="font:15px/1 'Material Symbols Outlined'">{{ l.icon }}</span>{{ l.label }}</span></sc-for></div></sc-if></div>
+
+<sc-if value="{{ isTour }}" hint-placeholder-val="{{ false }}"><div style="height:48px;flex:none;display:flex;align-items:center;gap:16px;padding:0 14px;background:oklch(0.185 0.011 245);border-bottom:1px solid oklch(0.255 0.012 245);overflow:hidden"><span title="{{ t.flowNow }}" style="flex:none;display:flex;align-items:center;gap:6px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.07em;color:{{ t.flowNowColor }}"><span style="font:15px/1 'Material Symbols Outlined';letter-spacing:0">account_tree</span>FLOW</span><div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px"><sc-for list="{{ t.flowStrip }}" as="pa"><div style="display:flex;align-items:center;gap:4px;min-width:0;flex:{{ pa.flex }}"><sc-for list="{{ pa.nodes }}" as="n"><sc-if value="{{ n.arrow }}"><span style="flex:none;font:14px/1 'Material Symbols Outlined';color:oklch(0.45 0.012 245)">arrow_forward</span></sc-if><span onClick="{{ n.go }}" title="{{ n.title }}" style="flex:{{ n.flex }};min-width:0;display:flex;align-items:center;gap:6px;height:30px;padding:0 9px 0 7px;border-radius:6px;border:1px {{ n.bs }} {{ n.border }};background:{{ n.bg }};cursor:pointer" style-hover="border-color:oklch(0.80 0.11 190 / .75)"><span style="width:3px;height:14px;border-radius:2px;flex:none;background:{{ n.kc }}"></span><span style="font:500 11.5px/1 'Fira Code',monospace;color:{{ n.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ n.short }}</span><sc-if value="{{ n.isCur }}"><span style="flex:none;width:7px;height:7px;border-radius:50%;background:oklch(0.80 0.11 190);box-shadow:0 0 0 3px oklch(0.80 0.11 190 / .28)"></span></sc-if></span></sc-for></div><sc-if value="{{ pa.sep }}"><span style="flex:none;width:1px;height:26px;background:oklch(0.32 0.012 245)"></span></sc-if></sc-for></div></div></sc-if>
+
+<div style="flex:1;min-height:0;display:flex">
+<sc-if value="{{ showActivity }}" hint-placeholder-val="{{ true }}"><div style="width:48px;flex:none;display:flex;flex-direction:column;align-items:center;padding:4px 0;background:oklch(0.165 0.012 245);border-right:1px solid oklch(0.255 0.012 245);font:22px/1 'Material Symbols Outlined';color:oklch(0.56 0.012 245)"><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center">folder_open</span><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center">search</span><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center">account_tree</span><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center;color:oklch(0.80 0.11 190);box-shadow:inset 2px 0 0 oklch(0.80 0.11 190)">route</span><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center">extension</span><div style="flex:1"></div><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center">account_circle</span><span style="width:48px;height:46px;display:flex;align-items:center;justify-content:center">settings</span></div></sc-if>
+
+<sc-if value="{{ isSetup }}" hint-placeholder-val="{{ true }}">
+<div style="width:290px;flex:none;display:flex;flex-direction:column;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;padding:0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">TOUR</span></div><div style="padding:28px 22px;display:flex;flex-direction:column;gap:14px"><span style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:oklch(0.80 0.11 190 / .12);font:26px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">route</span><div style="font:500 20px/1.25 'Newsreader',Georgia,serif;color:oklch(0.95 0.006 245)">Walk through a diff the way a senior engineer reads it.</div><div style="font:13px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)">A tour turns a git change into steps: what the change is for, what a reviewer would ask, and where to stop and think. It never changes your files.</div><span onClick="{{ openSaved }}" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:7px;border:1px solid oklch(0.32 0.012 245);font:500 13px/1 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245);cursor:pointer" style-hover="background:oklch(0.26 0.014 245)">Open a tour file (.json)</span></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div style="height:36px;flex:none;display:flex;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div style="display:flex;align-items:center;gap:7px;padding:0 14px;background:oklch(0.205 0.011 245);box-shadow:inset 0 2px 0 oklch(0.80 0.11 190);font:12.5px/1 'IBM Plex Sans',sans-serif"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">settings</span>Set up tours</div></div>
+<div style="flex:1;min-height:0;overflow:auto;padding:44px 56px"><div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:36px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.80 0.11 190)">FIRST RUN</span><h1 style="margin:0;font:500 36px/1.12 'Newsreader',Georgia,serif;color:oklch(0.95 0.006 245)">Set up tours on this machine</h1><p style="margin:0;font:14px/1.5 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)">Two choices. Both have a recommended option selected, so Enter is enough. Change them later in Settings › Tour.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 14px/1 'IBM Plex Sans',sans-serif">1 · Language</span><span style="font:12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.62 0.012 245)">used for the screens and the tours</span></div><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ su.langs }}" as="l" hint-placeholder-count="5"><span onClick="{{ l.go }}" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:8px;background:{{ l.bg }};border:1px solid {{ l.border }};font:500 13px/1 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.80 0.11 190 / .6)"><span style="font:16px/1 'Material Symbols Outlined';color:{{ l.iconColor }}">{{ l.icon }}</span>{{ l.n }}<sc-if value="{{ l.detected }}"><span style="font:11px/1 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">detected</span></sc-if></span></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 14px/1 'IBM Plex Sans',sans-serif">2 · Who writes the tour</span><span style="font:12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.62 0.012 245)">an LLM CLI you already use, on your own plan</span></div><div style="display:flex;flex-direction:column;border:1px solid oklch(0.30 0.012 245);border-radius:10px;overflow:hidden"><sc-for list="{{ su.llms }}" as="m" hint-placeholder-count="5"><div onClick="{{ m.go }}" style="display:grid;grid-template-columns:24px 108px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 14px;background:{{ m.bg }};box-shadow:{{ m.ring }};border-top:1px solid oklch(0.26 0.012 245);cursor:{{ m.cursor }}"><span style="font:18px/1 'Material Symbols Outlined';color:{{ m.iconColor }}">{{ m.icon }}</span><span style="font:600 13.5px/1 'IBM Plex Sans',sans-serif;color:{{ m.nameColor }}">{{ m.name }}</span><span style="display:flex;align-items:center;gap:8px;font:12.5px/1.3 'IBM Plex Sans',sans-serif;color:{{ m.statusColor }};min-width:0"><span style="width:7px;height:7px;flex:none;border-radius:50%;box-sizing:border-box;background:{{ m.dot }};border:{{ m.dotBorder }}"></span><span>{{ m.status }}</span></span><sc-if value="{{ m.hasTag }}"><span style="font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.05em;padding:4px 7px;border-radius:4px;border:1px solid oklch(0.34 0.012 245);color:{{ m.tagColor }}">{{ m.tag }}</span></sc-if></div></sc-for></div></div>
+<div style="display:flex;align-items:center;gap:10px"><span onClick="{{ saveSetup }}" style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:8px;background:oklch(0.80 0.11 190);font:600 13.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.20 0.03 200);cursor:pointer" style-hover="filter:brightness(1.08)">Save and pick a change<span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.20 0.03 200 / .15)">⏎</span></span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:12px;background:oklch(0.225 0.013 245);border:1px solid oklch(0.30 0.012 245)"><div style="display:flex;align-items:center;gap:8px"><span style="font:19px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">shield</span><span style="font:600 14px/1.2 'IBM Plex Sans',sans-serif">What {{ su.llmName }} can and cannot do</span></div><div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.07em;color:oklch(0.62 0.012 245)">SENT TO {{ su.provider }}</span><div style="display:flex;gap:8px;font:13px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:16px/1.3 'Material Symbols Outlined';color:oklch(0.78 0.12 150)">check</span>Tracked files at the two commits, the diff and the commit messages</div><div style="display:flex;gap:8px;font:13px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:16px/1.3 'Material Symbols Outlined';color:oklch(0.78 0.12 150)">check</span>When you ask about a step: your question and the whole tour</div></div><div style="display:flex;flex-direction:column;gap:8px"><span style="font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.07em;color:oklch(0.62 0.012 245)">NOT POSSIBLE</span><div style="display:flex;gap:8px;font:13px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:16px/1.3 'Material Symbols Outlined';color:oklch(0.74 0.13 25)">block</span>Reading outside the export directory, including your working tree, .git and home</div><div style="display:flex;gap:8px;font:13px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:16px/1.3 'Material Symbols Outlined';color:oklch(0.74 0.13 25)">block</span>Reading files in .gitignore, such as .env</div><div style="display:flex;gap:8px;font:13px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:16px/1.3 'Material Symbols Outlined';color:oklch(0.74 0.13 25)">block</span>Writing, editing or deleting any file</div><div style="display:flex;gap:8px;font:13px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:16px/1.3 'Material Symbols Outlined';color:oklch(0.74 0.13 25)">block</span>Running commands that change anything, or reaching the network</div></div><div style="padding:10px 12px;border-radius:7px;background:oklch(0.185 0.011 245);font:11.5px/1.6 'Fira Code',monospace;color:oklch(0.80 0.06 190)">{{ su.cmd }}</div><div style="font:12px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">Enforced by the flags passed to the tool, not only by the prompt.</div></div>
+</div></div></div>
+</sc-if>
+
+<sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
+<div style="width:300px;flex:none;display:flex;flex-direction:column;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px 0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">TOUR</span><span onClick="{{ openQuick }}" style="margin-left:auto;font:17px/1 'Material Symbols Outlined';color:oklch(0.60 0.012 245);cursor:pointer">add</span></div>
+<div style="padding:4px 8px;display:flex;flex-direction:column;gap:2px">
+<div style="padding:8px 8px 6px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.74 0.012 245)">CHANGES · vs main</div>
+<div onClick="{{ startWriting }}" style="display:flex;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer" style-hover="background:oklch(0.26 0.014 245)"><span style="font:16px/1.2 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">call_split</span><div style="display:flex;flex-direction:column;gap:4px"><span style="display:flex;align-items:center;gap:6px;font:500 12.5px/1.2 'Fira Code',monospace">feature/coupons<span style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;padding:3px 5px;border-radius:3px;background:oklch(0.80 0.12 80 / .16);color:oklch(0.82 0.11 80)">+ UNCOMMITTED</span></span><span style="font:11.5px/1.2 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">current branch · 2 commits</span></div></div>
+<div onClick="{{ openPlain }}" style="display:flex;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer" style-hover="background:oklch(0.26 0.014 245)"><span style="font:16px/1.2 'Material Symbols Outlined';color:oklch(0.60 0.012 245)">call_split</span><div style="display:flex;flex-direction:column;gap:4px"><span style="font:12.5px/1.2 'Fira Code',monospace;color:oklch(0.86 0.006 245)">origin/fix/reconcile-timeout</span><span style="font:11.5px/1.2 'IBM Plex Sans',sans-serif;color:oklch(0.62 0.012 245)">3 files · opens git diff, no tour</span></div></div>
+<div style="padding:14px 8px 6px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.74 0.012 245)">REVIEW REQUESTED</div>
+<div onClick="{{ startWriting }}" style="display:flex;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer" style-hover="background:oklch(0.26 0.014 245)"><span style="font:16px/1.2 'Material Symbols Outlined';color:oklch(0.76 0.11 300)">merge</span><div style="display:flex;flex-direction:column;gap:4px"><span style="font:12.5px/1.25 'IBM Plex Sans',sans-serif">#42 Add coupon discounts at checkout</span><span style="font:11.5px/1.2 'Fira Code',monospace;color:oklch(0.62 0.012 245)">origin/feature/coupons</span></div></div>
+<div style="padding:14px 8px 6px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.74 0.012 245)">SAVED TOURS · open instantly</div>
+<div onClick="{{ openSaved }}" style="display:flex;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer" style-hover="background:oklch(0.26 0.014 245)"><span style="font:16px/1.2 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">route</span><span style="font:12.5px/1.35 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)">Coupons at checkout: what a single UPDATE protects…</span></div>
+</div></div>
+<div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center"><div onClick="{{ openQuick }}" style="display:flex;flex-direction:column;align-items:center;gap:18px;opacity:.55;cursor:pointer"><span style="font:84px/1 'Material Symbols Outlined';color:oklch(0.36 0.012 245)">route</span><span style="font:13px/1 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">Tour a change <span style="font-family:'Fira Code',monospace;padding-left:8px">⇧⌘T</span></span></div></div>
+</sc-if>
+
+<sc-if value="{{ isPlain }}" hint-placeholder-val="{{ false }}">
+<div style="width:290px;flex:none;display:flex;flex-direction:column;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;padding:0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">SOURCE CONTROL</span></div><div style="padding:4px 8px"><div style="padding:6px 8px;display:flex;align-items:center;gap:8px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.74 0.012 245)">main ↔ origin/fix/reconcile-timeout<span style="margin-left:auto;font-weight:400;color:oklch(0.56 0.012 245)">3</span></div><sc-for list="{{ pv.files }}" as="f" hint-placeholder-count="3"><div onClick="{{ f.go }}" style="display:flex;align-items:center;gap:7px;height:26px;padding:0 8px;border-radius:5px;background:{{ f.bg }};cursor:pointer" style-hover="background:oklch(0.25 0.013 245)"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.82 0.09 190)">description</span><span style="font:12.5px/1 'IBM Plex Sans',sans-serif;color:{{ f.color }};white-space:nowrap">{{ f.name }}</span><span style="font:11px/1 'IBM Plex Sans',sans-serif;color:oklch(0.52 0.012 245);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">{{ f.dir }}</span><span style="margin-left:auto;font:600 11px/1 'Fira Code',monospace;color:{{ f.statusColor }}">{{ f.status }}</span></div></sc-for></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div style="height:36px;flex:none;display:flex;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div style="display:flex;align-items:center;gap:7px;padding:0 14px;background:oklch(0.205 0.011 245);box-shadow:inset 0 2px 0 oklch(0.80 0.11 190);font:12.5px/1 'IBM Plex Sans',sans-serif"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.82 0.09 190)">difference</span>{{ pv.name }} (main ↔ fix/reconcile-timeout)</div></div>
+<div style="flex:none;display:flex;align-items:center;gap:10px;padding:8px 16px;background:oklch(0.235 0.012 245);border-bottom:1px solid oklch(0.28 0.012 245);font:12.5px/1.35 'IBM Plex Sans',sans-serif;color:oklch(0.80 0.008 245)"><span style="font:17px/1 'Material Symbols Outlined';color:oklch(0.66 0.012 245)">info</span>3 files changed. Changes under 10 files open in the standard diff, without a tour.<span style="margin-left:auto;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)">Settings › Tour › Minimum files: 10</span></div>
+<div style="height:28px;flex:none;display:flex;align-items:center;gap:4px;padding:0 16px;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><sc-for list="{{ pv.crumbs }}" as="c"><span>{{ c.p }}</span><sc-if value="{{ c.sep }}"><span style="font:14px/1 'Material Symbols Outlined';color:oklch(0.50 0.012 245)">chevron_right</span></sc-if></sc-for></div>
+<div ref="{{ edRef }}" style="flex:1;min-height:0;overflow:auto;padding:0 0 40px"><dc-import name="Tour Blocks" blocks="{{ pv.rows }}" hint-size="100%,400px"></dc-import></div></div>
+</sc-if>
+
+<sc-if value="{{ isWriting }}" hint-placeholder-val="{{ false }}">
+<div style="width:300px;flex:none;display:flex;flex-direction:column;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;padding:0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">TOUR</span></div><div style="padding:4px 8px"><div style="padding:8px 8px 6px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.74 0.012 245)">CHANGES</div><div style="display:flex;gap:9px;padding:7px 8px;border-radius:6px;background:oklch(0.28 0.016 245)"><span style="font:16px/1.2 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">progress_activity</span><div style="display:flex;flex-direction:column;gap:6px;flex:1"><span style="font:500 12.5px/1.2 'Fira Code',monospace">feature/coupons</span><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:3px;border-radius:2px;background:oklch(0.32 0.012 245);overflow:hidden"><div style="width:{{ wr.pct }};height:100%;background:oklch(0.80 0.11 190)"></div></div><span style="font:11px/1 'Fira Code',monospace;color:oklch(0.80 0.11 190)">{{ wr.el }}</span></div></div></div></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div style="height:36px;flex:none;display:flex;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div style="display:flex;align-items:center;gap:7px;padding:0 14px;background:oklch(0.205 0.011 245);box-shadow:inset 0 2px 0 oklch(0.80 0.11 190);font:12.5px/1 'IBM Plex Sans',sans-serif"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">progress_activity</span>Writing · feature/coupons</div></div>
+<div style="flex:1;min-height:0;overflow:auto;padding:40px 56px"><div style="max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;align-items:flex-end;gap:24px"><div style="display:flex;flex-direction:column;gap:10px;flex:1"><span style="font:500 12px/1 'Fira Code',monospace;color:oklch(0.74 0.012 245)">main ← feature/coupons · {{ llm }}</span><h1 style="margin:0;font:500 36px/1.12 'Newsreader',Georgia,serif;color:oklch(0.95 0.006 245)">Writing the tour</h1><p style="margin:0;font:14px/1.5 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245);max-width:620px">The LLM reads the files around the change, not only the diff. This takes 2 to 5 minutes (sped up here). Keep working; you get a notification when the tour is ready.</p></div><div style="display:flex;gap:8px"><span onClick="{{ cancelWriting }}" style="padding:9px 13px;border-radius:8px;border:1px solid oklch(0.32 0.012 245);font:500 12.5px/1 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="background:oklch(0.26 0.014 245)">Cancel</span><span onClick="{{ openSaved }}" style="display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:8px;background:oklch(0.80 0.11 190);font:600 12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.20 0.03 200);cursor:pointer">Skip to the tour<span style="font:16px/1 'Material Symbols Outlined'">arrow_forward</span></span></div></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px"><sc-for list="{{ wr.stages }}" as="g" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:10px;border:{{ g.border }};background:{{ g.bg }}"><div style="display:flex;align-items:center;gap:8px;font:600 13px/1 'IBM Plex Sans',sans-serif;color:{{ g.nameColor }}"><span style="font:18px/1 'Material Symbols Outlined';color:{{ g.iconColor }}">{{ g.icon }}</span>{{ g.name }}</div><div style="font:12.5px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245)">{{ g.desc }}</div></div></sc-for></div>
+<div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start"><div style="border:1px solid oklch(0.30 0.012 245);border-radius:10px;overflow:hidden;background:oklch(0.185 0.011 245);min-height:120px"><div style="display:flex;padding:10px 14px;border-bottom:1px solid oklch(0.28 0.012 245);font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.07em;color:oklch(0.66 0.012 245)">READING NOW<span style="margin-left:auto;font:400 12px/1 'IBM Plex Sans',sans-serif;letter-spacing:0">newest first</span></div><div style="padding:6px 0;font:12.5px/1 'Fira Code',monospace"><sc-for list="{{ wr.rows }}" as="r"><div style="display:grid;grid-template-columns:52px 54px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 14px;background:{{ r.bg }}"><span style="color:{{ r.timeColor }}">{{ r.time }}</span><span style="color:{{ r.toolColor }}">{{ r.tool }}</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.path }}</span><span style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.05em;padding:3px 5px;border-radius:3px;color:{{ r.tagColor }};border:1px solid {{ r.tagBorder }}">{{ r.tag }}</span></div></sc-for></div></div>
+<div style="border:1px solid oklch(0.30 0.012 245);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px"><div style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.07em;color:oklch(0.66 0.012 245)">EXPORT DIRECTORY</div><div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font:12.5px/1.3 'Fira Code',monospace"><span>base/</span><span style="font-family:'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">files before the change</span><span>head/</span><span style="font-family:'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">files after the change</span><span>change.diff</span><span style="font-family:'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">git diff</span><span>commits.txt</span><span style="font-family:'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">git log</span><span>lessons/</span><span style="font-family:'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">what senior engineers have learned</span></div><div style="font:12px/1.4 'IBM Plex Sans',sans-serif;color:oklch(0.62 0.012 245)">Deleted once the tour is written. Read, Grep and Glob only; no writes, no network.</div></div></div>
+</div></div></div>
+</sc-if>
+
+<sc-if value="{{ isDoc }}" hint-placeholder-val="{{ false }}">
+<div style="width:300px;flex:none;display:flex;flex-direction:column;min-height:0;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;padding:0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">TOUR</span></div><div style="padding:0 16px 14px;display:flex;flex-direction:column;gap:9px;border-bottom:1px solid oklch(0.255 0.012 245)"><div style="font:600 13px/1.35 'IBM Plex Sans',sans-serif">Coupons at checkout: what a single UPDATE protects, and what it doesn't</div><div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:4px;border-radius:2px;background:oklch(0.30 0.012 245);overflow:hidden"><div style="width:{{ t.outline.pct }};height:100%;background:oklch(0.80 0.11 190)"></div></div><span style="font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)">{{ t.outline.label }}</span></div></div>
+<div style="flex:1;min-height:0;overflow:auto;padding:4px 8px 12px"><sc-for list="{{ t.outline.chapters }}" as="ch"><div style="padding:12px 8px 5px;display:flex;gap:8px;font:600 10.5px/1.3 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:{{ ch.color }}"><span>{{ ch.no }}</span><span>{{ ch.title }}</span></div><sc-for list="{{ ch.steps }}" as="st"><div onClick="{{ st.go }}" style="display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border-radius:6px;background:{{ st.bg }};font:12.5px/1.35 'IBM Plex Sans',sans-serif;color:{{ st.color }};cursor:pointer" style-hover="background:oklch(0.25 0.013 245)"><span style="width:16px;flex:none;font:16px/1 'Material Symbols Outlined';color:{{ st.iconColor }}">{{ st.icon }}</span><span style="width:16px;flex:none;font:11px/17px 'Fira Code',monospace;color:oklch(0.56 0.012 245)">{{ st.no }}</span><span style="flex:1;min-width:0">{{ st.title }}</span><sc-if value="{{ st.hasNote }}"><span style="font:14px/1 'Material Symbols Outlined';color:oklch(0.80 0.12 80)">sticky_note_2</span></sc-if></div></sc-for></sc-for></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div style="height:36px;flex:none;display:flex;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div style="display:flex;align-items:center;gap:7px;padding:0 14px;background:oklch(0.205 0.011 245);box-shadow:inset 0 2px 0 oklch(0.80 0.11 190);font:12.5px/1 'IBM Plex Sans',sans-serif"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">route</span>Tour · Coupons at checkout</div></div>
+<div style="flex:1;min-height:0;position:relative"><div ref="{{ docRef }}" style="position:absolute;inset:0;overflow:auto"><div style="max-width:880px;margin:0 auto;padding:28px 40px 110px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:center;gap:10px;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)"><span>{{ t.chapter }}</span><span style="color:oklch(0.45 0.012 245)">/</span><span>{{ t.stepLabel }}</span><div style="margin-left:auto;display:flex;gap:8px"><span onClick="{{ t.toggleDone }}" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;border:1px solid {{ t.doneBorder }};background:{{ t.doneBg }};color:{{ t.doneColor }};cursor:pointer"><span style="font:16px/1 'Material Symbols Outlined'">{{ t.doneIcon }}</span>{{ t.doneLabel }}</span><span onClick="{{ t.toggleNote }}" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;border:1px solid oklch(0.30 0.012 245);cursor:pointer;color:oklch(0.86 0.006 245)"><span style="font:16px/1 'Material Symbols Outlined'">edit_note</span>Note</span></div></div>
+<div style="padding-left:126px;display:flex;flex-direction:column;gap:10px"><sc-if value="{{ t.isQ }}"><span style="align-self:flex-start;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;padding:4px 7px;border-radius:4px;background:oklch(0.76 0.11 300 / .14);color:oklch(0.76 0.11 300)">QUESTION</span></sc-if><sc-if value="{{ t.hasAnswers }}"><div style="display:flex;align-items:center;gap:6px;font:500 12px/1.3 'IBM Plex Sans',sans-serif;color:oklch(0.76 0.11 300)"><span style="font:15px/1 'Material Symbols Outlined'">subdirectory_arrow_right</span>{{ t.answers }}</div></sc-if><h1 style="margin:0;font:500 36px/1.12 'Newsreader',Georgia,serif;color:oklch(0.95 0.006 245);text-wrap:balance">{{ t.title }}</h1><sc-if value="{{ t.noteOpen }}"><textarea value="{{ t.note }}" onChange="{{ t.onNote }}" placeholder="A note for yourself. Saved next to the tour, never in the repo." style="min-height:64px;resize:vertical;padding:10px 12px;border-radius:8px;border:1px solid oklch(0.80 0.12 80 / .5);background:oklch(0.80 0.12 80 / .07);color:oklch(0.93 0.006 245);font:14px/1.45 'IBM Plex Sans',sans-serif;outline:none"></textarea></sc-if></div>
+<dc-import name="Tour Blocks" blocks="{{ t.all }}" wide="{{ true }}" hint-size="100%,600px"></dc-import>
+</div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:58px;display:flex;align-items:center;gap:24px;padding:0 20px;background:oklch(0.19 0.012 245 / .96);border-top:1px solid oklch(0.255 0.012 245)"><div onClick="{{ t.prev }}" style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;cursor:pointer;opacity:{{ t.prevOp }}"><span style="font:18px/1 'Material Symbols Outlined';color:oklch(0.74 0.012 245)">arrow_back</span><span style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font:11px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)">{{ t.prevNo }}</span><span style="font:13px/1.2 'IBM Plex Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.prevTitle }}</span></span></div><div style="display:flex;gap:3px;width:300px;flex:none;align-items:center;height:14px"><sc-for list="{{ t.ticks }}" as="k"><span onClick="{{ k.go }}" title="{{ k.title }}" style="flex:1;height:{{ k.h }};border-radius:2px;background:{{ k.bg }};cursor:pointer"></span></sc-for></div><div onClick="{{ t.next }}" style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;justify-content:flex-end;text-align:right;cursor:pointer;opacity:{{ t.nextOp }}"><span style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font:11px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)">{{ t.nextNo }}</span><span style="font:13px/1.2 'IBM Plex Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.nextTitle }}</span></span><span style="width:32px;height:32px;flex:none;border-radius:7px;display:flex;align-items:center;justify-content:center;background:oklch(0.80 0.11 190);color:oklch(0.20 0.03 200);font:18px/1 'Material Symbols Outlined'">arrow_forward</span></div></div>
+</div></div>
+</sc-if>
+
+<sc-if value="{{ isInline }}" hint-placeholder-val="{{ false }}">
+<div style="width:290px;flex:none;display:flex;flex-direction:column;min-height:0;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;padding:0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">TOUR FILES</span><span style="margin-left:auto;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)">click a number to jump</span></div><div style="padding:0 16px 12px;display:flex;flex-direction:column;gap:9px;border-bottom:1px solid oklch(0.255 0.012 245)"><div style="display:flex;gap:2px;align-items:center;height:12px"><sc-for list="{{ t.ticks }}" as="k"><span onClick="{{ k.go }}" title="{{ k.title }}" style="flex:1;height:{{ k.h }};border-radius:2px;background:{{ k.bg }};cursor:pointer"></span></sc-for></div><div style="font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)">{{ t.stepLabel }} · {{ t.outline.label }}</div></div>
+<div style="flex:1;min-height:0;overflow:auto;padding:4px 8px"><sc-for list="{{ t.files }}" as="g"><div style="padding:12px 8px 6px;display:flex;gap:8px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:{{ g.color }}">{{ g.label }}<span style="color:oklch(0.56 0.012 245);font-weight:400">{{ g.count }}</span></div><sc-for list="{{ g.items }}" as="f"><div onClick="{{ f.go }}" style="display:flex;align-items:center;gap:7px;height:26px;padding:0 8px;border-radius:5px;background:{{ f.bg }};cursor:{{ f.cursor }}" style-hover="background:oklch(0.25 0.013 245)"><span style="font:15px/1 'Material Symbols Outlined';color:{{ f.iconColor }}">description</span><span style="font:12.5px/1 'IBM Plex Sans',sans-serif;color:{{ f.nameColor }};white-space:nowrap">{{ f.name }}</span><span style="margin-left:auto;display:flex;gap:3px;flex:none"><sc-for list="{{ f.visits }}" as="v"><span onClick="{{ v.go }}" style="min-width:16px;height:16px;padding:0 3px;box-sizing:border-box;border-radius:4px;display:flex;align-items:center;justify-content:center;font:600 10px/1 'IBM Plex Sans',sans-serif;background:{{ v.bg }};color:{{ v.color }};cursor:pointer">{{ v.s }}</span></sc-for></span><span style="width:12px;flex:none;text-align:right;font:600 11px/1 'Fira Code',monospace;color:{{ f.statusColor }}">{{ f.status }}</span></div></sc-for></sc-for></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div style="height:36px;flex:none;display:flex;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><sc-for list="{{ ie.tabs }}" as="tb"><div onClick="{{ tb.go }}" style="display:flex;align-items:center;gap:7px;padding:0 14px;background:{{ tb.bg }};box-shadow:inset 0 2px 0 {{ tb.top }};border-right:1px solid oklch(0.255 0.012 245);font:12.5px/1 'IBM Plex Sans',sans-serif;color:{{ tb.color }};cursor:pointer"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.82 0.09 190)">description</span>{{ tb.label }}<span style="font:11px/1 'Fira Code',monospace;color:{{ tb.atColor }}">{{ tb.at }}</span><span style="font:13px/1 'Material Symbols Outlined';color:oklch(0.60 0.012 245)">lock</span></div></sc-for></div>
+<div style="height:28px;flex:none;display:flex;align-items:center;gap:4px;padding:0 16px;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><sc-for list="{{ ie.crumbs }}" as="c"><span>{{ c.p }}</span><sc-if value="{{ c.sep }}"><span style="font:14px/1 'Material Symbols Outlined';color:oklch(0.50 0.012 245)">chevron_right</span></sc-if></sc-for><span style="margin-left:auto;display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:4px;background:oklch(0.80 0.11 190 / .1);color:oklch(0.80 0.11 190);font:500 11px/1 'Fira Code',monospace"><span style="font:13px/1 'Material Symbols Outlined'">lock</span>{{ ie.atLabel }}</span></div>
+<div ref="{{ edRef }}" style="flex:1;min-height:0;overflow:auto;padding:4px 0 40px">
+<dc-import name="Tour Blocks" blocks="{{ ie.before }}" hint-size="100%,1px"></dc-import>
+<sc-if value="{{ ie.ghost }}"><div style="margin:3px 30px 3px 83px;border:1px dashed oklch(0.80 0.12 80 / .6);border-radius:8px;background:oklch(0.80 0.12 80 / .05)"><div style="display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-bottom:1px dashed oklch(0.80 0.12 80 / .35)"><span style="font:600 10px/1 'IBM Plex Sans',sans-serif;letter-spacing:.07em;padding:4px 6px;border-radius:4px;background:oklch(0.80 0.12 80 / .16);color:oklch(0.80 0.12 80)">EXAMPLE</span><span style="font:12px/1.3 'IBM Plex Sans',sans-serif;color:oklch(0.80 0.012 245)">Not in this repository: a possible guard in apply(), before consumeUse</span><div style="margin-left:auto;display:flex;gap:6px"><span onClick="{{ copyEx }}" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;border:1px solid oklch(0.34 0.012 245);font:500 12px/1 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="background:oklch(0.28 0.016 245)"><span style="font:15px/1 'Material Symbols Outlined'">content_copy</span>Copy</span><span onClick="{{ draftEx }}" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;background:oklch(0.80 0.12 80 / .18);border:1px solid oklch(0.80 0.12 80 / .55);font:500 12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.88 0.10 80);cursor:pointer"><span style="font:15px/1 'Material Symbols Outlined'">rate_review</span>Draft PR comment</span></div></div><div style="padding:5px 0"><sc-for list="{{ ghost }}" as="g"><div style="display:flex;height:20px"><span style="width:52px;flex:none;text-align:right;padding-right:10px;box-sizing:border-box;font:12.5px/20px 'Fira Code',monospace;color:oklch(0.80 0.12 80 / .8)">+</span><span style="flex:1;min-width:0;white-space:pre;overflow:hidden;font:italic 13px/20px 'Fira Code',monospace;opacity:.85"><sc-for list="{{ g.toks }}" as="k"><span style="color:{{ k.c }}">{{ k.v }}</span></sc-for></span></div></sc-for></div></div></sc-if>
+<dc-import name="Tour Blocks" blocks="{{ ie.mid }}" hint-size="100%,1px"></dc-import>
+<div style="margin:6px 30px 10px 83px;border:1px solid oklch(0.80 0.11 190 / .45);border-radius:10px;background:oklch(0.225 0.013 245);box-shadow:0 14px 34px oklch(0.10 0.01 245 / .55)">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 10px 8px 16px;border-bottom:1px solid oklch(0.30 0.012 245)"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.80 0.11 190)">STEP {{ t.no }} / 16</span><span style="font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.chapter }}</span><div style="margin-left:auto;display:flex;align-items:center;gap:4px;flex:none"><span onClick="{{ t.toggleDone }}" style="display:flex;align-items:center;gap:6px;padding:5px 9px;border-radius:6px;border:1px solid {{ t.doneBorder }};background:{{ t.doneBg }};color:{{ t.doneColor }};font:12px/1 'IBM Plex Sans',sans-serif;cursor:pointer"><span style="font:15px/1 'Material Symbols Outlined'">{{ t.doneIcon }}</span>{{ t.doneLabel }}</span><span onClick="{{ t.toggleNote }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;font:18px/1 'Material Symbols Outlined';color:oklch(0.80 0.012 245);cursor:pointer">edit_note</span><span onClick="{{ t.prev }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;font:18px/1 'Material Symbols Outlined';color:oklch(0.80 0.012 245);cursor:pointer;opacity:{{ t.prevOp }}">arrow_back</span><span onClick="{{ t.next }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;font:18px/1 'Material Symbols Outlined';background:oklch(0.80 0.11 190);color:oklch(0.20 0.03 200);cursor:pointer;opacity:{{ t.nextOp }}">arrow_forward</span></div></div>
+<div style="padding:14px 18px 16px;display:flex;flex-direction:column;gap:12px"><sc-if value="{{ t.hasAnswers }}"><div style="font:500 12px/1.3 'IBM Plex Sans',sans-serif;color:oklch(0.76 0.11 300)">{{ t.answers }}</div></sc-if><div style="font:500 22px/1.2 'Newsreader',Georgia,serif;color:oklch(0.95 0.006 245)">{{ t.title }}</div>
+<sc-if value="{{ t.hasBalVis }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start"><dc-import name="Tour Blocks" blocks="{{ t.balText }}" hint-size="100%,200px"></dc-import><dc-import name="Tour Blocks" blocks="{{ t.balVis }}" hint-size="100%,200px"></dc-import></div></sc-if>
+<sc-if value="{{ t.noBalVis }}"><div style="max-width:820px"><dc-import name="Tour Blocks" blocks="{{ t.balText }}" hint-size="100%,200px"></dc-import></div></sc-if>
+<sc-if value="{{ t.noteOpen }}"><textarea value="{{ t.note }}" onChange="{{ t.onNote }}" placeholder="A note for yourself. Saved next to the tour, never in the repo." style="min-height:56px;resize:vertical;padding:10px 12px;border-radius:8px;border:1px solid oklch(0.80 0.12 80 / .5);background:oklch(0.80 0.12 80 / .07);color:oklch(0.93 0.006 245);font:14px/1.45 'IBM Plex Sans',sans-serif;outline:none"></textarea></sc-if>
+<div style="display:flex;align-items:center;gap:7px;font:11.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)"><span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245);color:oklch(0.88 0.006 245)">← →</span>steps<span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245);color:oklch(0.88 0.006 245);margin-left:8px">U</span>understood<span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245);color:oklch(0.88 0.006 245);margin-left:8px">N</span>note</div></div>
+</div>
+<dc-import name="Tour Blocks" blocks="{{ ie.after }}" hint-size="100%,1px"></dc-import>
+</div></div>
+</sc-if>
+
+<sc-if value="{{ isFocus }}" hint-placeholder-val="{{ false }}"><div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="height:66px;flex:none;display:flex;align-items:center;gap:28px;padding:0 24px;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div style="width:260px;flex:none;display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font:600 13px/1.2 'IBM Plex Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Coupons at checkout: what a single UPDATE protects, and what it doesn't</span><span style="font:11.5px/1 'Fira Code',monospace;color:oklch(0.70 0.012 245)">main ← feature/coupons · {{ llm }}</span></div><div style="flex:1;min-width:0;display:flex;gap:12px;align-items:flex-end"><sc-for list="{{ t.route }}" as="ch"><div style="flex:{{ ch.flex }};min-width:0;display:flex;flex-direction:column;gap:8px"><span style="font:11px/1.1 'IBM Plex Sans',sans-serif;color:{{ ch.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ch.label }}</span><div style="display:flex;gap:3px;align-items:flex-end;height:10px"><sc-for list="{{ ch.ticks }}" as="k"><span onClick="{{ k.go }}" title="{{ k.title }}" style="flex:1;height:{{ k.h }};border-radius:2px;background:{{ k.bg }};cursor:pointer"></span></sc-for></div></div></sc-for></div><span onClick="{{ exitFocus }}" style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;border:1px solid oklch(0.30 0.012 245);font:12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.80 0.012 245);cursor:pointer" style-hover="background:oklch(0.26 0.014 245)"><span style="font:16px/1 'Material Symbols Outlined'">close_fullscreen</span>Exit focus<span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245)">Esc</span></span></div>
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(440px,580px) minmax(0,1fr)">
+<div ref="{{ lRef }}" style="min-height:0;overflow:auto;padding:30px 44px 28px;display:flex;flex-direction:column;gap:16px;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="display:flex;align-items:center;gap:10px;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)"><span>{{ t.chapter }}</span><span style="color:oklch(0.45 0.012 245)">/</span><span>{{ t.stepLabel }}</span></div><h1 style="margin:0;font:500 32px/1.15 'Newsreader',Georgia,serif;color:oklch(0.95 0.006 245);text-wrap:balance">{{ t.title }}</h1><sc-if value="{{ t.hasAnswers }}"><div style="display:flex;align-items:center;gap:6px;font:500 12px/1.3 'IBM Plex Sans',sans-serif;color:oklch(0.76 0.11 300)"><span style="font:15px/1 'Material Symbols Outlined'">subdirectory_arrow_right</span>{{ t.answers }}</div></sc-if><dc-import name="Tour Blocks" blocks="{{ t.text }}" hint-size="100%,300px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:8px;background:oklch(0.80 0.12 80 / .08);border:1px solid oklch(0.80 0.12 80 / .3)"><div style="display:flex;align-items:center;gap:7px;font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.80 0.12 80)"><span style="font:15px/1 'Material Symbols Outlined'">sticky_note_2</span>MY NOTE<span style="margin-left:auto;font:400 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:0;color:oklch(0.62 0.012 245)">only you · saved next to the tour</span></div><textarea value="{{ t.note }}" onChange="{{ t.onNote }}" placeholder="Write something to bring up in the review…" style="min-height:52px;resize:vertical;padding:0;border:0;background:transparent;color:oklch(0.93 0.006 245);font:14px/1.45 'IBM Plex Sans',sans-serif;outline:none"></textarea></div></div>
+<div ref="{{ rRef }}" style="min-height:0;overflow:auto;padding:18px 24px 24px;display:flex;flex-direction:column;gap:14px"><div style="display:flex;align-items:center;gap:8px;font:500 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.60 0.012 245)">EVIDENCE<span style="letter-spacing:0;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245);color:oklch(0.80 0.012 245)">{{ t.visCount }}</span><span style="margin-left:auto;letter-spacing:0;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245)">code is read from git at the toured commit</span></div><sc-if value="{{ t.hasVis }}"><dc-import name="Tour Blocks" blocks="{{ t.vis }}" hint-size="100%,400px"></dc-import></sc-if><sc-if value="{{ t.noVisQ }}"><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:oklch(0.62 0.012 245);font:14px/1.5 'IBM Plex Sans',sans-serif;text-align:center"><span style="font:40px/1 'Material Symbols Outlined';color:oklch(0.76 0.11 300)">psychology</span>Think first. The evidence comes with the answer on the next step.</div></sc-if><sc-if value="{{ t.noVisT }}"><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:oklch(0.62 0.012 245);font:14px/1.5 'IBM Plex Sans',sans-serif;text-align:center"><span style="font:36px/1 'Material Symbols Outlined';color:oklch(0.45 0.012 245)">notes</span>This step is text only. Use the flow bar above or o to open the code.</div></sc-if></div>
+</div>
+<div style="height:58px;flex:none;display:flex;align-items:center;gap:16px;padding:0 20px;background:oklch(0.19 0.012 245);border-top:1px solid oklch(0.255 0.012 245)"><div onClick="{{ t.prev }}" style="display:flex;align-items:center;gap:10px;padding:7px 14px 7px 10px;border-radius:8px;border:1px solid oklch(0.30 0.012 245);min-width:0;max-width:330px;cursor:pointer;opacity:{{ t.prevOp }}"><span style="font:18px/1 'Material Symbols Outlined';color:oklch(0.74 0.012 245)">arrow_back</span><span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font:11px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)">{{ t.prevNo }}</span><span style="font:13px/1.2 'IBM Plex Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.prevTitle }}</span></span></div><div style="flex:1;display:flex;justify-content:center"><span onClick="{{ t.toggleDone }}" style="display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:8px;border:1px solid {{ t.doneBorder }};background:{{ t.doneBg }};color:{{ t.doneColor }};font:500 12.5px/1 'IBM Plex Sans',sans-serif;cursor:pointer"><span style="font:17px/1 'Material Symbols Outlined'">{{ t.doneIcon }}</span>{{ t.doneLabel }}<span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245);color:oklch(0.80 0.006 245)">U</span></span></div><div style="display:flex;align-items:center;gap:6px;font:11.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.60 0.012 245)"><span style="font:500 11px/1 'Fira Code',monospace;padding:3px 6px;border-radius:4px;background:oklch(0.28 0.016 245);color:oklch(0.88 0.006 245)">o</span>open code</div><div onClick="{{ t.next }}" style="display:flex;align-items:center;gap:10px;padding:7px 10px 7px 14px;border-radius:8px;background:oklch(0.80 0.11 190);color:oklch(0.20 0.03 200);min-width:0;max-width:340px;cursor:pointer;opacity:{{ t.nextOp }}"><span style="display:flex;flex-direction:column;gap:3px;min-width:0;text-align:right"><span style="font:11px/1 'IBM Plex Sans',sans-serif;opacity:.75">{{ t.nextNo }}</span><span style="font:600 13px/1.2 'IBM Plex Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.nextTitle }}</span></span><span style="font:18px/1 'Material Symbols Outlined'">arrow_forward</span></div></div>
+</div></sc-if>
+
+<sc-if value="{{ isFile }}" hint-placeholder-val="{{ false }}">
+<div style="width:290px;flex:none;display:flex;flex-direction:column;min-height:0;background:oklch(0.19 0.012 245);border-right:1px solid oklch(0.255 0.012 245)"><div style="height:36px;flex:none;display:flex;align-items:center;padding:0 16px"><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;color:oklch(0.74 0.012 245)">TOUR FILES</span></div><div style="flex:1;min-height:0;overflow:auto;padding:4px 8px"><sc-for list="{{ fv.files }}" as="g"><div style="padding:12px 8px 6px;display:flex;gap:8px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:{{ g.color }}">{{ g.label }}</div><sc-for list="{{ g.items }}" as="f"><div onClick="{{ f.go }}" style="display:flex;align-items:center;gap:7px;height:26px;padding:0 8px;border-radius:5px;background:{{ f.bg }};cursor:{{ f.cursor }}" style-hover="background:oklch(0.25 0.013 245)"><span style="font:15px/1 'Material Symbols Outlined';color:{{ f.iconColor }}">description</span><span style="font:12.5px/1 'IBM Plex Sans',sans-serif;color:{{ f.nameColor }}">{{ f.name }}</span><span style="margin-left:auto;font:600 11px/1 'Fira Code',monospace;color:{{ f.statusColor }}">{{ f.status }}</span></div></sc-for></sc-for></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;position:relative"><div style="height:36px;flex:none;display:flex;background:oklch(0.19 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><div onClick="{{ closeFile }}" style="display:flex;align-items:center;gap:7px;padding:0 14px;border-right:1px solid oklch(0.255 0.012 245);font:12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245);cursor:pointer"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">route</span>Tour · Coupons at checkout</div><div style="display:flex;align-items:center;gap:7px;padding:0 14px;background:oklch(0.205 0.011 245);box-shadow:inset 0 2px 0 oklch(0.80 0.11 190);font:12.5px/1 'IBM Plex Sans',sans-serif"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.82 0.09 190)">description</span>{{ fv.name }}<span style="font:11px/1 'Fira Code',monospace;color:oklch(0.80 0.11 190)">{{ fv.at }}</span><span style="font:13px/1 'Material Symbols Outlined';color:oklch(0.60 0.012 245)">lock</span><span onClick="{{ closeFile }}" style="font:14px/1 'Material Symbols Outlined';color:oklch(0.60 0.012 245);cursor:pointer;margin-left:4px">close</span></div></div>
+<div style="flex:none;display:flex;align-items:center;gap:10px;padding:9px 16px;background:oklch(0.80 0.11 190 / .08);border-bottom:1px solid oklch(0.80 0.11 190 / .25);font:12.5px/1.35 'IBM Plex Sans',sans-serif;color:oklch(0.86 0.006 245)"><span style="font:17px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">lock</span>{{ fv.banner }}</div>
+<div style="height:28px;flex:none;display:flex;align-items:center;gap:4px;padding:0 16px;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245);border-bottom:1px solid oklch(0.255 0.012 245)"><sc-for list="{{ fv.crumbs }}" as="c"><span>{{ c.p }}</span><sc-if value="{{ c.sep }}"><span style="font:14px/1 'Material Symbols Outlined';color:oklch(0.50 0.012 245)">chevron_right</span></sc-if></sc-for><span style="margin-left:auto;color:oklch(0.60 0.012 245)">{{ fv.changeLabel }}</span></div>
+<div ref="{{ edRef }}" style="flex:1;min-height:0;overflow:auto;padding:6px 0 200px"><dc-import name="Tour Blocks" blocks="{{ fv.rows }}" hint-size="100%,400px"></dc-import></div>
+<div style="position:absolute;right:24px;bottom:22px;width:440px;border-radius:12px;background:oklch(0.25 0.014 245);border:1px solid oklch(0.80 0.11 190 / .45);box-shadow:0 18px 44px oklch(0.08 0.01 245 / .7);overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:10px 12px 0 14px"><span style="font:15px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">route</span><span style="font:600 11px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.80 0.11 190)">STEP {{ t.no }} / 16</span><span style="font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">opened from the tour</span></div><div style="padding:8px 14px 12px;font:500 17px/1.25 'Newsreader',Georgia,serif">{{ t.title }}</div><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid oklch(0.32 0.012 245)"><span onClick="{{ closeFile }}" style="display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:7px;background:oklch(0.80 0.11 190);font:600 12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.20 0.03 200);cursor:pointer"><span style="font:16px/1 'Material Symbols Outlined'">undo</span><span>Back to step {{ t.no }}</span></span><span style="font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">or Esc</span><span style="margin-left:auto;display:flex;gap:4px"><span onClick="{{ t.prev }}" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid oklch(0.36 0.012 245);font:17px/1 'Material Symbols Outlined';cursor:pointer">arrow_back</span><span onClick="{{ t.next }}" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid oklch(0.36 0.012 245);font:17px/1 'Material Symbols Outlined';cursor:pointer">arrow_forward</span></span></div></div>
+</div>
+</sc-if>
+</div>
+
+<div style="height:24px;flex:none;display:flex;align-items:center;gap:16px;padding:0 10px;background:oklch(0.165 0.012 245);border-top:1px solid oklch(0.255 0.012 245);font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.74 0.012 245)"><span style="display:flex;align-items:center;gap:5px"><span style="font:14px/1 'Material Symbols Outlined'">call_split</span>feature/coupons*</span><sc-if value="{{ hasPending }}"><span style="display:flex;align-items:center;gap:5px;color:oklch(0.80 0.11 190)"><span style="font:14px/1 'Material Symbols Outlined'">rate_review</span>{{ pendingLabel }}</span></sc-if><span style="margin-left:auto;display:flex;align-items:center;gap:5px;color:oklch(0.80 0.11 190)"><span style="font:14px/1 'Material Symbols Outlined'">route</span>{{ statusTour }}</span><span style="display:flex;align-items:center;gap:5px"><span style="font:14px/1 'Material Symbols Outlined'">lock</span>{{ llm }} · read-only</span></div>
+
+<sc-if value="{{ hasQuick }}" hint-placeholder-val="{{ false }}"><div onClick="{{ closeQuick }}" style="position:absolute;inset:38px 0 0 0;background:oklch(0.10 0.01 245 / .45);z-index:30"><div onClick="{{ stop }}" style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:660px;border-radius:10px;background:oklch(0.235 0.013 245);border:1px solid oklch(0.36 0.014 245);box-shadow:0 22px 60px oklch(0.06 0.01 245 / .75);overflow:hidden"><div style="display:flex;align-items:center;gap:10px;margin:8px;padding:0 10px;height:36px;border-radius:7px;background:oklch(0.19 0.012 245);border:1px solid oklch(0.80 0.11 190 / .6)"><span style="font:17px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">route</span><span style="font:13.5px/1 'IBM Plex Sans',sans-serif">Tour a change</span><span style="font:13px/1 'IBM Plex Sans',sans-serif;color:oklch(0.55 0.012 245)">↑ ↓ to choose, Enter to start</span></div><div style="padding:2px 8px 8px"><sc-for list="{{ quick }}" as="q"><sc-if value="{{ q.hasHead }}"><div style="padding:9px 10px 5px;font:600 10.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.06em;color:oklch(0.62 0.012 245)">{{ q.head }}</div></sc-if><div onClick="{{ q.go }}" onMouseEnter="{{ q.hover }}" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:{{ q.bg }};cursor:pointer"><span style="font:17px/1 'Material Symbols Outlined';color:{{ q.iconColor }}">{{ q.icon }}</span><span style="font:13px/1 'IBM Plex Sans',sans-serif">{{ q.label }}</span><span style="margin-left:auto;font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.64 0.012 245)">{{ q.detail }}</span></div></sc-for></div><div style="display:flex;align-items:center;gap:8px;padding:9px 16px;border-top:1px solid oklch(0.31 0.012 245);font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">A new tour takes 2 to 5 minutes. A saved tour opens instantly and costs nothing.</div></div></div></sc-if>
+
+<sc-if value="{{ hasPr }}" hint-placeholder-val="{{ false }}"><div onClick="{{ closePr }}" style="position:absolute;inset:0;background:oklch(0.10 0.01 245 / .4);z-index:40;display:flex;align-items:center;justify-content:center"><div onClick="{{ stop }}" style="width:540px;border-radius:12px;background:oklch(0.25 0.014 245);border:1px solid oklch(0.36 0.014 245);box-shadow:0 24px 60px oklch(0.06 0.01 245 / .75);overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid oklch(0.32 0.012 245)"><span style="font:17px/1 'Material Symbols Outlined';color:oklch(0.80 0.11 190)">rate_review</span><span style="font:600 13px/1 'IBM Plex Sans',sans-serif">Review comment</span><span style="font:12px/1 'IBM Plex Sans',sans-serif;color:oklch(0.70 0.012 245)">#42 · Add coupon discounts at checkout</span><span onClick="{{ closePr }}" style="margin-left:auto;font:17px/1 'Material Symbols Outlined';color:oklch(0.60 0.012 245);cursor:pointer">close</span></div><div style="padding:14px;display:flex;flex-direction:column;gap:12px"><div style="display:flex;align-items:center;gap:8px;font:12px/1 'Fira Code',monospace;color:oklch(0.74 0.012 245)"><span style="font:14px/1 'Material Symbols Outlined'">description</span>{{ pr.target }}</div><div style="display:flex;gap:6px"><sc-for list="{{ pr.weights }}" as="w"><span onClick="{{ w.go }}" style="padding:5px 10px;border-radius:999px;border:1px solid {{ w.border }};background:{{ w.bg }};color:{{ w.color }};font:600 11px/1 'IBM Plex Sans',sans-serif;cursor:pointer">{{ w.n }}</span></sc-for></div><textarea value="{{ pr.text }}" onChange="{{ onPrText }}" style="height:170px;resize:vertical;padding:10px 12px;border-radius:8px;background:oklch(0.20 0.012 245);border:1px solid oklch(0.80 0.11 190 / .5);color:oklch(0.88 0.008 245);font:12px/1.55 'Fira Code',monospace;outline:none"></textarea><div style="font:11.5px/1.45 'IBM Plex Sans',sans-serif;color:oklch(0.66 0.012 245)">Saved as a pending review comment on GitHub. Your files are not touched.</div><div style="display:flex;justify-content:flex-end;gap:8px"><span onClick="{{ copyPr }}" style="padding:8px 12px;border-radius:7px;border:1px solid oklch(0.36 0.012 245);font:500 12.5px/1 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="background:oklch(0.30 0.014 245)">Copy as Markdown</span><span onClick="{{ addPr }}" style="padding:8px 12px;border-radius:7px;background:oklch(0.80 0.11 190);font:600 12.5px/1 'IBM Plex Sans',sans-serif;color:oklch(0.20 0.03 200);cursor:pointer">Add to review</span></div></div></div></div></sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;background:oklch(0.30 0.016 245);border:1px solid oklch(0.40 0.014 245);box-shadow:0 12px 30px oklch(0.06 0.01 245 / .6);font:13px/1 'IBM Plex Sans',sans-serif"><span style="font:16px/1 'Material Symbols Outlined';color:oklch(0.78 0.12 150)">check_circle</span>{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { ready: !!(window.DT && window.DT_MORE), screen: 'setup', lang: 'English', llm: 'Claude Code', quick: false, qsel: 0, wt: 0, layout: 'doc', step: 1, tab: 0, done: {}, visited: { 1: true }, notes: {}, noteOpen: false, guesses: {}, file: null, pr: null, pending: 0, toast: '' };
+  docRef = el => { this._e1 = el; };
+  lRef = el => { this._e2 = el; };
+  rRef = el => { this._e3 = el; };
+  edRef = el => { this._e4 = el; };
+
+  componentDidMount() {
+    if (!this.state.ready) this._r = setInterval(() => { if (window.DT && window.DT_MORE) { clearInterval(this._r); this.setState({ ready: true }); } }, 50);
+    this._k = e => this.onKey(e);
+    window.addEventListener('keydown', this._k);
+  }
+  componentWillUnmount() { clearInterval(this._r); clearInterval(this._w); clearTimeout(this._tt); window.removeEventListener('keydown', this._k); }
+  componentDidUpdate() {
+    const s = this.state, p = this._prev || {};
+    if (p.step !== s.step || p.layout !== s.layout || p.file !== s.file || p.screen !== s.screen) [this._e1, this._e2, this._e3, this._e4].forEach(el => { if (el) el.scrollTop = 0; });
+    this._prev = { step: s.step, layout: s.layout, file: s.file, screen: s.screen };
+  }
+
+  K() {
+    return { text: 'oklch(0.93 0.006 245)', muted: 'oklch(0.74 0.012 245)', faint: 'oklch(0.60 0.012 245)', faint2: 'oklch(0.50 0.012 245)', line: 'oklch(0.30 0.012 245)', bg3: 'oklch(0.24 0.013 245)', bg4: 'oklch(0.28 0.016 245)', accent: 'oklch(0.80 0.11 190)', onAccent: 'oklch(0.20 0.03 200)', green: 'oklch(0.78 0.12 150)', red: 'oklch(0.74 0.13 25)', amber: 'oklch(0.80 0.12 80)', violet: 'oklch(0.76 0.11 300)',
+      s: { def: 'oklch(0.88 0.01 245)', prop: 'oklch(0.84 0.025 245)', kw: 'oklch(0.76 0.12 300)', str: 'oklch(0.80 0.11 150)', num: 'oklch(0.82 0.11 70)', com: 'oklch(0.60 0.02 245)', type: 'oklch(0.82 0.09 190)', fn: 'oklch(0.82 0.08 250)', pun: 'oklch(0.66 0.015 245)' } };
+  }
+
+  tok(line, lang, K) {
+    const S = K.s, out = [];
+    const push = (v, c, i) => { i = i || 'normal'; const l = out[out.length - 1]; if (l && (/^\s+$/.test(v) || (l.c === c && l.i === i))) l.v += v; else out.push({ v, c, i }); };
+    if (!line) return out;
+    let m;
+    if (lang === 'sql') {
+      const KW = /^(CREATE|TABLE|ALTER|ADD|COLUMN|TEXT|INTEGER|NOT|NULL|DEFAULT|PRIMARY|KEY|REFERENCES|CHECK|UPDATE|SET|WHERE|AND|SELECT|FROM|INSERT|INTO|VALUES)$/;
+      const re = /(--.*$)|('(?:[^'\\]|\\.)*')|(\b\d+\b)|([A-Za-z_]\w*)|(\s+)|([\s\S])/g;
+      while ((m = re.exec(line))) { if (m[1]) push(m[1], S.com, 'italic'); else if (m[2]) push(m[2], S.str); else if (m[3]) push(m[3], S.num); else if (m[4]) push(m[4], KW.test(m[4]) ? S.kw : S.def); else if (m[5]) push(m[5], S.def); else push(m[6], S.pun); }
+      return out;
+    }
+    if (/^(\/\*\*|\*\/|\*|\/\/)/.test(line.trim())) { push(line, S.com, 'italic'); return out; }
+    const KW = new Set(['import', 'from', 'export', 'class', 'readonly', 'constructor', 'const', 'let', 'if', 'else', 'throw', 'new', 'return', 'type', 'async', 'await', 'try', 'catch', 'this', 'void', 'undefined', 'null', 'true', 'false', 'extends', 'super', 'instanceof', 'string', 'number', 'boolean', 'for', 'of', 'in', 'as', 'continue', 'function']);
+    const re = /(\/\/.*$)|('(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`|"(?:[^"\\]|\\.)*")|(\b\d+\b)|(#?[A-Za-z_$][\w$]*)|(\s+)|([\s\S])/g;
+    while ((m = re.exec(line))) {
+      if (m[1]) push(m[1], S.com, 'italic'); else if (m[2]) push(m[2], S.str); else if (m[3]) push(m[3], S.num);
+      else if (m[4]) { const w = m[4], after = line.slice(re.lastIndex), before = line.slice(0, m.index); let c = S.def; if (KW.has(w)) c = S.kw; else if (/^[A-Z]/.test(w)) c = S.type; else if (/^\s*\(/.test(after)) c = S.fn; else if (/\.$/.test(before) || w[0] === '#') c = S.prop; push(w, c); }
+      else if (m[5]) push(m[5], S.def); else push(m[6], S.pun);
+    }
+    return out;
+  }
+
+  data() {
+    if (this._d) return this._d;
+    const D = window.DT, K = this.K(), toks = {}, flat = [];
+    if (window.DT_MORE && !D.more) { Object.assign(D.steps, window.DT_MORE.steps); Object.assign(D.files, window.DT_MORE.files || {}); D.commits = window.DT_MORE.commits; D.more = true; }
+    D.tour.chapters.forEach((c, ci) => c.steps.forEach(t => { const no = flat.length + 1; flat.push({ no, title: t, ch: ci, chTitle: c.title, q: D.tour.questions.indexOf(no) >= 0 }); }));
+    const anchors = {};
+    Object.keys(D.steps).forEach(n => (D.steps[n].blocks || []).forEach(b => { if (b.code) { const key = b.code.at === 'base' ? b.code.file + '@base' : b.code.file; (anchors[key] = anchors[key] || []).push({ line: b.code.lines[0], no: +n }); } }));
+    (anchors['src/coupons/couponService.ts'] = anchors['src/coupons/couponService.ts'] || []).push({ line: 28, no: 11 });
+    anchors['src/db.ts'] = [{ line: 10, no: 8 }, { line: 17, no: 14 }];
+    const findings = {}, s15 = D.steps[15], tb = s15 && s15.blocks.find(b => b.table); if (tb) tb.table.rows.forEach(r => { findings[r[0]] = r[1]; });
+    this._d = { D, K, flat, anchors, findings, al: {}, tc: {}, tf: key => toks[key] || (toks[key] = D.files[key].lines.map(l => this.tok(l, D.files[key].lang, K))) };
+    return this._d;
+  }
+
+  segs(t) {
+    const D = window.DT;
+    return String(t).split(/(`[^`]+`|\*\*[^*]+\*\*)/).filter(Boolean).map(x => {
+      const f = { plain: false, code: false, link: false, bold: false, go: null };
+      if (x.length > 2 && x[0] === '`' && x[x.length - 1] === '`') {
+        const v = x.slice(1, -1), m = /^((?:src|db|test)\/[\w./-]+)(?::(\d+)(?:-(\d+))?)?$/.exec(v);
+        if (m && D.files[m[1]]) { const a = +(m[2] || 1), b = +(m[3] || m[2] || 1); return Object.assign(f, { t: v, link: true, go: () => this.openFile(m[1], m[2] ? [a, b] : null) }); }
+        return Object.assign(f, { t: v, code: true });
+      }
+      if (x.length > 4 && x.startsWith('**') && x.endsWith('**')) return Object.assign(f, { t: x.slice(2, -2), bold: true });
+      return Object.assign(f, { t: x, plain: true });
+    });
+  }
+
+  toast(msg) { clearTimeout(this._tt); this.setState({ toast: msg }); this._tt = setTimeout(() => this.setState({ toast: '' }), 2600); }
+  copy(text, msg) { try { if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) {} this.toast(msg); }
+  startWriting() {
+    clearInterval(this._w);
+    this.setState({ screen: 'writing', quick: false, wt: 0, file: null });
+    this._w = setInterval(() => { const wt = this.state.wt + 1; if (wt > 21) this.openTour(); else this.setState({ wt }); }, 450);
+  }
+  openTour() { clearInterval(this._w); this.setState(s => ({ screen: 'tour', quick: false, file: null, visited: Object.assign({}, s.visited, { [s.step]: true }) })); if (this.state.screen === 'writing') this.toast('Your tour is ready'); }
+  go(n) { if (n < 1 || n > 16) return; this.setState(s => ({ step: n, tab: 0, file: null, noteOpen: false, pr: null, visited: Object.assign({}, s.visited, { [n]: true }) })); }
+  toggleDone() { const n = this.state.step; this.setState(s => ({ done: Object.assign({}, s.done, { [n]: !s.done[n] }) })); }
+  openFile(key, hl) { this.setState({ file: { key, hl } }); }
+  codesOf(n) { const S = window.DT.steps[n]; return S ? S.blocks.filter(b => b.code).map(b => b.code) : []; }
+  lastCodes(n) { for (let j = n - 1; j >= 1; j--) { const c = this.codesOf(j); if (c.length) return c; } return []; }
+  openPrimary() { const c = this.codesOf(this.state.step)[0] || this.lastCodes(this.state.step)[0]; if (c) this.openFile(c.at === 'base' ? c.file + '@base' : c.file, c.lines); }
+  targets() { return { Must: 'src/coupons/couponService.ts · line 28', Suggestion: 'src/coupons/sqliteCouponRepository.ts · line 27', Question: 'src/orders/orderService.ts · line 45', Praise: 'src/coupons/sqliteCouponRepository.ts · line 37', Nit: 'src/orders/order.ts · line 23' }; }
+  draft(w, extra) { const { findings } = this.data(); const lead = w === 'Must' ? 'Must fix' : w; this.setState({ pr: { weight: w, target: this.targets()[w], text: '**' + lead + ':** ' + (findings[w] || '') + (extra || '') } }); }
+
+  onKey(e) {
+    const t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA'), s = this.state;
+    if (!s.ready) return;
+    if (e.key === 'Escape') { if (s.pr) return this.setState({ pr: null }); if (s.quick) return this.setState({ quick: false }); if (typing) return t.blur(); if (s.file) return this.setState({ file: null }); if (s.screen === 'tour' && s.layout === 'focus') this.setState({ layout: 'doc' }); return; }
+    if (typing) return;
+    if (s.quick) { const items = this.quickItems(), n = items.length; if (e.key === 'ArrowDown') { e.preventDefault(); this.setState({ qsel: (s.qsel + 1) % n }); } else if (e.key === 'ArrowUp') { e.preventDefault(); this.setState({ qsel: (s.qsel + n - 1) % n }); } else if (e.key === 'Enter') { e.preventDefault(); items[s.qsel].go(); } return; }
+    if (s.screen === 'setup' && e.key === 'Enter') return this.setState({ screen: 'pick', quick: true, qsel: 0 });
+    if (s.screen !== 'tour' || s.pr) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); this.go(s.step + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); this.go(s.step - 1); }
+    else if (e.key === 'u' || e.key === 'U') this.toggleDone();
+    else if (e.key === 'n' || e.key === 'N') { e.preventDefault(); this.setState({ noteOpen: !s.noteOpen }); }
+    else if (e.key === 'o' || e.key === 'O') this.openPrimary();
+  }
+
+  fixFiles() {
+    const D = window.DT;
+    if (!D.files['fix:src/jobs/reconcilePendingPayments.ts']) Object.assign(D.files, {
+      'fix:src/jobs/reconcilePendingPayments.ts@base': { lang: 'ts', lines: ["import type { OrderRepository } from '../orders/orderRepository';", "import type { PaymentGateway } from '../payment/paymentGateway';", "", "const STALE_AFTER_MS = 10 * 60 * 1000;", "", "export async function reconcilePendingPayments(orders: OrderRepository, payments: PaymentGateway, now = new Date()): Promise<void> {", "  for (const order of orders.findByStatus('PENDING_PAYMENT')) {", "    if (now.getTime() - order.updatedAt.getTime() < STALE_AFTER_MS) continue;", "    const charge = await payments.findCharge(`order-${order.id}`);", "    order.status = charge ? 'PAID' : 'PAYMENT_FAILED';", "    order.updatedAt = now;", "    orders.save(order);", "  }", "}"] },
+      'fix:src/jobs/reconcilePendingPayments.ts': { lang: 'ts', lines: ["import type { OrderRepository } from '../orders/orderRepository';", "import type { PaymentGateway } from '../payment/paymentGateway';", "", "const STALE_AFTER_MS = 10 * 60 * 1000;", "const LOOKUP_TIMEOUT_MS = 5_000;", "", "export async function reconcilePendingPayments(orders: OrderRepository, payments: PaymentGateway, now = new Date()): Promise<void> {", "  for (const order of orders.findByStatus('PENDING_PAYMENT')) {", "    if (now.getTime() - order.updatedAt.getTime() < STALE_AFTER_MS) continue;", "    let charge;", "    try {", "      charge = await payments.findCharge(`order-${order.id}`, AbortSignal.timeout(LOOKUP_TIMEOUT_MS));", "    } catch {", "      continue; // try again on the next run", "    }", "    order.status = charge ? 'PAID' : 'PAYMENT_FAILED';", "    order.updatedAt = now;", "    orders.save(order);", "  }", "}"] },
+      'fix:src/payment/httpGateway.ts@base': { lang: 'ts', lines: ["  async findCharge(idempotencyKey: string): Promise<Charge | null> {", "    const res = await fetch(`${this.#baseUrl}/charges?key=${encodeURIComponent(idempotencyKey)}`, {", "      headers: { authorization: `Bearer ${this.#apiKey}` },", "    });", "    if (res.status === 404) return null;", "    if (!res.ok) throw new Error(`payment service answered ${res.status}`);", "    return (await res.json()) as Charge;", "  }"] },
+      'fix:src/payment/httpGateway.ts': { lang: 'ts', lines: ["  async findCharge(idempotencyKey: string, signal?: AbortSignal): Promise<Charge | null> {", "    const res = await fetch(`${this.#baseUrl}/charges?key=${encodeURIComponent(idempotencyKey)}`, {", "      headers: { authorization: `Bearer ${this.#apiKey}` },", "      signal,", "    });", "    if (res.status === 404) return null;", "    if (!res.ok) throw new Error(`payment service answered ${res.status}`);", "    return (await res.json()) as Charge;", "  }"] },
+      'fix:test/reconcilePendingPayments.test.ts@base': { lang: 'ts', lines: [] },
+      'fix:test/reconcilePendingPayments.test.ts': { lang: 'ts', lines: ["import { test } from 'node:test';", "import assert from 'node:assert/strict';", "import { reconcilePendingPayments } from '../src/jobs/reconcilePendingPayments';", "", "test('a slow payment service does not mark the order as failed', async () => {", "  const orders = fakeOrders([pendingOrder('o1', 11)]);", "  const payments = { findCharge: () => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10)) };", "  await reconcilePendingPayments(orders, payments as never);", "  assert.equal(orders.get('o1').status, 'PENDING_PAYMENT');", "});"] }
+    });
+    return [['src/jobs/reconcilePendingPayments.ts', 'M'], ['src/payment/httpGateway.ts', 'M'], ['test/reconcilePendingPayments.test.ts', 'A']];
+  }
+  openPlain(i) { clearInterval(this._w); this.fixFiles(); this.setState({ screen: 'plain', quick: false, pfile: i || 0 }); }
+  plainVals() {
+    const K = this.K(), fs = this.fixFiles(), i = this.state.pfile || 0, path = fs[i][0], key = 'fix:' + path, len = window.DT.files[key].lines.length;
+    return {
+      files: fs.map((f, j) => { const p = f[0].split('/'); return { name: p.pop(), dir: p.join('/'), status: f[1], statusColor: f[1] === 'A' ? K.green : K.amber, bg: j === i ? K.bg4 : 'transparent', color: j === i ? K.text : 'oklch(0.86 0.008 245)', go: () => this.setState({ pfile: j }) }; }),
+      name: path.split('/').pop(), crumbs: this.crumbs(path, ''), rows: this.editorRows(key, 1, len, { head: true }).map(b => Object.assign(b, { rightLabel: 'origin/fix/reconcile-timeout' }))
+    };
+  }
+
+  quickItems() {
+    const nw = () => this.toast('Only feature/coupons is wired up in this prototype');
+    return [
+      ['COMPARED WITH main', 'call_split', 'feature/coupons with uncommitted changes', '14 files · tour', () => this.startWriting()],
+      ['', 'call_split', 'feature/coupons', '14 files · 2 commits · tour', () => this.startWriting()],
+      ['', 'call_split', 'origin/fix/reconcile-timeout', '3 files · opens git diff', () => this.openPlain(0)],
+      ['', 'merge', '#42 Add coupon discounts at checkout', '14 files · pull request · tour', () => this.startWriting()],
+      ['SAVED', 'route', 'Coupons at checkout: what a single UPDATE protects…', 'opens instantly', () => this.openTour()],
+      ['OTHER', 'commit', 'A single commit…', 'tour <commit>', nw],
+      ['', 'linear_scale', 'A range…', 'tour <base>..<head>', nw],
+      ['', 'data_object', 'A saved tour file…', 'tour <file>.json', () => this.openTour()]
+    ].map((q, i) => ({ hasHead: !!q[0], head: q[0], icon: q[1], label: q[2], detail: q[3], go: q[4] }));
+  }
+
+  setupVals() {
+    const st = this.state, K = this.K();
+    const langs = ['English', '日本語', '简体中文', '繁體中文', 'Español'].map(n => { const sel = st.lang === n; return { n, detected: n === 'English', icon: sel ? 'radio_button_checked' : 'radio_button_unchecked', iconColor: sel ? K.accent : 'oklch(0.50 0.012 245)', bg: sel ? 'oklch(0.80 0.11 190 / .12)' : 'transparent', border: sel ? 'oklch(0.80 0.11 190 / .6)' : 'oklch(0.32 0.012 245)', go: () => this.setState({ lang: n }) }; });
+    const L = [
+      ['Claude Code', 'Signed in', 'ok', 'RECOMMENDED', 'Anthropic', 'claude -p --restricted --strict-mcp-config --tools Read,Grep,Glob --permission-mode dontAsk --no-session-persistence'],
+      ['Codex CLI', 'Signed in', 'ok', '', 'OpenAI', 'codex … --ignore-user-config --ignore-rules -c approval_policy="never" -c web_search="disabled" --ephemeral'],
+      ['Gemini CLI', 'Not signed in · run gemini once', 'warn', 'EXPERIMENTAL', 'Google', ''],
+      ['OpenCode 2', 'Not found · needs OpenCode 2.0 or later', 'off', 'NEW', '', ''],
+      ['Copilot CLI', 'Signed in', 'ok', 'EXPERIMENTAL', 'GitHub', 'copilot --available-tools=view,grep,rg,glob --deny-tool=shell --deny-tool=write --disable-builtin-mcps --no-custom-instructions']
+    ];
+    const llms = L.map(l => { const sel = st.llm === l[0], ok = l[2] === 'ok'; return { name: l[0], status: l[1], tag: l[3], hasTag: !!l[3], tagColor: l[3] === 'RECOMMENDED' ? 'oklch(0.84 0.10 190)' : K.muted, icon: sel ? 'radio_button_checked' : 'radio_button_unchecked', iconColor: sel ? K.accent : ok ? 'oklch(0.50 0.012 245)' : 'oklch(0.38 0.012 245)', bg: sel ? 'oklch(0.80 0.11 190 / .1)' : 'transparent', ring: sel ? 'inset 0 0 0 1px oklch(0.80 0.11 190 / .5)' : 'none', nameColor: ok ? K.text : K.muted, statusColor: ok ? K.green : l[2] === 'warn' ? K.amber : K.faint, dot: ok ? K.green : l[2] === 'warn' ? K.amber : 'transparent', dotBorder: l[2] === 'off' ? '1px solid oklch(0.55 0.012 245)' : '0px solid transparent', cursor: ok ? 'pointer' : 'not-allowed', go: () => (ok ? this.setState({ llm: l[0] }) : this.toast(l[0] + ': ' + l[1])) }; });
+    const cur = L.find(l => l[0] === st.llm);
+    return { langs, llms, llmName: cur[0], provider: cur[4].toUpperCase(), cmd: cur[5] };
+  }
+
+  writingVals() {
+    const wt = this.state.wt, K = this.K();
+    const logs = [['0:12', 'Glob', 'lessons/**', ''], ['0:31', 'Read', 'change.diff', ''], ['0:52', 'Read', 'head/db/migrations/002_add_coupons.sql', ''], ['1:10', 'Glob', 'head/test/**/*.test.ts', ''], ['1:22', 'Read', 'head/src/payment/httpGateway.ts', 'NOT IN DIFF'], ['1:31', 'Read', 'head/src/db.ts', 'NOT IN DIFF'], ['1:47', 'Read', 'base/src/orders/orderService.ts', 'BASE'], ['2:02', 'Read', 'head/src/coupons/couponService.ts', ''], ['2:09', 'Grep', 'consumeUse · head/src', ''], ['2:14', 'Read', 'head/src/coupons/sqliteCouponRepository.ts', '']];
+    const shown = Math.max(0, Math.min(logs.length, Math.floor((wt - 1) * 0.7)));
+    const tc = { Read: K.s.fn, Grep: K.s.kw, Glob: K.s.str };
+    const rows = logs.slice(0, shown).reverse().map((l, i) => ({ time: l[0], tool: l[1], path: l[2], tag: l[3], toolColor: tc[l[1]], tagColor: l[3] === 'BASE' ? K.amber : K.muted, tagBorder: l[3] ? 'oklch(0.38 0.012 245)' : 'transparent', bg: i === 0 ? 'oklch(0.80 0.11 190 / .08)' : 'transparent', timeColor: i === 0 ? K.accent : 'oklch(0.56 0.012 245)' }));
+    const secs = 4 + wt * 7, stage = wt < 2 ? 0 : wt < 16 ? 1 : wt < 20 ? 2 : 3;
+    const defs = [['1 · Export', 'git archive, git diff and git log into a cache directory. Only files git tracks.'], ['2 · Write', 'The LLM reads with Read, Grep and Glob, then writes the tour as JSON.'], ['3 · Check', 'Every file and line the tour points to must exist. Mistakes go back to the LLM, at most twice.'], ['4 · Show', 'Code on screen is read from git at the right commit, never copied from the reply.']];
+    const stages = defs.map((d, i) => { const s = i < stage ? 'done' : i === stage ? 'active' : 'todo'; return { name: d[0], desc: d[1], icon: s === 'done' ? 'check_circle' : s === 'active' ? 'progress_activity' : 'radio_button_unchecked', iconColor: s === 'done' ? K.green : s === 'active' ? K.accent : 'oklch(0.45 0.012 245)', border: s === 'active' ? '1px solid oklch(0.80 0.11 190 / .6)' : s === 'done' ? '1px solid oklch(0.30 0.012 245)' : '1px dashed oklch(0.32 0.012 245)', bg: s === 'active' ? 'oklch(0.80 0.11 190 / .07)' : 'transparent', nameColor: s === 'todo' ? K.muted : K.text }; });
+    return { rows, el: Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0'), pct: Math.min(100, Math.round(wt / 21 * 100)) + '%', stages };
+  }
+
+  blocks(s, mode) {
+    const { D, K } = this.data(), st = this.state, S = D.steps[s], out = [];
+    const BASIS = { fact: ['Verified', K.green], inferred: ['From the code', K.amber], opinion: ['Senior view', K.violet] };
+    const WC = { Must: [K.red, 'oklch(0.74 0.13 25 / .5)', 'oklch(0.74 0.13 25 / .12)'], Suggestion: [K.amber, 'oklch(0.80 0.12 80 / .5)', 'oklch(0.80 0.12 80 / .12)'], Question: [K.violet, 'oklch(0.76 0.11 300 / .5)', 'oklch(0.76 0.11 300 / .12)'], Praise: [K.green, 'oklch(0.78 0.12 150 / .5)', 'oklch(0.78 0.12 150 / .12)'], Nit: [K.faint, K.line, 'transparent'], Opinion: [K.accent, K.line, 'transparent'] };
+    const V = (k, x) => Object.assign({ k, isP: k === 'p', isCode: k === 'code', isTimeline: k === 'timeline', isFlow: k === 'flow', isSchema: k === 'schema', isList: k === 'list', isTarget: k === 'target', isQuote: k === 'quote', isFiles: k === 'files', isTable: k === 'table', isSnippet: k === 'snippet', isQuestion: k === 'question', isGuess: k === 'guess', isEditor: false, isAsks: false }, x);
+    if ((s === 7 || s === 10) && st.guesses[s - 1]) out.push(V('guess', { label: 'YOUR GUESS ON STEP ' + (s - 1), text: st.guesses[s - 1] }));
+    S.blocks.forEach(b => {
+      if (b.p) {
+        const m = /^Weight: \*\*([a-z ]+)\*\*/.exec(b.p), w = m ? (m[1] === 'must fix' ? 'Must' : m[1][0].toUpperCase() + m[1].slice(1)) : null, wc = w ? WC[w] : null;
+        out.push(V('p', { segs: this.segs(b.p), basisLabel: b.basis ? BASIS[b.basis][0] : '', basisColor: b.basis ? BASIS[b.basis][1] : 'transparent', hasAction: !!w, weight: w || '', wColor: wc ? wc[0] : '', wBorder: wc ? wc[1] : '', wBg: wc ? wc[2] : '', onDraft: w ? () => this.draft(w) : null }));
+      } else if (b.list) out.push(V('list', { items: b.list.map(t => { const m = /^(Must|Suggestion|Question|Opinion|Nit|Praise):\s*/.exec(t); return m ? { hasTag: true, tag: m[1].toUpperCase(), tagColor: WC[m[1]][0], segs: this.segs(t.slice(m[0].length)) } : { hasTag: false, segs: this.segs(t) }; }) }));
+      else if (b.quote) { const p = b.quote.split('\n'); out.push(V('quote', { subject: p[0], body: p.slice(1).join('\n') })); }
+      else if (b.target) out.push(V('target', { base: 'main', head: 'feature/coupons', stat: '2 commits · 14 files', commits: D.commits }));
+      else if (b.files) out.push(V('files', { groups: this.fileGroups(null, s) }));
+      else if (b.code) out.push(V('code', Object.assign(this.codeBlock(b.code), { onOpen: () => this.openFile(b.code.at === 'base' ? b.code.file + '@base' : b.code.file, b.code.lines) })));
+      else if (b.snippet) { const text = b.snippet.text; out.push(V('snippet', { label: b.snippet.label, rows: text.split('\n').map(l => ({ toks: this.tok(l, 'ts', K) })), onCopy: () => this.copy(text, 'Example copied. It is not in the repository.'), onDraft: () => this.draft('Must', '\n\n```ts\n' + text + '\n```') })); }
+      else if (b.timeline) out.push(V('timeline', this.timeline(b.timeline, K)));
+      else if (b.flow) out.push(V('flow', this.flow(b.flow, K)));
+      else if (b.schema) out.push(V('schema', this.schema(b.schema, K)));
+      else if (b.table) out.push(V('table', this.table(b.table, K, WC)));
+    });
+    if (S.question) out.push(V('question', { guess: st.guesses[s] || '', onGuess: e => { const v = e.target.value; this.setState(x => ({ guesses: Object.assign({}, x.guesses, { [s]: v }) })); }, onReveal: () => this.go(s + 1), hint: st.guesses[s] ? 'Saved with the tour.' : 'Optional. → also moves on.' }));
+    const tk = ['p', 'list', 'question', 'guess'];
+    if (mode === 'text') return out.filter(b => tk.indexOf(b.k) >= 0);
+    if (mode === 'vis') return out.filter(b => tk.indexOf(b.k) < 0);
+    if (mode === 'balvis') return out.filter(b => tk.indexOf(b.k) < 0 && b.k !== 'code' && !(s === 11 && b.k === 'snippet'));
+    return out;
+  }
+
+  tokText(text, lang) { const d = this.data(), k = lang + '|' + text; return d.tc[k] || (d.tc[k] = this.tok(text, lang, d.K)); }
+  baseOf(path) { const D = window.DT, f = D.files[path]; if (D.files[path + '@base']) return D.files[path + '@base'].lines; if (D.added.indexOf(path) >= 0) return []; if (f.added) return f.lines.filter((_, i) => f.added.indexOf(i + 1) < 0); return f.lines; }
+  align(path) {
+    const d = this.data(); if (d.al[path]) return d.al[path];
+    const A = this.baseOf(path), B = window.DT.files[path].lines, n = A.length, m = B.length;
+    const L = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    const ops = []; let i = 0, j = 0;
+    while (i < n || j < m) {
+      if (i < n && j < m && A[i] === B[j]) { ops.push({ k: 'same', b: i + 1, h: j + 1 }); i++; j++; }
+      else if (j < m && (i >= n || L[i][j + 1] >= L[i + 1][j])) { ops.push({ k: 'add', b: null, h: j + 1 }); j++; }
+      else { ops.push({ k: 'del', b: i + 1, h: null }); i++; }
+    }
+    const out = []; let q = 0;
+    while (q < ops.length) {
+      if (ops[q].k === 'same') { out.push(ops[q]); q++; continue; }
+      const dels = [], adds = [];
+      while (q < ops.length && ops[q].k !== 'same') { (ops[q].k === 'del' ? dels : adds).push(ops[q]); q++; }
+      for (let t = 0; t < Math.max(dels.length, adds.length); t++) out.push({ k: dels[t] && adds[t] ? 'chg' : dels[t] ? 'del' : 'add', b: dels[t] ? dels[t].b : null, h: adds[t] ? adds[t].h : null });
+    }
+    return (d.al[path] = { rows: out, A, B, isNew: n === 0 && m > 0, same: out.every(r => r.k === 'same') });
+  }
+  leftLabel(al) { return al.isNew ? 'main · this file did not exist' : 'main'; }
+  splitCols(al, ed) { return (ed ? '30px ' : '') + (al.isNew ? 'minmax(0,.42fr) minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)'); }
+  splitRows(path, side, from, to, o, cols, font) {
+    const { K } = this.data(), al = this.align(path), lang = window.DT.files[path].lang, rows = [];
+    const HATCH = 'repeating-linear-gradient(135deg, oklch(0.215 0.012 245) 0 5px, oklch(0.195 0.011 245) 5px 10px)';
+    let first = -1, last = -1;
+    al.rows.forEach((r, x) => { const v = side === 'base' ? r.b : r.h; if (v != null && v >= from && v <= to) { if (first < 0) first = x; last = x; } });
+    if (first < 0) return rows;
+    for (let x = first; x <= last; x++) {
+      const r = al.rows[x], ln = side === 'base' ? r.b : r.h;
+      const hl = !!(o.hl && ln != null && ln >= o.hl[0] && ln <= o.hl[1]), cx = !!(o.ctx && ln != null && ln >= o.ctx[0] && ln <= o.ctx[1]);
+      const fbg = hl ? 'oklch(0.80 0.11 190 / .10)' : cx ? 'oklch(0.80 0.11 190 / .05)' : 'transparent', fedge = hl ? K.accent : cx ? 'oklch(0.80 0.11 190 / .4)' : 'transparent';
+      const hasL = r.b != null, hasR = r.h != null, del = r.k === 'del' || r.k === 'chg', add = r.k === 'add' || r.k === 'chg';
+      const addBg = al.isNew ? (hl ? fbg : 'oklch(0.78 0.12 150 / .06)') : 'oklch(0.78 0.12 150 / .16)', addEdge = al.isNew ? (hl ? K.accent : 'oklch(0.78 0.12 150 / .45)') : K.green;
+      const bd = o.badges && ln != null ? o.badges[ln] : null, cur = !!bd && bd === this.state.step;
+      rows.push({ isLine: true, isNote: false, cols, font, nl: hasL ? String(r.b) : '', nr: hasR ? String(r.h) : '', ltoks: hasL ? this.tokText(al.A[r.b - 1], lang) : [], rtoks: hasR ? this.tokText(al.B[r.h - 1], lang) : [],
+        lbg: !hasL ? HATCH : del ? 'oklch(0.74 0.13 25 / .18)' : fbg, rbg: !hasR ? HATCH : add ? addBg : fbg,
+        ledge: !hasL ? 'transparent' : del ? K.red : fedge, redge: !hasR ? 'transparent' : add ? addEdge : fedge,
+        lsign: del ? '−' : '', rsign: add ? '+' : '', lsc: K.red, rsc: K.green, lnum: hl || del ? K.muted : K.faint2, rnum: hl || add ? K.muted : K.faint2,
+        hasBadge: !!bd, badge: bd ? String(bd) : '', badgeBg: cur ? K.accent : 'oklch(0.31 0.014 245)', badgeColor: cur ? K.onAccent : K.muted });
+      const mk = o.marks && ln != null ? o.marks[ln] : null;
+      if (mk) { const txt = side === 'base' ? al.A[r.b - 1] : al.B[r.h - 1], nb = 'oklch(0.80 0.11 190 / .10)'; rows.push({ isLine: false, isNote: true, cols, text: mk, indent: txt.match(/^\s*/)[0].length + 'ch', noteL: side === 'base', noteR: side !== 'base', lbg: side === 'base' ? nb : (hasL ? fbg : HATCH), rbg: side !== 'base' ? nb : (hasR ? fbg : HATCH), ledge: side === 'base' ? K.accent : 'transparent', redge: side !== 'base' ? K.accent : 'transparent' }); }
+    }
+    return rows;
+  }
+
+  codeBlock(c) {
+    const path = c.file, side = c.at === 'base' ? 'base' : 'head', al = this.align(path), win = c.show || c.lines, marks = {};
+    (c.marks || []).forEach(x => { marks[x.line] = x.text; });
+    const cols = this.splitCols(al, false), rows = this.splitRows(path, side, win[0], win[1], { hl: c.lines, marks }, cols, '12px/20px');
+    const add = rows.filter(r => r.rsign === '+').length, del = rows.filter(r => r.lsign === '−').length, parts = path.split('/'), name = parts.pop();
+    return { isCode: false, isSplit: true, name, dir: parts.join('/') + '/', range: (side === 'base' ? 'main · ' : '') + (c.lines[0] === c.lines[1] ? 'line ' + c.lines[0] : 'lines ' + c.lines[0] + '–' + c.lines[1]), changeLabel: al.isNew ? 'new file' : (add || del) ? '+' + add + ' −' + del + ' here' : 'no change in these lines', cols, leftLabel: this.leftLabel(al), rightLabel: al.same ? 'feature/coupons · same as main' : 'feature/coupons', srows: rows };
+  }
+
+  timeline(t, K) {
+    const col = l => t.lanes.indexOf(l) + 1, MC = { ok: K.green, bad: K.red, note: K.accent };
+    const events = t.events.map((e, i) => {
+      const a = col(e.lane), mc = MC[e.mark] || null, gr = String(i + 2);
+      if (e.to) { const z = col(e.to), s = Math.min(a, z), en = Math.max(a, z), right = z > a, lc = mc || 'oklch(0.64 0.02 245)'; return { isArrow: true, isSelf: false, gc: s + ' / ' + (en + 1), gr, inset: (50 / (en - s + 1)).toFixed(3) + '%', text: e.text, textColor: mc || K.text, lineColor: lc, hl: right ? 'auto' : '-2px', hr: right ? '-2px' : 'auto', bl: right ? '7px solid ' + lc : '0px solid transparent', br: right ? '0px solid transparent' : '7px solid ' + lc }; }
+      return { isArrow: false, isSelf: true, gc: a + ' / ' + (a + 1), gr, text: e.text, textColor: mc || K.text, boxBg: mc ? 'color-mix(in oklch, ' + mc + ' 16%, oklch(0.185 0.011 245))' : K.bg3, boxBorder: mc ? 'color-mix(in oklch, ' + mc + ' 50%, transparent)' : K.line };
+    });
+    return { cols: 'repeat(' + t.lanes.length + ', minmax(0, 1fr))', lanes: t.lanes.map(name => ({ name })), events };
+  }
+
+  flowNodes() {
+    return [
+      { id: 'route', label: 'POST /orders/:id/coupon', short: 'POST coupon', kind: 'changed', path: 0 },
+      { id: 'handler', label: 'handleApplyCoupon', short: 'handler', kind: 'new', path: 0 },
+      { id: 'apply', label: 'CouponService.apply', short: 'apply()', kind: 'new', path: 0 },
+      { id: 'tables', label: 'coupons / orders tables', short: 'tables', kind: 'external', path: 0 },
+      { id: 'route2', label: 'POST /orders/:id/checkout', short: 'POST checkout', kind: 'same', path: 1 },
+      { id: 'checkout', label: 'OrderService.checkout', short: 'checkout()', kind: 'changed', path: 1 },
+      { id: 'payment', label: 'Payment service', short: 'payment', kind: 'external', path: 1 },
+      { id: 'reconcile', label: 'reconcilePendingPayments (every 5 min)', short: 'reconcile', kind: 'same', path: 2 }
+    ];
+  }
+  stepNodes() { return { 5: ['apply', 'checkout'], 6: ['apply'], 7: ['tables'], 8: ['checkout', 'tables'], 9: ['apply'], 10: ['apply'], 11: ['apply'], 12: ['apply', 'tables'], 13: ['checkout', 'payment', 'reconcile'], 14: ['route', 'handler'] }; }
+  nodeTarget(id) {
+    return {
+      route: { files: ['src/server.ts'], open: ['src/server.ts', [26, 29]] },
+      handler: { files: ['src/handlers/applyCoupon.ts'], open: ['src/handlers/applyCoupon.ts', [7, 21]] },
+      apply: { files: ['src/coupons/couponService.ts'], open: ['src/coupons/couponService.ts', [18, 35]] },
+      tables: { files: ['src/coupons/sqliteCouponRepository.ts', 'db/migrations/002_add_coupons.sql'], open: ['db/migrations/002_add_coupons.sql', [1, 10]] },
+      route2: { files: ['src/server.ts'], open: ['src/server.ts', [22, 25]] },
+      checkout: { files: ['src/orders/orderService.ts'], open: ['src/orders/orderService.ts', [28, 55]] },
+      payment: { files: ['src/payment/httpGateway.ts'], open: ['src/payment/httpGateway.ts', [22, 37]] },
+      reconcile: { files: ['src/jobs/reconcilePendingPayments.ts'], open: ['src/jobs/reconcilePendingPayments.ts', [10, 18]] }
+    }[id];
+  }
+  nodeSteps(id) { const t = this.nodeTarget(id), S = window.DT.steps; return Object.keys(S).map(Number).filter(n => (S[n].blocks || []).some(b => b.code && t.files.indexOf(b.code.file) >= 0)).sort((a, b) => a - b); }
+  nodeTitle(id) { const st = this.nodeSteps(id), t = this.nodeTarget(id); return st.length ? 'code of ' + t.files.map(f => f.split('/').pop()).join(' / ') + ' in step ' + st.join(', ') : 'opens ' + t.open[0] + ' at feature/coupons'; }
+  goNode(id) {
+    const t = this.nodeTarget(id), st = this.nodeSteps(id), cur = this.state.step;
+    if (!st.length) return this.openFile(t.open[0], t.open[1]);
+    const nx = st.find(n => n > cur) || st[0];
+    if (nx === cur) return this.openFile(t.open[0], t.open[1]);
+    this.go(nx);
+  }
+  flowStrip() {
+    const K = this.K(), s = this.state.step, cur = this.stepNodes()[s] || [], seen = {};
+    Object.keys(this.state.visited).forEach(n => { if (+n !== s) (this.stepNodes()[n] || []).forEach(id => { seen[id] = true; }); });
+    const KC = { new: K.green, changed: K.amber, same: 'oklch(0.55 0.012 245)', external: 'oklch(0.45 0.012 245)' };
+    const nodes = this.flowNodes(), paths = [0, 1, 2].map(p => nodes.filter(n => n.path === p));
+    const strip = paths.map((ns, pi) => ({ flex: String(ns.length), sep: pi < 2, nodes: ns.map((n, i) => { const c = cur.indexOf(n.id) >= 0, sn = !!seen[n.id], steps = this.nodeSteps(n.id); return { short: n.short, arrow: i > 0, isCur: c, flex: c ? '0 0 auto' : '0 1 auto', kc: KC[n.kind], bs: n.kind === 'external' ? 'dashed' : 'solid', border: c ? 'oklch(0.80 0.11 190 / .85)' : sn ? 'oklch(0.42 0.03 190)' : 'oklch(0.30 0.012 245)', bg: c ? 'oklch(0.80 0.11 190 / .18)' : 'transparent', color: c ? K.text : sn ? 'oklch(0.80 0.03 190)' : K.muted, title: n.label + (c ? ' · you are here' : '') + ' · ' + this.nodeTitle(n.id), go: () => this.goNode(n.id) }; }) }));
+    const curLabels = nodes.filter(n => cur.indexOf(n.id) >= 0).map(n => n.short);
+    return { strip, now: s === 4 ? 'This step is the map' : curLabels.length ? 'Now at ' + curLabels.join(' + ') : s < 4 ? 'Before the flow' : 'Whole change', nowColor: curLabels.length || s === 4 ? K.accent : K.muted };
+  }
+
+  flow(f, K) {
+    const KD = { new: ['new', K.green, 'oklch(0.78 0.12 150 / .45)', 'oklch(0.78 0.12 150 / .07)', 'solid'], changed: ['changed', K.amber, 'oklch(0.80 0.12 80 / .45)', 'oklch(0.80 0.12 80 / .07)', 'solid'], same: ['unchanged', K.muted, 'oklch(0.34 0.012 245)', 'oklch(0.22 0.012 245)', 'solid'], external: ['external', K.faint, 'oklch(0.44 0.012 245)', 'transparent', 'dashed'] };
+    const paths = [];
+    f.nodes.forEach(nd => { if (nd.start || !paths.length) paths.push([]); paths[paths.length - 1].push(nd); });
+    const FN = this.flowNodes(), s = this.state.step, cur = this.stepNodes()[s] || [];
+    return { cols: 'repeat(' + paths.length + ', minmax(0, 1fr))', paths: paths.map(p => ({ nodes: p.map((nd, i) => {
+      const k = KD[nd.kind], fn = FN.find(x => x.label === nd.label), id = fn ? fn.id : null, steps = id ? this.nodeSteps(id) : [], isCur = !!id && cur.indexOf(id) >= 0;
+      return { label: nd.label, note: nd.note || '', hasNote: !!nd.note, next: nd.next || '', hasLink: i < p.length - 1, start: !!nd.start, kind: k[0], kc: k[1], bc: isCur ? 'oklch(0.80 0.11 190 / .85)' : k[2], bg: isCur ? 'oklch(0.80 0.11 190 / .14)' : k[3], bs: k[4], cursor: id ? 'pointer' : 'default', title: id ? this.nodeTitle(id) : '', go: id ? () => this.goNode(id) : null, hasOpen: !!id && steps.length === 0, openLabel: id ? 'open ' + this.nodeTarget(id).open[0].split('/').pop() : '',
+        hasChips: steps.length > 0 && !(steps.length === 1 && steps[0] === 4), chips: steps.filter(n => n !== 4).map(n => ({ s: String(n), title: 'Step ' + n, bg: n === s ? K.accent : 'oklch(0.30 0.014 245)', color: n === s ? K.onAccent : K.muted, go: e => { if (e && e.stopPropagation) e.stopPropagation(); this.go(n); } })) };
+    }) })) };
+  }
+
+  schema(s, K) {
+    return { caption: s.caption, fk: s.fk, fkNote: s.fkNote, tables: s.tables.map(t => ({ name: t.name, tag: t.tag, tagColor: t.isNew ? K.green : K.amber, border: t.isNew ? 'oklch(0.78 0.12 150 / .45)' : K.line, cols: t.cols.map(c => ({ name: c.name, type: c.type, flag: c.flag || '', sign: c.added ? '+' : '', nameColor: c.added || t.isNew ? K.text : K.muted, flagColor: c.added ? K.green : K.faint, bg: c.added ? 'oklch(0.78 0.12 150 / .08)' : 'transparent' })) })) };
+  }
+
+  table(t, K, WC) {
+    const w = t.head[0] === 'Label', n = t.head.length, cells = [];
+    t.head.forEach(h => cells.push({ isHead: true, isBadge: false, isText: false, t: h.toUpperCase() }));
+    t.rows.forEach(r => r.forEach((c, j) => { if (w && j === 0) { const wc = WC[c] || [K.accent, K.line, 'transparent']; cells.push({ isHead: false, isBadge: true, isText: false, t: c.toUpperCase(), color: wc[0], bg: wc[2], canDraft: true, onDraft: () => this.draft(c) }); } else cells.push({ isHead: false, isBadge: false, isText: true, segs: this.segs(c) }); }));
+    return { cols: w ? '130px minmax(0,1fr)' : n === 3 ? 'minmax(0,1fr) minmax(0,1.5fr) minmax(0,.9fr)' : 'repeat(' + n + ',minmax(0,1fr))', cells };
+  }
+
+  fileGroups(active, cur) {
+    const { D, K } = this.data();
+    return [['core', 'CORE', K.accent], ['mechanical', 'MECHANICAL', K.faint], ['test', 'TESTS', K.violet]].map(g => {
+      const items = D.roles.filter(x => x.role === g[0]);
+      return { label: g[1], color: g[2], count: String(items.length), items: items.map(x => {
+        const parts = x.file.split('/'), name = parts.pop(), has = !!D.files[x.file], isAct = x.file === active, isNew = D.added.indexOf(x.file) >= 0;
+        return { name, dir: parts.join('/'), note: x.note || '', color: g[0] === 'core' ? K.text : K.muted, cursor: has ? 'pointer' : 'default', go: has ? () => this.openFile(x.file, null) : () => this.toast(name + ' is not part of this prototype'), status: isNew ? 'A' : 'M', statusColor: isNew ? K.green : K.amber, bg: isAct ? K.bg4 : 'transparent', nameColor: isAct ? K.text : g[0] === 'core' ? 'oklch(0.86 0.008 245)' : K.muted, iconColor: g[0] === 'core' ? K.accent : g[0] === 'test' ? K.violet : K.faint, visits: (D.visits[x.file] || []).map(n => ({ s: String(n), bg: n === cur ? K.accent : 'oklch(0.29 0.014 245)', color: n === cur ? K.onAccent : K.muted, go: e => { if (e && e.stopPropagation) e.stopPropagation(); this.go(n); } })) };
+      }) };
+    });
+  }
+
+  editorRows(key, a, b, o) {
+    const { anchors } = this.data(), path = key.replace('@base', ''), side = key.indexOf('@base') >= 0 ? 'base' : 'head', al = this.align(path), badges = {};
+    (anchors[key] || []).forEach(x => { if (!badges[x.line]) badges[x.line] = x.no; });
+    const cols = this.splitCols(al, true);
+    return [{ isEditorSplit: true, showHead: !!o.head, cols, leftLabel: this.leftLabel(al), rightLabel: al.same ? 'feature/coupons · same as main' : 'feature/coupons', rows: this.splitRows(path, side, a, b, Object.assign({}, o, { badges }), cols, '13px/20px') }];
+  }
+
+  crumbs(path, sym) { const p = path.split('/'); if (sym) p.push(sym); return p.map((x, i) => ({ p: x, sep: i < p.length - 1 })); }
+
+  inlineVals() {
+    const { D, K } = this.data(), st = this.state, s = st.step, CS = 'src/coupons/couponService.ts';
+    const tab = (c, i, ti) => ({ label: c.file.split('/').pop(), at: c.at === 'base' ? 'base' : 'head', atColor: c.at === 'base' ? K.amber : K.accent, bg: i === ti ? 'oklch(0.205 0.011 245)' : 'transparent', color: i === ti ? K.text : K.muted, top: i === ti ? K.accent : 'transparent', go: () => this.setState({ tab: i }) });
+    if (s === 11) return { file: CS, tabs: [tab({ file: CS }, 0, 0)], crumbs: this.crumbs(CS, 'apply'), before: this.editorRows(CS, 18, 27, { head: true }), ghost: true, mid: this.editorRows(CS, 28, 29, { ctx: [28, 28] }), after: this.editorRows(CS, 30, 36, {}), atLabel: 'feature/coupons · read-only' };
+    let codes = this.codesOf(s), own = true;
+    if (!codes.length) { own = false; codes = this.lastCodes(s); }
+    if (!codes.length) codes = [{ file: CS, lines: [18, 35] }];
+    const ti = Math.min(st.tab, codes.length - 1), c = codes[ti], key = c.at === 'base' ? c.file + '@base' : c.file, len = D.files[key].lines.length, marks = {};
+    (c.marks || []).forEach(m => { marks[m.line] = m.text; });
+    const r = { file: c.file, tabs: codes.map((cc, i) => tab(cc, i, ti)), crumbs: this.crumbs(c.file, ''), ghost: false, mid: [], atLabel: (c.at === 'base' ? 'main (base)' : 'feature/coupons') + ' · read-only' };
+    if (own) { r.before = this.editorRows(key, Math.max(1, c.lines[0] - 6), c.lines[1], { hl: c.lines, marks, head: true }); r.after = this.editorRows(key, c.lines[1] + 1, Math.min(len, c.lines[1] + 12), {}); }
+    else { r.before = []; r.after = this.editorRows(key, Math.max(1, c.lines[0] - 4), len, { ctx: c.lines, head: true }); }
+    return r;
+  }
+
+  tourVals(activeFile) {
+    const { D, K, flat } = this.data(), st = this.state, s = st.step, m = flat[s - 1], prev = flat[s - 2], next = flat[s], done = !!st.done[s];
+    const nd = Object.keys(st.done).filter(k => st.done[k]).length, cc = m.ch;
+    const tick = x => ({ go: () => this.go(x.no), title: x.no + ' · ' + x.title, bg: x.no === s ? K.text : st.done[x.no] ? K.accent : st.visited[x.no] ? 'oklch(0.55 0.05 190)' : 'oklch(0.34 0.012 245)', h: x.no === s ? '10px' : '4px' });
+    const fs = this.flowStrip();
+    const text = this.blocks(s, 'text'), vis = this.blocks(s, 'vis'), bv = this.blocks(s, 'balvis'), wideBal = bv.some(b => b.k === 'table' || b.k === 'files');
+    const balText = wideBal ? this.blocks(s, 'doc').filter(b => b.k !== 'code' && !(s === 11 && b.k === 'snippet')) : text, balVis = wideBal ? [] : bv;
+    return {
+      no: String(s), title: m.title, chapter: 'Chapter ' + (cc + 1) + ' · ' + m.chTitle, stepLabel: 'Step ' + s + ' of 16', isQ: m.q,
+      hasAnswers: s === 7 || s === 10, answers: prev ? 'Answers step ' + prev.no + ' · ' + prev.title : '',
+      prev: () => this.go(s - 1), prevOp: prev ? '1' : '.35', prevNo: prev ? 'Previous · ' + prev.no : 'Start', prevTitle: prev ? prev.title : 'This is the first step',
+      next: () => this.go(s + 1), nextOp: next ? '1' : '.45', nextNo: next ? 'Next · ' + next.no + (next.q ? ' · question' : '') : 'End of tour', nextTitle: next ? next.title : 'You reached the end',
+      toggleDone: () => this.toggleDone(), doneIcon: done ? 'check_box' : 'check_box_outline_blank', doneLabel: done ? 'Understood' : 'Mark as understood', doneBg: done ? 'oklch(0.80 0.11 190 / .14)' : 'transparent', doneBorder: done ? 'oklch(0.80 0.11 190 / .55)' : 'oklch(0.30 0.012 245)', doneColor: done ? 'oklch(0.86 0.09 190)' : K.text,
+      note: st.notes[s] || '', noteOpen: st.noteOpen || !!st.notes[s], toggleNote: () => this.setState({ noteOpen: !this.state.noteOpen }), onNote: e => { const v = e.target.value; this.setState(x => ({ notes: Object.assign({}, x.notes, { [s]: v }) })); },
+      all: this.blocks(s, 'doc'), text, vis, hasVis: vis.length > 0, noVis: vis.length === 0, noVisQ: vis.length === 0 && m.q, noVisT: vis.length === 0 && !m.q, visCount: String(vis.length), balText, balVis, hasBalVis: balVis.length > 0, noBalVis: balVis.length === 0,
+      ticks: flat.map(tick),
+      route: D.tour.chapters.map((c, ci) => { const xs = flat.filter(x => x.ch === ci); return { label: (ci + 1) + '  ' + c.title, flex: String(xs.length), color: ci === cc ? K.text : K.faint, ticks: xs.map(tick) }; }),
+      outline: { pct: Math.round(nd / 16 * 100) + '%', label: nd + ' of 16 understood', chapters: D.tour.chapters.map((c, ci) => ({ no: String(ci + 1), title: c.title.toUpperCase(), color: ci === cc ? K.text : K.faint, steps: flat.filter(x => x.ch === ci).map(x => { const dn = !!st.done[x.no], isCur = x.no === s, vi = !!st.visited[x.no]; return { no: String(x.no), title: x.title, go: () => this.go(x.no), icon: dn ? 'check_circle' : isCur ? 'play_circle' : x.q ? 'help' : vi ? 'radio_button_checked' : 'radio_button_unchecked', iconColor: dn ? K.accent : isCur ? K.text : x.q ? K.violet : vi ? K.muted : 'oklch(0.45 0.012 245)', color: isCur ? K.text : dn || vi ? K.muted : 'oklch(0.82 0.01 245)', bg: isCur ? K.bg4 : 'transparent', hasNote: !!st.notes[x.no] }; }) })) },
+      files: this.fileGroups(activeFile, s), understood: nd,
+      flowStrip: fs.strip, flowNow: fs.now, flowNowColor: fs.nowColor
+    };
+  }
+
+  fileVals() {
+    const { D } = this.data(), f = this.state.file, key = f.key, path = key.replace('@base', ''), isBase = key.indexOf('@base') >= 0, len = D.files[key].lines.length, changed = D.roles.some(r => r.file === path);
+    const banner = path === 'src/db.ts' ? 'Read-only copy of src/db.ts at feature/coupons, from the tour cache. Your working tree has a different version, so this is the code the tour talks about.' : isBase ? path + ' as it was on main, before the change. Read-only.' : path + ' at feature/coupons. Read-only: the tour never writes to your files.';
+    return { name: path.split('/').pop(), at: isBase ? '@ main' : '@ feature/coupons', banner, crumbs: this.crumbs(path, ''), changeLabel: changed ? 'changed in feature/coupons' : 'unchanged in this change', rows: this.editorRows(key, 1, len, { hl: f.hl || null, head: true }), files: this.fileGroups(path, this.state.step) };
+  }
+
+  renderVals() {
+    const st = this.state;
+    if (!st.ready) return { isSetup: true };
+    const K = this.K(), scr = st.screen, isTour = scr === 'tour', file = isTour && !!st.file, lay = st.layout;
+    const v = {
+      isSetup: scr === 'setup', isPick: scr === 'pick', isWriting: scr === 'writing', isTour,
+      isDoc: isTour && !file && lay === 'doc', isInline: isTour && !file && lay === 'inline', isFocus: isTour && !file && lay === 'focus', isFile: file,
+      showActivity: !(isTour && !file && lay === 'focus'), llm: st.llm,
+      cmdLabel: isTour ? 'Tour · Coupons at checkout' : 'Tour a change',
+      openQuick: () => this.setState({ quick: true, qsel: 0 }), closeQuick: () => this.setState({ quick: false }), stop: e => e.stopPropagation(),
+      layouts: [['doc', 'Document', 'article'], ['inline', 'Inline', 'code'], ['focus', 'Focus', 'center_focus_strong']].map(l => ({ label: l[1], icon: l[2], go: () => this.setState({ layout: l[0], file: null }), bg: lay === l[0] ? 'oklch(0.31 0.014 245)' : 'transparent', color: lay === l[0] ? K.text : K.muted })),
+      exitFocus: () => this.setState({ layout: 'doc' }), closeFile: () => this.setState({ file: null }),
+      saveSetup: () => this.setState({ screen: 'pick', quick: true, qsel: 0 }),
+      startWriting: () => this.startWriting(), openSaved: () => this.openTour(), cancelWriting: () => { clearInterval(this._w); this.setState({ screen: 'pick' }); },
+      notWired: () => this.toast('Only feature/coupons is wired up in this prototype'),
+      hasQuick: st.quick, hasToast: !!st.toast, toast: st.toast,
+      hasPending: st.pending > 0, pendingLabel: 'PR #42 · ' + st.pending + ' pending',
+      docRef: this.docRef, lRef: this.lRef, rRef: this.rRef, edRef: this.edRef,
+      hasPr: !!st.pr
+    };
+    if (st.quick) v.quick = this.quickItems().map((q, i) => Object.assign(q, { bg: i === st.qsel ? 'oklch(0.80 0.11 190 / .16)' : 'transparent', iconColor: i === st.qsel ? K.accent : K.faint, hover: () => { if (this.state.qsel !== i) this.setState({ qsel: i }); } }));
+    if (v.isSetup) v.su = this.setupVals();
+    if (v.isWriting) v.wr = this.writingVals();
+    v.isPlain = scr === 'plain'; v.openPlain = () => this.openPlain(0);
+    if (v.isPlain) v.pv = this.plainVals();
+    if (isTour) {
+      let ie = null;
+      if (v.isInline) { ie = this.inlineVals(); v.ie = ie; }
+      v.t = this.tourVals(ie ? ie.file : (st.file ? st.file.key.replace('@base', '') : null));
+      if (file) v.fv = this.fileVals();
+      const sn = window.DT.steps[11].blocks[0].snippet.text;
+      v.ghost = sn.split('\n').map(l => ({ toks: this.tok(l, 'ts', K) }));
+      v.copyEx = () => this.copy(sn, 'Example copied. It is not in the repository.');
+      v.draftEx = () => this.draft('Must', '\n\n```ts\n' + sn + '\n```');
+    }
+    v.statusTour = isTour ? 'Tour ' + st.step + '/16 · ' + (v.t ? v.t.understood : 0) + ' understood' : scr === 'writing' ? 'Writing tour · ' + v.wr.el : scr === 'setup' ? 'Tour: not set up' : scr === 'plain' ? 'No tour · 3 files (under 10)' : 'Tour: pick a change';
+    if (st.pr) {
+      const pr = st.pr;
+      v.pr = { target: pr.target, text: pr.text, weights: ['Must', 'Suggestion', 'Question', 'Nit', 'Praise'].map(w => { const sel = w === pr.weight; return { n: w, bg: sel ? 'oklch(0.80 0.11 190 / .16)' : 'transparent', border: sel ? 'oklch(0.80 0.11 190 / .6)' : 'oklch(0.36 0.012 245)', color: sel ? 'oklch(0.86 0.09 190)' : K.muted, go: () => { const lead = w === 'Must' ? 'Must fix' : w; this.setState(x => ({ pr: Object.assign({}, x.pr, { weight: w, target: this.targets()[w], text: x.pr.text.replace(/^\*\*[^*]+:\*\*/, '**' + lead + ':**') }) })); } }; }) };
+      v.closePr = () => this.setState({ pr: null });
+      v.onPrText = e => { const val = e.target.value; this.setState(x => ({ pr: Object.assign({}, x.pr, { text: val }) })); };
+      v.copyPr = () => this.copy(pr.text, 'Comment copied as Markdown');
+      v.addPr = () => { this.setState(x => ({ pr: null, pending: x.pending + 1 })); this.toast('Added to your pending review on #42'); };
+    }
+    return v;
+  }
+}
+</script>
+</body>
+</html>

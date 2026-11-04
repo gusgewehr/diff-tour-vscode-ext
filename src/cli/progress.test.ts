@@ -46,4 +46,3 @@ test('caps, repair, stage literal, time, error, cached', () => {
   for (const e of cached) c = reduce(c, e);
   assert.deepEqual(Object.values(c.stages), ['done', 'done', 'done', 'done']);
 });
-
