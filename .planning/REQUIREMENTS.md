@@ -121,12 +121,63 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmap) | | |
+| CLI-01 | Phase 1 | Pending |
+| CLI-02 | Phase 1 | Pending |
+| CLI-03 | Phase 1 | Pending |
+| CLI-04 | Phase 1 | Pending |
+| CLI-05 | Phase 1 | Pending |
+| CLI-06 | Phase 1 | Pending |
+| CLI-07 | Phase 1 | Pending |
+| PICK-01 | Phase 2 | Pending |
+| PICK-02 | Phase 2 | Pending |
+| PICK-03 | Phase 2 | Pending |
+| PICK-04 | Phase 2 | Pending |
+| PICK-05 | Phase 2 | Pending |
+| PICK-06 | Phase 2 | Pending |
+| PICK-07 | Phase 2 | Pending |
+| PICK-08 | Phase 2 | Pending |
+| SMALL-01 | Phase 3 | Pending |
+| SMALL-02 | Phase 3 | Pending |
+| SMALL-03 | Phase 3 | Pending |
+| WRITE-01 | Phase 4 | Pending |
+| WRITE-02 | Phase 4 | Pending |
+| WRITE-03 | Phase 4 | Pending |
+| WRITE-04 | Phase 4 | Pending |
+| WRITE-05 | Phase 4 | Pending |
+| WRITE-06 | Phase 4 | Pending |
+| WRITE-07 | Phase 4 | Pending |
+| WRITE-08 | Phase 4 | Pending |
+| DOC-01 | Phase 5 | Pending |
+| DOC-02 | Phase 5 | Pending |
+| DOC-03 | Phase 5 | Pending |
+| DOC-04 | Phase 5 | Pending |
+| DOC-05 | Phase 5 | Pending |
+| DOC-06 | Phase 5 | Pending |
+| DOC-07 | Phase 5 | Pending |
+| DOC-08 | Phase 5 | Pending |
+| DOC-09 | Phase 5 | Pending |
+| CODE-01 | Phase 6 | Pending |
+| CODE-02 | Phase 6 | Pending |
+| CODE-03 | Phase 6 | Pending |
+| CODE-04 | Phase 6 | Pending |
+| CODE-05 | Phase 6 | Pending |
+| CODE-06 | Phase 6 | Pending |
+| BLOCK-01 | Phase 7 | Pending |
+| BLOCK-02 | Phase 7 | Pending |
+| BLOCK-03 | Phase 7 | Pending |
+| BLOCK-04 | Phase 7 | Pending |
+| BLOCK-05 | Phase 7 | Pending |
+| BLOCK-06 | Phase 7 | Pending |
+| BLOCK-07 | Phase 7 | Pending |
+| FLOW-01 | Phase 8 | Pending |
+| FLOW-02 | Phase 8 | Pending |
+| FLOW-03 | Phase 8 | Pending |
+| FLOW-04 | Phase 8 | Pending |
 
 **Coverage:**
 - v1 requirements: 52 total
-- Mapped to phases: 0
-- Unmapped: 52 ⚠️
+- Mapped to phases: 52
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-11-03*
