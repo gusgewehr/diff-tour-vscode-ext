@@ -163,7 +163,7 @@ Plans:
   4. From an opened file, user can return to the step via status bar, editor title button or Esc, and go prev/next
   5. Stepping through several files reuses preview tabs instead of piling up editors
 
-**Plans**: TBD
+**Plans**: 1/2 plans executed (06-01 done)
 **UI hint**: yes
 
 ### Phase 7: Webview tour blocks
