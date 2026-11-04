@@ -10,8 +10,8 @@ progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 3
-  completed_plans: 2
-  percent: 0
+  completed_plans: 3
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-11-03)
 ## Current Position
 
 Phase: 1 of 8 (Verify diff-tour CLI JSON + headless fork)
-Plan: 2 of 3 in current phase (01-02 complete)
-Status: Executing, next 01-03
+Plan: 3 of 3 in current phase (01-03 complete)
+Status: Phase 1 plans complete
 Last activity: 2026-11-04 -- Phase 1 planning complete
 
-Progress: [███░░░░░░░] 33%
+Progress: [██████████] 100% of phase 1
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [███░░░░░░░] 33%
 - Fork the diff-tour CLI for headless JSON/JSONL output
 - Phase 1 verifies the CLI and schema before any extension code depends on it
 - Claude Code is the only provider tested in v1; VSIX distribution only
+- Flow nodes: fork adds optional file/lines to FlowNode (prompt v7); heuristic mapping only 15%
 - Extension owns tour cache under globalStorageUri; the CLI `done` event carries key, path, SHAs
 
 ### Pending Todos
