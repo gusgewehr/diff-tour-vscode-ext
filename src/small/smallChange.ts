@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'node:path';
-import { ChangedFile, Target, git, listChangedFiles } from '../git/changes';
+import { ChangedFile, Target, listChangedFiles } from '../git/changes';
+import { tourUri } from '../git/contentProvider';
 import { noticeText, sides, statusText } from './logic';
-
-const SCHEME = 'difftour-git';
 
 type Node = { root: true } | { file: ChangedFile; index: number };
 
-export class SmallChange implements vscode.TextDocumentContentProvider, vscode.TreeDataProvider<Node> {
+export class SmallChange implements vscode.TreeDataProvider<Node> {
   private files: ChangedFile[] = [];
   private target?: Target;
   private cwd = '';
@@ -22,30 +21,18 @@ export class SmallChange implements vscode.TextDocumentContentProvider, vscode.T
   register(context: vscode.ExtensionContext): void {
     this.tree = vscode.window.createTreeView<Node>('difftour.smallChange', { treeDataProvider: this });
     context.subscriptions.push(
-      vscode.workspace.registerTextDocumentContentProvider(SCHEME, this),
       vscode.commands.registerCommand('difftour.internal.openSmallChangeFile', (i: number) => this.openFile(i)),
       this.tree, this.changed,
     );
   }
 
-  // Content provider: `git show <sha>:<path>`, or empty for a missing side.
-  async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
-    const q = new URLSearchParams(uri.query);
-    if (q.get('empty') === '1') return '';
-    const sha = q.get('sha') ?? '';
-    const cwd = q.get('cwd') ?? '';
-    if (!sha || sha.startsWith('-') || !cwd) return '';
-    return git(cwd, ['show', `${sha}:${uri.path.replace(/^\//, '')}`]);
-  }
-
   private uri(p: string | undefined, sha: string): vscode.Uri {
-    if (p === undefined) return vscode.Uri.from({ scheme: SCHEME, path: '/empty', query: 'empty=1' });
+    if (p === undefined) return tourUri(undefined, sha, this.cwd);
     try {
       const api = vscode.extensions.getExtension('vscode.git')?.exports?.getAPI(1);
       if (api) return api.toGitUri(vscode.Uri.file(path.join(this.cwd, p)), sha) as vscode.Uri;
     } catch { /* fall back to our provider */ }
-    const query = new URLSearchParams({ sha, cwd: this.cwd }).toString();
-    return vscode.Uri.from({ scheme: SCHEME, path: '/' + p.replace(/\\/g, '/'), query });
+    return tourUri(p, sha, this.cwd);
   }
 
   private async openFile(i: number): Promise<void> {
