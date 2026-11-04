@@ -72,7 +72,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-03-PLAN.md — Activation smoke test, README, VSIX package + contents check, local install via code CLI
+- [x] 02-03-PLAN.md — Activation smoke test, README, VSIX package + contents check, local install via code CLI
 
 **UI hint**: yes
 
