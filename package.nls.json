@@ -31,5 +31,6 @@
   "config.minFiles.description": "Changes with fewer files open in the standard diff without a tour.",
   "config.cliPath.description": "Path to the tour executable. Empty = the CLI bundled with the extension, then `tour` on PATH. The official diff-tour CLI does not work (no --json mode).",
   "config.claudePath.description": "Full path to the Claude Code executable (run `which claude` in a terminal). Empty = PATH, then ~/.local/bin, ~/.claude/local and your login shell.",
-  "config.baseBranch.description": "Empty = auto: origin/HEAD, then main, then master."
+  "config.baseBranch.description": "Empty = auto: origin/HEAD, then main, then master.",
+  "command.regenerateTour.title": "Regenerate tour"
 }

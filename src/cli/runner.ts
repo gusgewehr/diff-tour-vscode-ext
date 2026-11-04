@@ -77,7 +77,7 @@ export function cliLlm(llm: string): string {
   return llm === 'claude' ? 'claude-code' : llm;
 }
 
-export function cliArgs(t: Pick<Target, 'kind' | 'base' | 'head' | 'baseSha' | 'headSha'>, s: Pick<Settings, 'llm' | 'language'>, repo: string): string[] {
+export function cliArgs(t: Pick<Target, 'kind' | 'base' | 'head' | 'baseSha' | 'headSha'>, s: Pick<Settings, 'llm' | 'language'>, repo: string, fresh = false): string[] {
   const range = t.kind === 'branch' ? `${t.base}..${t.head}` : `${t.baseSha}..${t.headSha}`;
-  return ['--json', '--llm', cliLlm(s.llm), '--lang', s.language, '--repo', repo, range];
+  return ['--json', '--llm', cliLlm(s.llm), '--lang', s.language, '--repo', repo, ...(fresh ? ['--fresh'] : []), range];
 }

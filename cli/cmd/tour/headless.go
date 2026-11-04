@@ -28,6 +28,7 @@ type headlessArgs struct {
 	lang       string
 	llm        string
 	count      bool
+	fresh      bool // ignore a cached tour and write a new one
 }
 
 // emitter writes one JSON object per line. Nothing else may write to stdout in --json mode.
@@ -169,7 +170,7 @@ func runHeadless(out io.Writer, a headlessArgs) error {
 	}
 	stage := func(s, state string) { em.emit("stage", map[string]any{"stage": s, "state": state}) }
 
-	if t, err := generate.LoadCached(key); err == nil && t != nil {
+	if t, err := generate.LoadCached(key); err == nil && t != nil && !a.fresh {
 		stage("show", "done")
 		done(true)
 		return nil

@@ -2,7 +2,7 @@
   "name": "diff-tour",
   "displayName": "diff-tour",
   "publisher": "difftour",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "%description%",
   "engines": {
     "vscode": "^1.110.0"
@@ -52,6 +52,12 @@
         "title": "%command.nextStep.title%",
         "category": "diff-tour",
         "icon": "$(chevron-right)"
+      },
+      {
+        "command": "difftour.regenerateTour",
+        "title": "%command.regenerateTour.title%",
+        "category": "diff-tour",
+        "icon": "$(refresh)"
       }
     ],
     "keybindings": [
@@ -119,6 +125,11 @@
           "command": "difftour.tourChange",
           "when": "view == difftour.changes",
           "group": "navigation"
+        },
+        {
+          "command": "difftour.regenerateTour",
+          "when": "view == difftour.outline && difftour.tourActive",
+          "group": "navigation"
         }
       ],
       "editor/title": [
@@ -136,6 +147,11 @@
           "command": "difftour.nextStep",
           "when": "difftour.inTourCode",
           "group": "navigation@3"
+        },
+        {
+          "command": "difftour.regenerateTour",
+          "when": "activeWebviewPanelId == difftour.tour",
+          "group": "navigation"
         }
       ],
       "commandPalette": [
@@ -150,6 +166,22 @@
         {
           "command": "difftour.nextStep",
           "when": "difftour.inTourCode"
+        },
+        {
+          "command": "difftour.regenerateTour",
+          "when": "difftour.tourActive"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "difftour.regenerateTour",
+          "when": "view == difftour.changes && viewItem == saved",
+          "group": "inline"
+        },
+        {
+          "command": "difftour.regenerateTour",
+          "when": "view == difftour.changes && viewItem == saved",
+          "group": "navigation"
         }
       ]
     },

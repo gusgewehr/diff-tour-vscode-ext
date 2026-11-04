@@ -121,7 +121,8 @@ export async function showPicker(model: ChangeModel, deps: Deps): Promise<void> 
       items.push({ label: g.label, kind: vscode.QuickPickItemKind.Separator });
       for (const entry of g.entries) {
         const p = present(entry, deps.settings().minFiles);
-        items.push({ label: `$(${p.icon}) ${p.label}`, description: p.description, detail: p.detail, entry });
+        const buttons = entry.kind === 'saved' ? [{ iconPath: new vscode.ThemeIcon('refresh'), tooltip: vscode.l10n.t('Regenerate tour') }] : undefined;
+        items.push({ label: `$(${p.icon}) ${p.label}`, description: p.description, detail: p.detail, entry, buttons });
       }
     }
     qp.items = items;
@@ -135,6 +136,11 @@ export async function showPicker(model: ChangeModel, deps: Deps): Promise<void> 
     if (!entry || entry.kind === 'info') return;
     qp.hide();
     choose(entry, deps).catch((e) => vscode.window.showErrorMessage(String((e as Error).message ?? e)));
+  });
+  qp.onDidTriggerItemButton((e) => {
+    if (e.item.entry?.kind !== 'saved') return;
+    qp.hide();
+    void vscode.commands.executeCommand('difftour.regenerateTour', e.item.entry);
   });
   qp.onDidHide(() => { sub.dispose(); qp.dispose(); });
   qp.show();

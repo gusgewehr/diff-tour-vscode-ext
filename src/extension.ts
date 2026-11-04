@@ -7,7 +7,9 @@ import { ChangeModel, Deps, Entry, choose, setCurrentModel, showPicker } from '.
 import { ChangesTree } from './views/changesTree';
 import type { Target } from './git/changes';
 import { SmallChange } from './small/smallChange';
-import { startTour, revealWriting } from './cli/startTour';
+import { startTour, revealWriting, type StartOptions } from './cli/startTour';
+import type { TourMeta } from './cli/cache';
+import type { Language } from './settings';
 import { TourController } from './tour/controller';
 import { registerCodeOpen } from './tour/openCode';
 import { OutlineTree } from './views/outlineTree';
@@ -37,16 +39,37 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('difftour.internal.openSmallChange', (t: Target) => small.open(t).catch(err));
   const output = vscode.window.createOutputChannel('diff-tour');
   context.subscriptions.push(output);
-  reg('difftour.internal.startTour', (t: Target) => startTour(t, {
+  reg('difftour.internal.startTour', (t: Target, opts?: StartOptions) => startTour(t, {
     settings: deps.settings, savedDir: deps.savedDir, extensionPath: deps.extensionPath, extensionUri: context.extensionUri,
     cwd: () => model.cwd, hideSmall: () => small.hide(), refresh: () => void model.refresh(), output,
-  }).catch(err));
+    resetState: (key) => tours.resetState(key),
+  }, opts).catch(err));
+  reg('difftour.regenerateTour', (arg?: Entry) => regenerate(arg).catch(err));
   reg('difftour.internal.revealWriting', () => revealWriting());
   // the tour reads code from model.cwd, so wait for the repo root (not the whole branch/PR list)
   reg('difftour.internal.openSavedTour', (p: string) => model.ensureRoot().then(() => tours.open(p)).catch(err));
   reg('difftour.internal.revealTour', () => tours.reveal());
   reg('difftour.internal.gotoStep', (i: unknown) => { if (typeof i === 'number' && Number.isInteger(i)) tours.goto(i); });
   registerCodeOpen(context, tours, () => model.cwd);
+  // Regenerate the open tour, or a SAVED entry: same change (the toured shas), same language, CLI cache bypassed.
+  async function regenerate(arg?: Entry): Promise<void> {
+    let meta: TourMeta | undefined;
+    if (arg?.kind === 'saved') {
+      try { meta = JSON.parse(fs.readFileSync(arg.path.replace(/.json$/, '.meta.json'), 'utf8')) as TourMeta; } catch { meta = undefined; }
+    } else meta = tours.session?.meta;
+    if (!meta?.baseSha || !meta.headSha) {
+      void vscode.window.showInformationMessage(vscode.l10n.t('Open a saved tour, or pick one under SAVED, to regenerate it.'));
+      return;
+    }
+    const go = vscode.l10n.t('Regenerate');
+    const ok = await vscode.window.showWarningMessage(
+      vscode.l10n.t('Regenerate the tour "{0}"?', meta.label),
+      { modal: true, detail: vscode.l10n.t('The LLM writes it again from scratch: this takes a few minutes and costs about US$2. Your progress and notes on this tour are cleared.') }, go);
+    if (ok !== go) return;
+    await model.ensureRoot();
+    const target: Target = { kind: 'range', label: meta.label, base: meta.baseSha, head: meta.headSha, baseSha: meta.baseSha, headSha: meta.headSha, files: meta.files };
+    await vscode.commands.executeCommand('difftour.internal.startTour', target, { fresh: true, lang: (meta.lang || undefined) as Language | undefined });
+  }
   const flowBar = new FlowBarView(context.extensionUri, () => tours.session, () => tours.reveal());
   let wasActive = false;
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(FlowBarView.viewType, flowBar, { webviewOptions: { retainContextWhenHidden: true } }), tours.onDidChange(() => {

@@ -126,7 +126,7 @@ try {
   assert.ok(execs.some((a) => a[0] === 'setContext' && a[2] === false), 'context false');
 } catch (e) { failed = `exception: ${e?.stack ?? e}`; }
 
-const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.revealWriting', 'difftour.internal.openSavedTour', 'difftour.internal.revealTour', 'difftour.internal.gotoStep', 'difftour.internal.openCode', 'difftour.backToStep', 'difftour.prevStep', 'difftour.nextStep'];
+const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.revealWriting', 'difftour.internal.openSavedTour', 'difftour.internal.revealTour', 'difftour.internal.gotoStep', 'difftour.internal.openCode', 'difftour.backToStep', 'difftour.prevStep', 'difftour.nextStep', 'difftour.regenerateTour'];
 const missing = want.filter((c) => !commands.includes(c)).concat(['difftour.changes', 'difftour.smallChange', 'difftour.outline'].filter((v) => !views.includes(v)).map((v) => `view ${v}`));
 if (failed || missing.length) {
   console.error(`smoke FAILED: ${failed} missing: ${missing.join(', ')}`);

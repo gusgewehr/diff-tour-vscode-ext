@@ -27,6 +27,7 @@ export class ChangesTree implements vscode.TreeDataProvider<Node> {
     item.description = p.description;
     item.tooltip = p.detail;
     item.iconPath = new vscode.ThemeIcon(p.icon);
+    item.contextValue = n.kind;
     if (n.kind !== 'info') item.command = { command: 'difftour.internal.choose', title: vscode.l10n.t('Tour'), arguments: [n] };
     return item;
   }

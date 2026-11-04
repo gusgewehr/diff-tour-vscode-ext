@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'node:path';
-import type { Settings } from '../settings';
+import type { Settings, Language } from '../settings';
 import type { Target } from '../git/changes';
 import { detectTools, envWithDir } from './detect';
 import { run, cliArgs, type RunHandle } from './runner';
@@ -19,7 +19,12 @@ export interface WriteDeps {
   hideSmall(): void;
   refresh(): void;
   output: vscode.OutputChannel;
+  /** Clears the saved progress of a tour (and closes it if open) before a regenerated copy replaces it. */
+  resetState?(key: string): void;
 }
+
+/** fresh: ignore the CLI cache and write a new tour; lang: keep the language of the tour being regenerated. */
+export interface StartOptions { fresh?: boolean; lang?: Language }
 
 let current: { panel: WritingPanel } | undefined;
 
@@ -27,13 +32,13 @@ export function revealWriting(): void {
   current?.panel.show();
 }
 
-export async function startTour(target: Target, d: WriteDeps): Promise<void> {
+export async function startTour(target: Target, d: WriteDeps, opts: StartOptions = {}): Promise<void> {
   if (current) {
     current.panel.show();
     void vscode.window.showInformationMessage(vscode.l10n.t('A tour is already being written.'));
     return;
   }
-  const settings = d.settings();
+  const settings = opts.lang ? { ...d.settings(), language: opts.lang } : d.settings();
   const cwd = d.cwd();
   if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
   const roots = [...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath), d.extensionPath];
@@ -61,7 +66,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   current = { panel };
   panel.show();
 
-  const args = cliArgs(target, settings, cwd);
+  const args = cliArgs(target, settings, cwd, opts.fresh);
   d.output.appendLine(`> ${cli} ${args.join(' ')}`);
 
   let result;
@@ -90,6 +95,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   }
 
   if (result.done) {
+    if (opts.fresh) d.resetState?.(result.done.key);
     let tourPath: string;
     try {
       tourPath = await saveTour(d.savedDir, result.done, target.label, settings);
@@ -129,7 +135,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
       t.sendText('claude');
       break;
     }
-    case 'Try again': await startTour(target, d); break;
+    case 'Try again': await startTour(target, d, opts); break;
     case 'Show details': d.output.show(); break;
     case 'Open Settings': await vscode.commands.executeCommand('workbench.action.openSettings', 'difftour'); break;
   }

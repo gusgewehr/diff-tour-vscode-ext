@@ -31,5 +31,6 @@
   "config.minFiles.description": "Alterações com menos arquivos abrem no diff padrão, sem tour.",
   "config.cliPath.description": "Caminho do executável do tour. Vazio = a CLI incluída na extensão e, depois, `tour` no PATH. A CLI oficial do diff-tour não funciona (não tem o modo --json).",
   "config.claudePath.description": "Caminho completo do executável do Claude Code (execute `which claude` em um terminal). Vazio = PATH, depois ~/.local/bin, ~/.claude/local e o shell de login.",
-  "config.baseBranch.description": "Vazio = automático: origin/HEAD, depois main, depois master."
+  "config.baseBranch.description": "Vazio = automático: origin/HEAD, depois main, depois master.",
+  "command.regenerateTour.title": "Regerar tour"
 }

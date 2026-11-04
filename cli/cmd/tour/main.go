@@ -40,6 +40,7 @@ options:
                   (needs --llm and --lang when no config exists; closing stdin cancels)
   --llm <name>    LLM for this run: claude-code, codex, gemini, opencode, copilot, pi
   --count         with --json: print the file count and shas, no generation
+  --fresh         with --json: ignore a cached tour and write a new one
   --version       print the version
 `
 
@@ -102,6 +103,7 @@ func run(args []string) error {
 	jsonOut := fs.Bool("json", false, "")
 	llmFlag := fs.String("llm", "", "")
 	count := fs.Bool("count", false, "")
+	fresh := fs.Bool("fresh", false, "")
 	positional, err := parse(fs, args)
 	if err != nil {
 		return err
@@ -113,7 +115,7 @@ func run(args []string) error {
 
 	cfg, err := config.Load()
 	if *jsonOut { // before any isTerminal() check or setup: no TUI can start
-		return runHeadless(os.Stdout, headlessArgs{positional: positional, cfg: cfg, cfgErr: err, repoDir: *repoDir, lang: *langFlag, llm: *llmFlag, count: *count})
+		return runHeadless(os.Stdout, headlessArgs{positional: positional, cfg: cfg, cfgErr: err, repoDir: *repoDir, lang: *langFlag, llm: *llmFlag, count: *count, fresh: *fresh})
 	}
 	if err != nil {
 		return err

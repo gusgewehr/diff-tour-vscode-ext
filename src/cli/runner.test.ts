@@ -56,4 +56,8 @@ test('args', () => {
   assert.deepEqual(b.slice(0, 7), ['--json', '--llm', 'claude-code', '--lang', 'en', '--repo', '/r']);
   assert.equal(b[7], 'main..feature/x');
   for (const kind of ['commit', 'range', 'pr'] as const) assert.equal(cliArgs({ ...t, kind }, s, '/r')[7], 'aaa..bbb');
+  // regenerate: --fresh goes before the range, which stays last
+  const f = cliArgs({ ...t, kind: 'range' }, s, '/r', true);
+  assert.deepEqual(f.slice(7), ['--fresh', 'aaa..bbb']);
+  assert.ok(!b.includes('--fresh'));
 });

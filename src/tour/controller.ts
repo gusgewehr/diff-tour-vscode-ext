@@ -4,7 +4,7 @@ import { codeTargetForBlock, primaryCode, renderMessage, type Intent } from './m
 import { StepEnricher } from './enrich';
 import { resolveTour } from './open';
 import { TourSession } from './session';
-import { StateStore } from './state';
+import { StateStore, stateKey } from './state';
 
 let current: TourSession | undefined;
 export function activeSession(): TourSession | undefined { return current; }
@@ -97,6 +97,11 @@ export class TourController implements vscode.Disposable {
     this.sub?.dispose(); this.sub = undefined; this.enricher = undefined;
     this._session?.dispose();
     this._session = current = undefined;
+  }
+
+  resetState(id: string): void {
+    if (this._session?.id === id) this.endSession();
+    void this.context.workspaceState.update(stateKey(id), undefined);
   }
 
   end(): void {
