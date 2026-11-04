@@ -185,7 +185,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 07-01-PLAN.md — Host enrichment: hunk alignment (align.ts), flow node->step mapping (flow.ts), StepEnricher (git), copy intent, previousGuess, async render
+- [x] 07-01-PLAN.md — Host enrichment: hunk alignment (align.ts), flow node->step mapping (flow.ts), StepEnricher (git), copy intent, previousGuess, async render
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -222,5 +222,5 @@ Plans:
 | 4. CLI runner, Writing progress, tour cache | 3/3 | Complete    | 2026-11-04 |
 | 5. Document layout, outline tree, tour state | 3/3 | Complete    | 2026-11-04 |
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
-| 7. Webview tour blocks | 0/TBD | Not started | - |
+| 7. Webview tour blocks | 1/3 | In Progress|  |
 | 8. Flow bar | 0/TBD | Not started | - |
