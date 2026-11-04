@@ -8,7 +8,7 @@
     "vscode": "^1.110.0"
   },
   "main": "./dist/extension.js",
-  "activationEvents": [],
+  "activationEvents": ["onWebviewPanel:difftour.tour"],
   "categories": [
     "Other"
   ],
@@ -54,6 +54,11 @@
         {
           "id": "difftour.changes",
           "name": "Changes"
+        },
+        {
+          "id": "difftour.outline",
+          "name": "Tour",
+          "when": "difftour.tourActive"
         },
         {
           "id": "difftour.smallChange",

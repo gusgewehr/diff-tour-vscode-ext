@@ -10,7 +10,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 2: Extension skeleton + change picker** - Settings, TOUR view container, "Tour a change" QuickPick, VSIX build (completed 2026-11-04)
 - [x] **Phase 3: Small-change rule** - Changes under `minFiles` open in the standard `vscode.diff` with no LLM call (completed 2026-11-04)
 - [x] **Phase 4: CLI runner, Writing progress, tour cache** - Run the fork with a cancellable Writing view and cache the tour (completed 2026-11-04)
-- [ ] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
+- [x] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
 - [ ] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
 - [ ] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment
 - [ ] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
@@ -145,7 +145,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 05-03-PLAN.md — Host wiring: resolveTour, TourPanel + serializer, TourController, outline tree, status bar, openCode stub, smoke, VSIX
+- [x] 05-03-PLAN.md — Host wiring: resolveTour, TourPanel + serializer, TourController, outline tree, status bar, openCode stub, smoke, VSIX
 
 **UI hint**: yes
 
