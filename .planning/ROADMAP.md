@@ -13,7 +13,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
 - [x] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
  (completed 2026-11-04)
-- [ ] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment
+- [x] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment (completed 2026-11-04)
 - [ ] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
 
 ## Phase Details
@@ -189,11 +189,11 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 07-02-PLAN.md — Webview code/diff side-by-side renderer, target and files blocks, fallback
+- [x] 07-02-PLAN.md — Webview code/diff side-by-side renderer, target and files blocks, fallback
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 07-03-PLAN.md — quote/list/pre/table/rows/schema, timeline/flow, snippet Copy, question/guess cards; package + reinstall VSIX
+- [x] 07-03-PLAN.md — quote/list/pre/table/rows/schema, timeline/flow, snippet Copy, question/guess cards; package + reinstall VSIX
 **UI hint**: yes
 
 ### Phase 8: Flow bar
@@ -222,5 +222,5 @@ Plans:
 | 4. CLI runner, Writing progress, tour cache | 3/3 | Complete    | 2026-11-04 |
 | 5. Document layout, outline tree, tour state | 3/3 | Complete    | 2026-11-04 |
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
-| 7. Webview tour blocks | 1/3 | In Progress|  |
+| 7. Webview tour blocks | 3/3 | Complete   | 2026-11-04 |
 | 8. Flow bar | 0/TBD | Not started | - |

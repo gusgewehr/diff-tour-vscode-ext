@@ -36,6 +36,8 @@ button.tick:hover { background: var(--vscode-foreground); }
 body.vscode-light .tick.unvisited { opacity: .45; }
 body.vscode-high-contrast .note-card, body.vscode-high-contrast-light .note-card,
 body.vscode-high-contrast .block.code, body.vscode-high-contrast-light .block.code,
+body.vscode-high-contrast .question-card, body.vscode-high-contrast-light .question-card,
+body.vscode-high-contrast .guess-card, body.vscode-high-contrast-light .guess-card,
 body.vscode-high-contrast .block-fallback, body.vscode-high-contrast-light .block-fallback,
 body.vscode-high-contrast nav.bar, body.vscode-high-contrast-light nav.bar,
 body.vscode-high-contrast .tick, body.vscode-high-contrast-light .tick { border: 1px solid var(--vscode-contrastBorder); }
@@ -78,3 +80,55 @@ button.file-row:hover { background: var(--vscode-list-hoverBackground); }
 .file-row .fnote { grid-column: 1 / -1; color: var(--vscode-descriptionForeground); font-size: 12px; }
 .fstat .add { color: var(--vscode-charts-green); }
 .fstat .del { color: var(--vscode-charts-red); }
+
+/* text blocks */
+.block.quote { border-left: 3px solid var(--vscode-textBlockQuote-border); background: var(--vscode-textBlockQuote-background); padding: 8px 14px; font-family: var(--vscode-editor-font-family); font-size: 13px; margin: 0; }
+.quote-subject { font-weight: 600; }
+.quote-body { white-space: pre-wrap; }
+.block.list { font-family: Georgia, serif; font-size: 17px; line-height: 1.6; padding-left: 132px; }
+.block.pre { background: var(--vscode-textCodeBlock-background); padding: 10px 12px; border-radius: 6px; overflow-x: auto; font-family: var(--vscode-editor-font-family); }
+.tour-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.tour-table th, .tour-table td { border-bottom: 1px solid var(--vscode-panel-border); padding: 6px 10px; text-align: left; vertical-align: top; }
+.tour-table th { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--vscode-descriptionForeground); }
+.rows-head { display: flex; gap: 8px; align-items: center; padding: 6px 0; }
+.block.rows table { font-family: var(--vscode-editor-font-family); font-size: 12px; }
+td.added, th.added { background: var(--vscode-diffEditor-insertedLineBackground); }
+.schema-head { display: flex; gap: 8px; align-items: center; color: var(--vscode-descriptionForeground); }
+.schema-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+.schema-table { border: 1px solid var(--vscode-panel-border); border-radius: 7px; padding: 8px 10px; }
+.schema-name { font-weight: 600; font-family: var(--vscode-editor-font-family); }
+.schema-col.focus { color: var(--vscode-charts-green); font-family: var(--vscode-editor-font-family); }
+
+/* timeline / flow / snippet */
+.block.timeline { display: grid; row-gap: 4px; column-gap: 8px; font-size: 13px; }
+.lane-head { text-align: center; font-size: 11px; font-weight: 600; padding: 6px 10px; border: 1px solid var(--vscode-panel-border); border-radius: 5px; }
+.tl-msg { border-bottom: 1px solid currentColor; text-align: center; padding-bottom: 2px; }
+.tl-msg .tl-arrow { line-height: 1; }
+.tl-msg.to-right .tl-arrow { text-align: right; }
+.tl-msg.to-left .tl-arrow { text-align: left; }
+.mark-ok { color: var(--vscode-charts-green); }
+.mark-bad { color: var(--vscode-charts-red); }
+.mark-note { color: var(--vscode-editorWarning-foreground); }
+.block.flow { display: grid; gap: 14px; }
+.flow-node { border: 1px solid var(--vscode-panel-border); border-radius: 6px; padding: 8px 10px 8px 12px; position: relative; box-shadow: inset 3px 0 0 var(--bar, transparent); }
+.kind-new { --bar: var(--vscode-charts-green); }
+.kind-changed { --bar: var(--vscode-editorWarning-foreground); }
+.kind-same { --bar: var(--vscode-descriptionForeground); }
+.kind-external { border-style: dashed; --bar: transparent; }
+.flow-note, .flow-next { color: var(--vscode-descriptionForeground); font-size: 12px; }
+.flow-next { font-style: italic; }
+.flow-arrow { text-align: center; padding: 2px 0; }
+button.chip { font-size: 11px; padding: 2px 8px; margin: 4px 4px 0 0; background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+.block.snippet { border: 1px dashed var(--vscode-editorWarning-foreground); border-radius: 8px; padding: 10px 12px; }
+.snippet-head { display: flex; gap: 8px; align-items: center; }
+.snippet-head button { margin-left: auto; }
+.badge.example { color: var(--vscode-editorWarning-foreground); }
+.snippet-text { font-family: var(--vscode-editor-font-family); white-space: pre; overflow-x: auto; margin: 8px 0 0; }
+
+/* question / guess */
+.question-card, .guess-card { margin: 6px 0 18px; padding: 14px; border-radius: 9px; border: 1px solid var(--vscode-charts-purple); background: color-mix(in srgb, var(--vscode-charts-purple) 9%, transparent); }
+.q-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--vscode-charts-purple); }
+.q-title { font-family: Georgia, serif; font-size: 20px; margin: 4px 0 8px; }
+.question-card textarea { width: 100%; box-sizing: border-box; min-height: 64px; margin-bottom: 8px; background: var(--vscode-input-background); color: var(--vscode-input-foreground); border: 1px solid var(--vscode-input-border, var(--vscode-panel-border)); font-family: inherit; }
+.guess-text { white-space: pre-wrap; }
+.guess-text.none { color: var(--vscode-descriptionForeground); }

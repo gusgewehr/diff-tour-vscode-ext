@@ -2,6 +2,9 @@ import type { Intent, RenderMsg } from '../../tour/messages';
 import { el } from './dom';
 import { renderBlock } from './blocks/index';
 import './blocks/p';
+import './blocks/text';
+import './blocks/diagrams';
+import './blocks/snippet';
 import './blocks/code';
 import './blocks/repo';
 import { keyAction } from './keys';
@@ -32,6 +35,23 @@ function buildContent(m: RenderMsg): void {
   const head = el('header');
   head.append(el('h1', 'tour-title', m.title), el('div', 'refs', `${m.base} → ${m.head}`));
   doc.append(head, el('div', 'chapter', `${m.chapterTitle} · Step ${m.index + 1} / ${m.total}`), el('h2', 'step-title', m.step.title));
+  if (m.step.question) {
+    const q = el('section', 'question-card');
+    const ta = document.createElement('textarea');
+    ta.value = m.guess;
+    ta.setAttribute('aria-label', 'Your guess');
+    ta.placeholder = 'Write what you expect before reading the answer';
+    ta.addEventListener('input', () => post({ type: 'guess', text: ta.value }));
+    const show = el('button', '', 'Show the answer') as HTMLButtonElement;
+    show.disabled = m.nextTitle === undefined;
+    show.addEventListener('click', () => post({ type: 'next' }));
+    q.append(el('div', 'q-label', 'STOP AND PREDICT'), el('div', 'q-title', 'Stop and predict before you go on'), ta, show);
+    doc.append(q);
+  } else if (m.previousGuess !== undefined) {
+    const g = el('section', 'guess-card');
+    g.append(el('div', 'q-label', 'YOUR GUESS'), m.previousGuess ? el('div', 'guess-text', m.previousGuess) : el('div', 'guess-text none', 'You did not write a guess.'));
+    doc.append(g);
+  }
   m.step.blocks.forEach((b, i) => doc.append(renderBlock(b, { index: i, step: m.step, post, data: m.blockData?.[i] ?? null, base: m.base, head: m.head })));
 
   noteVisible = m.note !== '';
