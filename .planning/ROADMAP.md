@@ -132,7 +132,21 @@ Plans:
   4. The Webview follows dark, light and high-contrast themes, loads fonts locally, and renders LLM text without script or HTML injection
   5. Single-letter shortcuts do nothing while typing in a note or question box
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Tour model/loader, persisted state, TourSession, message contract (vscode-free, tested)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02-PLAN.md — Document Webview renderer: layout, sticky nav + ticks, note card, keys with typing guard, block registry (p + fallback), theme CSS
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 05-03-PLAN.md — Host wiring: resolveTour, TourPanel + serializer, TourController, outline tree, status bar, openCode stub, smoke, VSIX
+
 **UI hint**: yes
 
 ### Phase 6: difftour: read-only provider + side-by-side diff
