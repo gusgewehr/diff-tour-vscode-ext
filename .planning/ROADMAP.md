@@ -137,7 +137,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — Tour model/loader, persisted state, TourSession, message contract (vscode-free, tested)
+- [x] 05-01-PLAN.md — Tour model/loader, persisted state, TourSession, message contract (vscode-free, tested)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
