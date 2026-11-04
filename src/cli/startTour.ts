@@ -6,7 +6,7 @@ import { detectTools, envWithDir } from './detect';
 import { run, cliArgs, type RunHandle } from './runner';
 import { initialState, reduce, currentStage, type ProgressState } from './progress';
 import { findExisting, saveTour } from './cache';
-import { describeError } from './errors';
+import { describeError, type ErrorAction } from './errors';
 import { WritingPanel } from '../webview/writing';
 import { missingNotice } from '../pick';
 
@@ -30,12 +30,12 @@ export function revealWriting(): void {
 export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   if (current) {
     current.panel.show();
-    void vscode.window.showInformationMessage('A tour is already being written.');
+    void vscode.window.showInformationMessage(vscode.l10n.t('A tour is already being written.'));
     return;
   }
   const settings = d.settings();
   const cwd = d.cwd();
-  if (!cwd) throw new Error('Open a folder that contains a git repository.');
+  if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
   const roots = [...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath), d.extensionPath];
   const { cli, claude, missing } = await detectTools(settings, roots);
   if (missing.length || !cli) {
@@ -46,8 +46,8 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   const existing = await findExisting(d.savedDir, target);
   d.hideSmall();
   const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-  status.text = '$(sync~spin) Writing tour…';
-  status.tooltip = `Writing tour: ${target.label}. Click to show progress.`;
+  status.text = vscode.l10n.t('$(sync~spin) Writing tour…');
+  status.tooltip = vscode.l10n.t('Writing tour: {0}. Click to show progress.', target.label);
   status.command = 'difftour.internal.revealWriting';
   status.show();
 
@@ -67,7 +67,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   let result;
   try {
     result = await vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Notification, title: `Writing tour: ${target.label}`, cancellable: true },
+      { location: vscode.ProgressLocation.Notification, title: vscode.l10n.t('Writing tour: {0}', target.label), cancellable: true },
       (progress, token) => {
         handle = run({ command: cli, args, cwd, env: claude ? envWithDir(path.dirname(claude)) : undefined }, (e) => {
           state = reduce(state, e);
@@ -95,7 +95,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
       tourPath = await saveTour(d.savedDir, result.done, target.label, settings);
     } catch (e) {
       panel.dispose();
-      void vscode.window.showErrorMessage(`Could not save the tour: ${(e as Error).message}`);
+      void vscode.window.showErrorMessage(vscode.l10n.t('Could not save the tour: {0}', (e as Error).message));
       return;
     }
     const wasActive = panel.active;
@@ -103,7 +103,10 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
     d.refresh();
     const open = () => vscode.commands.executeCommand('difftour.internal.openSavedTour', tourPath);
     if (wasActive) await open();
-    else void vscode.window.showInformationMessage('Your tour is ready', 'Open tour').then((c) => { if (c === 'Open tour') return open(); });
+    else {
+      const openTour = vscode.l10n.t('Open tour');
+      void vscode.window.showInformationMessage(vscode.l10n.t('Your tour is ready'), openTour).then((c) => { if (c === openTour) return open(); });
+    }
     return;
   }
 
@@ -113,12 +116,21 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   d.output.appendLine(`--- tour failed: ${result.error?.code ?? `exit ${result.exitCode}`}`);
   for (const p of result.error?.problems ?? []) d.output.appendLine(p);
   for (const l of result.stderrTail) d.output.appendLine(l);
-  const choice = await vscode.window.showErrorMessage(info.text, ...info.actions);
-  if (choice === 'Open Terminal') {
-    const t = vscode.window.createTerminal({ name: 'Claude Code' });
-    t.show();
-    t.sendText('claude');
-  } else if (choice === 'Try again') await startTour(target, d);
-  else if (choice === 'Show details') d.output.show();
-  else if (choice === 'Open Settings') await vscode.commands.executeCommand('workbench.action.openSettings', 'difftour');
+  const labels: Record<ErrorAction, string> = {
+    'Open Terminal': vscode.l10n.t('Open Terminal'), 'Try again': vscode.l10n.t('Try again'),
+    'Show details': vscode.l10n.t('Show details'), 'Open Settings': vscode.l10n.t('Open Settings'),
+  };
+  const picked = await vscode.window.showErrorMessage(info.text, ...info.actions.map((a) => labels[a]));
+  const choice = info.actions.find((a) => labels[a] === picked);
+  switch (choice) {
+    case 'Open Terminal': {
+      const t = vscode.window.createTerminal({ name: 'Claude Code' });
+      t.show();
+      t.sendText('claude');
+      break;
+    }
+    case 'Try again': await startTour(target, d); break;
+    case 'Show details': d.output.show(); break;
+    case 'Open Settings': await vscode.commands.executeCommand('workbench.action.openSettings', 'difftour'); break;
+  }
 }

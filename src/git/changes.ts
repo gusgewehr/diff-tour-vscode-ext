@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { t } from '../l10n';
 
 export type TargetKind = 'branch' | 'pr' | 'commit' | 'range';
 export interface Target { label: string; base: string; head: string; baseSha: string; headSha: string; files: number; kind: TargetKind }
@@ -28,7 +29,7 @@ export async function refExists(cwd: string, ref: string): Promise<boolean> {
 
 export async function detectBase(cwd: string, setting: string): Promise<string> {
   if (setting) {
-    if (!(await refExists(cwd, setting))) throw new Error(`Base branch "${setting}" not found`);
+    if (!(await refExists(cwd, setting))) throw new Error(t('Base branch "{0}" not found', setting));
     return setting;
   }
   try {
@@ -37,7 +38,7 @@ export async function detectBase(cwd: string, setting: string): Promise<string> 
     if (await refExists(cwd, `origin/${name}`)) return `origin/${name}`;
   } catch { /* no origin/HEAD */ }
   for (const b of ['main', 'master']) if (await refExists(cwd, b)) return b;
-  throw new Error('No base branch found. Set difftour.baseBranch.');
+  throw new Error(t('No base branch found. Set difftour.baseBranch.'));
 }
 
 export async function currentBranch(cwd: string): Promise<string | undefined> {
@@ -61,8 +62,8 @@ export async function compareCandidates(cwd: string, base: string): Promise<{ ca
   if (!onBase) {
     const n = await uncommittedCount(cwd);
     candidates.push({
-      kind: 'branch', label: branch ?? 'HEAD (detached)', base, head: branch ?? 'HEAD',
-      detail: n > 0 ? `+${n} uncommitted (not toured)` : 'current branch',
+      kind: 'branch', label: branch ?? t('HEAD (detached)'), base, head: branch ?? 'HEAD',
+      detail: n > 0 ? t('+{0} uncommitted (not toured)', n) : t('current branch'),
     });
   }
   const ex = [base, stripped, ...(branch ? [branch] : [])];
@@ -89,11 +90,11 @@ export function listPrs(cwd: string): Promise<Candidate[]> {
 }
 
 export async function fetchPr(cwd: string, c: Candidate): Promise<Candidate> {
-  if (!Number.isInteger(c.pr) || (c.pr as number) <= 0) throw new Error('Invalid PR number');
+  if (!Number.isInteger(c.pr) || (c.pr as number) <= 0) throw new Error(t('Invalid PR number'));
   try {
     await git(cwd, ['fetch', 'origin', `pull/${c.pr}/head`]);
   } catch (e) {
-    throw new Error(`Could not fetch PR #${c.pr}: ${(e as Error).message}`);
+    throw new Error(t('Could not fetch PR #{0}: {1}', c.pr as number, (e as Error).message));
   }
   const head = (await git(cwd, ['rev-parse', '--verify', 'FETCH_HEAD'])).trim();
   const base = (await refExists(cwd, `origin/${c.base}`)) ? `origin/${c.base}` : c.base;
@@ -118,15 +119,15 @@ export function parseNameStatus(out: string): ChangedFile[] {
 }
 
 export async function listChangedFiles(cwd: string, baseSha: string, headSha: string): Promise<ChangedFile[]> {
-  if (baseSha.startsWith('-') || headSha.startsWith('-')) throw new Error('invalid ref');
+  if (baseSha.startsWith('-') || headSha.startsWith('-')) throw new Error(t('invalid ref'));
   return parseNameStatus(await git(cwd, ['diff', '--name-status', '-z', '-M', baseSha, headSha]));
 }
 
 export async function resolveTarget(cwd: string, kind: TargetKind, label: string, base: string, head: string): Promise<Target> {
-  if (base.startsWith('-') || head.startsWith('-')) throw new Error(`${label}: invalid ref`);
+  if (base.startsWith('-') || head.startsWith('-')) throw new Error(t('{0}: invalid ref', label));
   const headSha = (await git(cwd, ['rev-parse', '--verify', `${head}^{commit}`])).trim();
   let baseSha: string;
-  try { baseSha = (await git(cwd, ['merge-base', base, head])).trim(); } catch { throw new Error(`${label}: no common history with ${base}`); }
+  try { baseSha = (await git(cwd, ['merge-base', base, head])).trim(); } catch { throw new Error(t('{0}: no common history with {1}', label, base)); }
   return { label, base, head, baseSha, headSha, files: await countFiles(cwd, baseSha, headSha), kind };
 }
 
@@ -148,8 +149,8 @@ export function parseRange(input: string): { base: string; head: string } | unde
 }
 
 export function describeCount(files: number, minFiles: number): string {
-  if (files === 0) return 'no changes';
-  return `${files} ${files === 1 ? 'file' : 'files'} · ${files < minFiles ? 'opens git diff' : 'tour'}`;
+  if (files === 0) return t('no changes');
+  return `${files === 1 ? t('{0} file', files) : t('{0} files', files)} · ${files < minFiles ? t('opens git diff') : t('tour')}`;
 }
 
 export async function listSavedTours(dir: string): Promise<SavedTour[]> {

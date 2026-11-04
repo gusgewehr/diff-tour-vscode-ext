@@ -55,7 +55,7 @@ export class ChangeModel {
       if (!folder) throw new Error('no folder');
       this.cwd = await repoRoot(folder);
     } catch {
-      this.cwd = undefined; this.groups = []; this.message = 'Open a folder that contains a git repository.';
+      this.cwd = undefined; this.groups = []; this.message = vscode.l10n.t('Open a folder that contains a git repository.');
       this.counting = false; this.emitter.fire(); return;
     }
     rooted();
@@ -70,14 +70,14 @@ export class ChangeModel {
     ]);
     if (gen !== this.gen) return;
     const compare: Entry[] = cmp.candidates.map((candidate) => ({ kind: 'change', candidate }));
-    if (cmp.onBase) compare.unshift({ kind: 'info', label: `You are on ${base}. Pick another branch, a commit or a range.` });
-    const groups: Group[] = [{ id: 'compare', label: `COMPARED WITH ${base}`, entries: compare }];
-    if (prs.length) groups.push({ id: 'prs', label: 'REVIEW REQUESTED', entries: prs.map((candidate) => ({ kind: 'change', candidate })) });
+    if (cmp.onBase) compare.unshift({ kind: 'info', label: vscode.l10n.t('You are on {0}. Pick another branch, a commit or a range.', base) });
+    const groups: Group[] = [{ id: 'compare', label: vscode.l10n.t('COMPARED WITH {0}', base), entries: compare }];
+    if (prs.length) groups.push({ id: 'prs', label: vscode.l10n.t('REVIEW REQUESTED'), entries: prs.map((candidate) => ({ kind: 'change', candidate })) });
     groups.push({
-      id: 'saved', label: 'SAVED',
-      entries: saved.length ? saved.map((t: SavedTour) => ({ kind: 'saved', path: t.path, label: t.label, files: t.files } as Entry)) : [{ kind: 'info', label: 'No saved tours yet' }],
+      id: 'saved', label: vscode.l10n.t('SAVED'),
+      entries: saved.length ? saved.map((t: SavedTour) => ({ kind: 'saved', path: t.path, label: t.label, files: t.files } as Entry)) : [{ kind: 'info', label: vscode.l10n.t('No saved tours yet') }],
     });
-    groups.push({ id: 'other', label: 'OTHER', entries: [{ kind: 'commit' }, { kind: 'range' }, { kind: 'file' }] });
+    groups.push({ id: 'other', label: vscode.l10n.t('OTHER'), entries: [{ kind: 'commit' }, { kind: 'range' }, { kind: 'file' }] });
     this.groups = groups;
     this.counting = true;
     this.emitter.fire();
@@ -96,13 +96,13 @@ export function present(e: Entry, minFiles: number): { label: string; descriptio
       const c = e.candidate;
       return {
         label: c.label, detail: c.detail, icon: c.kind === 'pr' ? 'git-pull-request' : 'git-branch',
-        description: e.target ? describeCount(e.target.files, minFiles) : e.error ? e.error : c.kind === 'pr' ? 'counted when picked' : 'counting…',
+        description: e.target ? describeCount(e.target.files, minFiles) : e.error ? e.error : c.kind === 'pr' ? vscode.l10n.t('counted when picked') : vscode.l10n.t('counting…'),
       };
     }
-    case 'saved': return { label: e.label, icon: 'bookmark', description: e.files !== undefined ? `${e.files} files · saved` : 'saved' };
-    case 'commit': return { label: 'A single commit…', icon: 'git-commit' };
-    case 'range': return { label: 'A range…', icon: 'diff' };
-    case 'file': return { label: 'A saved tour file…', icon: 'file' };
+    case 'saved': return { label: e.label, icon: 'bookmark', description: e.files !== undefined ? vscode.l10n.t('{0} files · saved', e.files) : vscode.l10n.t('saved') };
+    case 'commit': return { label: vscode.l10n.t('A single commit…'), icon: 'git-commit' };
+    case 'range': return { label: vscode.l10n.t('A range…'), icon: 'diff' };
+    case 'file': return { label: vscode.l10n.t('A saved tour file…'), icon: 'file' };
     case 'info': return { label: e.label, icon: 'info' };
   }
 }
@@ -111,8 +111,8 @@ interface PickItem extends vscode.QuickPickItem { entry?: Entry }
 
 export async function showPicker(model: ChangeModel, deps: Deps): Promise<void> {
   const qp = vscode.window.createQuickPick<PickItem>();
-  qp.title = 'diff-tour: Tour a change';
-  qp.placeholder = 'A new tour takes 2 to 5 minutes. A saved tour opens instantly and costs nothing.';
+  qp.title = vscode.l10n.t('diff-tour: Tour a change');
+  qp.placeholder = vscode.l10n.t('A new tour takes 2 to 5 minutes. A saved tour opens instantly and costs nothing.');
   qp.matchOnDescription = true;
   const build = () => {
     const active = qp.activeItems[0]?.entry;
@@ -153,34 +153,34 @@ export async function choose(entry: Entry, deps: Deps, model?: ChangeModel): Pro
       return;
     }
     case 'change': {
-      if (!cwd) throw new Error('Open a folder that contains a git repository.');
+      if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
       let target = entry.target;
       if (!target) {
         let c = entry.candidate;
-        if (c.kind === 'pr') c = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: `Fetching PR #${c.pr}…` }, () => fetchPr(cwd, c));
+        if (c.kind === 'pr') c = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: vscode.l10n.t('Fetching PR #{0}…', c.pr as number) }, () => fetchPr(cwd, c));
         target = await resolveTarget(cwd, c.kind === 'pr' ? 'pr' : 'branch', entry.candidate.label, c.base, c.head);
       }
       return routeTarget(target, deps);
     }
     case 'commit': {
-      if (!cwd) throw new Error('Open a folder that contains a git repository.');
+      if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
       const commits = await recentCommits(cwd, 50);
-      const pick = await vscode.window.showQuickPick(commits.map((c) => ({ label: c.subject, description: `${c.sha.slice(0, 7)} · ${c.when}`, sha: c.sha })), { title: 'Pick a commit' });
+      const pick = await vscode.window.showQuickPick(commits.map((c) => ({ label: c.subject, description: `${c.sha.slice(0, 7)} · ${c.when}`, sha: c.sha })), { title: vscode.l10n.t('Pick a commit') });
       if (!pick) return;
       let t: Target;
       try { t = await resolveTarget(cwd, 'commit', `${pick.sha.slice(0, 7)} ${pick.label}`, `${pick.sha}^`, pick.sha); } catch {
-        throw new Error('This commit has no parent to compare with.');
+        throw new Error(vscode.l10n.t('This commit has no parent to compare with.'));
       }
       return routeTarget(t, deps);
     }
     case 'range': {
-      if (!cwd) throw new Error('Open a folder that contains a git repository.');
+      if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
       const input = await vscode.window.showInputBox({
-        prompt: 'Range as <base>..<head>',
+        prompt: vscode.l10n.t('Range as <base>..<head>'),
         validateInput: async (v) => {
           const r = parseRange(v);
-          if (!r) return 'Use <base>..<head>';
-          for (const ref of [r.base, r.head]) if (!(await refExists(cwd, ref))) return `"${ref}" is not a commit in this repository`;
+          if (!r) return vscode.l10n.t('Use <base>..<head>');
+          for (const ref of [r.base, r.head]) if (!(await refExists(cwd, ref))) return vscode.l10n.t('"{0}" is not a commit in this repository', ref);
           return undefined;
         },
       });
@@ -197,7 +197,7 @@ export function setCurrentModel(m: ChangeModel) { currentModel = m; }
 
 export async function routeTarget(target: Target, deps: Deps): Promise<void> {
   const s = deps.settings();
-  if (target.files === 0) { void vscode.window.showInformationMessage(`${target.label}: no changes between ${target.base} and ${target.head}.`); return; }
+  if (target.files === 0) { void vscode.window.showInformationMessage(vscode.l10n.t('{0}: no changes between {1} and {2}.', target.label, target.base, target.head)); return; }
   if (target.files < s.minFiles) { await vscode.commands.executeCommand('difftour.internal.openSmallChange', target); return; }
   const roots = [...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath), deps.extensionPath];
   const { missing } = await detectTools(s, roots);
@@ -206,13 +206,15 @@ export async function routeTarget(target: Target, deps: Deps): Promise<void> {
 }
 
 export async function missingNotice(what: string[], messages: string[], deps: Deps): Promise<void> {
-  const choice = await vscode.window.showErrorMessage(messages.join('\n'), 'Open Settings', 'How to install');
-  if (choice === 'Open Settings') { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:difftour.diff-tour'); return; }
-  if (choice !== 'How to install') return;
+  const openSettings = vscode.l10n.t('Open Settings');
+  const howTo = vscode.l10n.t('How to install');
+  const choice = await vscode.window.showErrorMessage(messages.join('\n'), openSettings, howTo);
+  if (choice === openSettings) { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:difftour.diff-tour'); return; }
+  if (choice !== howTo) return;
   const dirs = [deps.extensionPath, ...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath)];
   const fork = dirs.map((d) => path.join(d, 'cli', 'FORK.md')).find((p) => fs.existsSync(p));
   if (fork) { await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fork)); return; }
-  const lines = ['Install the VSIX for your platform from github.com/gusgewehr/diff-tour-vscode-ext/releases (it includes the CLI), or build the fork (cd cli && go build -o bin/tour ./cmd/tour) and set difftour.cliPath to it. The official diff-tour CLI has no --json mode and does not work.'];
-  if (what.includes('claude')) lines.push('Install Claude Code: npm install -g @anthropic-ai/claude-code, then run claude once.');
+  const lines = [vscode.l10n.t('Install the VSIX for your platform from github.com/gusgewehr/diff-tour-vscode-ext/releases (it includes the CLI), or build the fork (cd cli && go build -o bin/tour ./cmd/tour) and set difftour.cliPath to it. The official diff-tour CLI has no --json mode and does not work.')];
+  if (what.includes('claude')) lines.push(vscode.l10n.t('Install Claude Code: npm install -g @anthropic-ai/claude-code, then run claude once.'));
   void vscode.window.showInformationMessage(lines.join(' '), { modal: true });
 }

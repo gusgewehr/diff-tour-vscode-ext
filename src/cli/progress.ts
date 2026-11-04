@@ -1,4 +1,5 @@
 export type StageName = 'export' | 'write' | 'check' | 'show';
+import { t } from '../l10n';
 export const STAGES: StageName[] = ['export', 'write', 'check', 'show'];
 export type StageState = 'todo' | 'active' | 'done';
 export interface ReadRow { time: string; tool: string; path: string; tag: string }
@@ -57,5 +58,5 @@ export function currentStage(s: ProgressState): string {
   const active = STAGES.find((n) => s.stages[n] === 'active');
   const done = [...STAGES].reverse().find((n) => s.stages[n] === 'done');
   const n = active ?? done ?? 'export';
-  return n[0].toUpperCase() + n.slice(1);
+  return { export: t('Export'), write: t('Write'), check: t('Check'), show: t('Show') }[n];
 }

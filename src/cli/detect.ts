@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import type { Settings } from '../settings';
+import { t } from '../l10n';
 
 const win32 = process.platform === 'win32';
 
@@ -32,8 +33,8 @@ export async function resolveCli(setting: string, roots: string[]): Promise<{ pa
   for (const c of candidates) {
     try { return { path: c, version: await version(c) }; } catch (e) { reason = (e as Error).message; }
   }
-  if (setting) return { problem: `difftour.cliPath is "${setting}", but it could not run (${reason}).` };
-  return { problem: 'The diff-tour CLI (tour) was not found: not in cli/bin/ and not on PATH.' };
+  if (setting) return { problem: t('difftour.cliPath is "{0}", but it could not run ({1}).', setting, reason) };
+  return { problem: t('The diff-tour CLI (tour) was not found: not in cli/bin/ and not on PATH.') };
 }
 
 // Where the Claude Code installers put claude. VS Code started from a desktop launcher often lacks these on PATH.
@@ -75,12 +76,12 @@ export async function detectTools(settings: Pick<Settings, 'cliPath' | 'llm'> & 
   Promise<{ cli?: string; claude?: string; missing: { what: 'cli' | 'claude'; message: string }[] }> {
   const missing: { what: 'cli' | 'claude'; message: string }[] = [];
   const cli = await resolveCli(settings.cliPath, roots);
-  if (!cli.path) missing.push({ what: 'cli', message: cli.problem ?? 'The diff-tour CLI was not found.' });
+  if (!cli.path) missing.push({ what: 'cli', message: cli.problem ?? t('The diff-tour CLI was not found.') });
   const claude = settings.llm === 'claude' ? await findClaude(settings.claudePath) : undefined;
   if (settings.llm === 'claude' && !claude) {
     missing.push({ what: 'claude', message: settings.claudePath
-      ? `difftour.claudePath is "${settings.claudePath}", but that file does not exist.`
-      : 'Claude Code (claude) was not found on PATH, in ~/.local/bin or ~/.claude/local, or in your shell. Install it and sign in (npm install -g @anthropic-ai/claude-code, then run claude once), or set difftour.claudePath to its full path (run `which claude` in a terminal).' });
+      ? t('difftour.claudePath is "{0}", but that file does not exist.', settings.claudePath)
+      : t('Claude Code (claude) was not found on PATH, in ~/.local/bin or ~/.claude/local, or in your shell. Install it and sign in (npm install -g @anthropic-ai/claude-code, then run claude once), or set difftour.claudePath to its full path (run `which claude` in a terminal).') });
   }
   return { cli: cli.path, claude, missing };
 }
