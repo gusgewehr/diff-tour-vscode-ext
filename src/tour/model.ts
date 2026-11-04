@@ -8,7 +8,7 @@ export const KINDS = ['p', 'quote', 'list', 'pre', 'table', 'code', 'diff', 'sni
 export interface Location { file: string; line: number; at?: At }
 export interface Mark { line: number; text: string }
 export interface CodeRef { file: string; at?: At; lines: [number, number]; show?: [number, number]; note?: string; marks?: Mark[] }
-export interface FlowNode { label: string; kind?: string; note?: string; next?: number[]; start?: boolean; file?: string; lines?: [number, number] }
+export interface FlowNode { label: string; kind?: string; note?: string; next?: string; start?: boolean; file?: string; lines?: [number, number] }
 export interface Flow { nodes: FlowNode[] }
 export interface TimelineEvent { lane: string; to?: string; text: string; mark?: string }
 export interface Timeline { lanes: string[]; events: TimelineEvent[] }
@@ -16,8 +16,8 @@ export interface FileRole { file: string; role: string; note?: string }
 export interface FileMap { roles?: FileRole[] }
 export interface DiffRef { file: string; hunks?: number[] }
 export interface Snippet { label: string; lang?: string; text: string }
-export interface SchemaRef { migrations: string[]; tables?: string[]; focus?: string }
-export interface Rows { tag?: string; label: string; head: string; data: string[][]; added?: boolean }
+export interface SchemaRef { migrations: string; tables?: string[]; focus?: string[] }
+export interface Rows { tag?: string; label: string; head: string[]; data: string[][]; added?: string[] }
 export interface Table { head: string[]; rows: string[][] }
 
 export type Block =
