@@ -39,3 +39,14 @@ One JSON object per stdout line, always `"v":1` and `"type"`; human text only on
 - `done` {key, path, base, head, baseSha, headSha, files, cached}
 - `error` {code: usage|git|not_signed_in|cancelled|invalid_tour|llm, message, problems? (invalid_tour)}; exit code 1
 - `count` (with `--count`, no LLM) {files, base, head, baseSha, headSha}
+
+## Windows verification (plan 01-03)
+
+- stdin-close cancel mid-generation: error `cancelled`, exit 1, 0 tour-spawned claude.exe, export dir removed.
+- Hard kill of tour.exe: 0 claude.exe (Job Object); export dir stays, and the next run of the same key removes it.
+- Real runs: 3 tours of 11, 14, 16 files, 0 repairs, $1.8-2.2 each, 6.5-8 min each. Cached re-run returns `done` `cached:true` in 0.3 s.
+- Tip: count claude by `Win32_Process -Filter "Name='claude.exe'"`; a plain command-line match also hits the shell wrapping the query.
+
+## Changes (plan 01-03)
+
+- `FlowNode` gets optional `file` and `lines` ([2]int); `format.md` flow row documents them; `PromptVersion` v6 -> v7 (CLI-07 fallback).

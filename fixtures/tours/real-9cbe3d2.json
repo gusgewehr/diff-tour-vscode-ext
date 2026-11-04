@@ -1,0 +1,847 @@
+{
+  "version": 1,
+  "title": "Asking questions inside a tour: where the answer goes, and where it is kept",
+  "base": "9cbe3d2^",
+  "head": "9cbe3d2",
+  "chapters": [
+    {
+      "title": "The change",
+      "steps": [
+        {
+          "title": "One commit that adds a question key",
+          "blocks": [
+            {
+              "target": true
+            },
+            {
+              "quote": "Let readers ask about a step, from suggested questions or their own words\n? opens a panel with the questions the tour expects at that step and a line for free text. The LLM answers from the same files the tour was written from, and the answer becomes the next step, saved with the tour."
+            },
+            {
+              "p": "This is one commit, and it adds a new feature. It does not fix a bug. It touches the viewer, the generator, the tour format and the prompts.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "What the change is for",
+      "steps": [
+        {
+          "title": "Before: a tour you could only watch",
+          "asks": [
+            "Can the reader ask questions while the tour is still being generated?"
+          ],
+          "blocks": [
+            {
+              "p": "Before this change, the viewer knew a few keys: next, back, scroll, `o` to open the code, and `q` to quit. A reader who got lost at a step had no one to ask.",
+              "basis": "fact"
+            },
+            {
+              "p": "After it, `?` opens a panel. The reader picks a question that the tour suggested for this step, or types their own. An LLM reads the same files the tour was written from and answers. The answer appears as the next step.",
+              "basis": "fact"
+            },
+            {
+              "p": "The commit message makes two promises: the answer comes from the same files, and it is \"saved with the tour\".",
+              "basis": "fact"
+            },
+            {
+              "p": "My first guess at the intent: answers are grounded in real code, and they survive closing the tour, so the next visit shows them. We will check both halves. Do not take the second half on trust yet.",
+              "basis": "inferred"
+            },
+            {
+              "p": "In one sentence: the change turns a one-way tour into one the reader can question, and the answer becomes part of the tour.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The map",
+      "steps": [
+        {
+          "title": "Where the thinking is",
+          "asks": [
+            "Why is `asks` in the prompt that writes tours, not only in the ask prompt?"
+          ],
+          "blocks": [
+            {
+              "files": {
+                "roles": [
+                  {
+                    "file": "internal/ui/ask.go",
+                    "role": "core",
+                    "note": "the panel, the wait, inserting the answer"
+                  },
+                  {
+                    "file": "internal/generate/ask.go",
+                    "role": "core",
+                    "note": "getting an answer from the LLM"
+                  },
+                  {
+                    "file": "internal/ui/app.go",
+                    "role": "core",
+                    "note": "builds an Asker that saves"
+                  },
+                  {
+                    "file": "cmd/tour/main.go",
+                    "role": "core",
+                    "note": "builds an Asker that does not save"
+                  },
+                  {
+                    "file": "internal/ui/viewer.go",
+                    "role": "core",
+                    "note": "routes keys to the panel"
+                  },
+                  {
+                    "file": "internal/tour/tour.go",
+                    "role": "core",
+                    "note": "Asks, Asked, InsertAfter"
+                  },
+                  {
+                    "file": "internal/render/frame.go",
+                    "role": "mechanical",
+                    "note": "key hint and question label"
+                  },
+                  {
+                    "file": "internal/render/blocks.go",
+                    "role": "mechanical",
+                    "note": "CanAsk flag"
+                  },
+                  {
+                    "file": "internal/i18n/i18n.go",
+                    "role": "mechanical",
+                    "note": "strings in two languages"
+                  },
+                  {
+                    "file": "internal/generate/prompts/format.md",
+                    "role": "config",
+                    "note": "tours now suggest questions"
+                  },
+                  {
+                    "file": "internal/generate/prompts/ask.md",
+                    "role": "config",
+                    "note": "how to answer"
+                  },
+                  {
+                    "file": "internal/generate/prompts/ask-output.md",
+                    "role": "config",
+                    "note": "answer = 1 chapter, 1-2 steps"
+                  },
+                  {
+                    "file": "internal/ui/ask_test.go",
+                    "role": "test"
+                  },
+                  {
+                    "file": "internal/tour/tour_test.go",
+                    "role": "test"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The i18n strings, the key hint in frame.go and the CanAsk flag are mechanical. I checked that they all have the same shape: the same keys in English and Japanese, and a span that is drawn only when CanAsk is true (frame.go:227-229).",
+              "basis": "fact"
+            },
+            {
+              "p": "format.md gains an `asks` field on each step. That is the only change to the prompt that writes whole tours.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "The flow of one question",
+          "asks": [
+            "Why does the answer run in a goroutine instead of inside Update?"
+          ],
+          "blocks": [
+            {
+              "flow": {
+                "nodes": [
+                  {
+                    "label": "Reader presses ? on a step",
+                    "kind": "changed",
+                    "note": "viewer.go"
+                  },
+                  {
+                    "label": "Panel: suggested question or free text",
+                    "kind": "new",
+                    "note": "ui/ask.go updateAsk",
+                    "next": "Enter"
+                  },
+                  {
+                    "label": "startAnswer starts a goroutine",
+                    "kind": "new",
+                    "note": "ui/ask.go",
+                    "next": "Question{Tour, Index, Text}"
+                  },
+                  {
+                    "label": "Answer: export base/head, write tour.json",
+                    "kind": "new",
+                    "note": "generate/ask.go"
+                  },
+                  {
+                    "label": "LLM CLI, read-only tools",
+                    "kind": "external",
+                    "next": "reply text"
+                  },
+                  {
+                    "label": "settle: parse, validate, ask for fixes",
+                    "kind": "same",
+                    "note": "generate.go",
+                    "next": "1-2 steps"
+                  },
+                  {
+                    "label": "answerDoneMsg: InsertAfter, go to it",
+                    "kind": "new",
+                    "note": "ui/ask.go"
+                  },
+                  {
+                    "label": "Save the tour to the cache",
+                    "kind": "same",
+                    "note": "only when Save is set"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "I will spend most of the time on two questions. After which step does the answer get inserted? Where is it kept, and for how long? The prompt text and the panel drawing get a short look.",
+              "basis": "opinion"
+            },
+            {
+              "p": "In one sentence: a question goes out as a small tour request, comes back through the same checks a tour goes through, and lands in the tour that is being shown.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "How it works",
+      "steps": [
+        {
+          "title": "An answer is a tiny tour",
+          "asks": [
+            "Why write the whole tour to tour.json instead of putting it in the prompt?",
+            "What happens if the LLM answers with zero steps?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/ask.go",
+                "lines": [
+                  27,
+                  54
+                ],
+                "show": [
+                  25,
+                  57
+                ],
+                "marks": [
+                  {
+                    "line": 27,
+                    "text": "same export as Generate"
+                  },
+                  {
+                    "line": 31,
+                    "text": "export is deleted afterwards"
+                  },
+                  {
+                    "line": 39,
+                    "text": "the whole tour, as a file to read"
+                  },
+                  {
+                    "line": 49,
+                    "text": "same backend, same read-only flags"
+                  },
+                  {
+                    "line": 54,
+                    "text": "same parse + repair loop"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Answer does not build a new way to talk to the LLM. It calls the same PrepareWorkspace, backend.Run and settle that Generate uses (generate.go:152-184).",
+              "basis": "fact"
+            },
+            {
+              "p": "So an answer gets every guard a tour has. The LLM reads an exported copy with read-only tools. Unknown JSON fields are rejected. Base and head are pinned. Every code line it points to is checked to exist (generate.go:106-123).",
+              "basis": "fact"
+            },
+            {
+              "p": "The other design is a plain-text answer in a pop-up. That is simpler. But it could not show code with marks, could not be checked, and could not be kept as a step. Making the answer a small tour gets all three for very little new code.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Two doors into the viewer",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/ui/app.go",
+                "lines": [
+                  193,
+                  199
+                ],
+                "show": [
+                  190,
+                  204
+                ],
+                "marks": [
+                  {
+                    "line": 193,
+                    "text": "a work dir per tour"
+                  },
+                  {
+                    "line": 198,
+                    "text": "answers written back to the cache"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "cmd/tour/main.go",
+                "lines": [
+                  162,
+                  168
+                ],
+                "show": [
+                  162,
+                  172
+                ],
+                "marks": [
+                  {
+                    "line": 162,
+                    "text": "the reason, written down"
+                  },
+                  {
+                    "line": 168,
+                    "text": "no Save"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "When the viewer is opened from the picker, the Asker has Save, which writes the whole tour back to the cache. When it is opened with `tour \u003cfile\u003e.json`, Save is nil on purpose.",
+              "basis": "fact"
+            },
+            {
+              "p": "This keeps an old promise. The README says tour never changes your files (README.md:52). The file path does not write the file it was given.",
+              "basis": "fact"
+            },
+            {
+              "p": "So the commit message's \"saved with the tour\" is true from the picker only. The hypothesis from chapter 2 is already half wrong. We come back to this in chapter 5.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "The reader keeps reading while the LLM answers",
+          "question": true,
+          "blocks": [
+            {
+              "p": "Answering is an LLM run. For a full tour, the README says that takes minutes. Say the reader asks at step 5, then presses → twice to read on while waiting."
+            },
+            {
+              "code": {
+                "file": "internal/ui/ask.go",
+                "lines": [
+                  152,
+                  152
+                ],
+                "show": [
+                  148,
+                  153
+                ],
+                "marks": [
+                  {
+                    "line": 152,
+                    "text": "Index is the step where the question was asked"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "internal/ui/ask.go",
+                "lines": [
+                  93,
+                  95
+                ],
+                "show": [
+                  87,
+                  96
+                ],
+                "marks": [
+                  {
+                    "line": 93,
+                    "text": "inserted after v.index"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "When the answer arrives, after which step is it inserted: step 5, or step 7?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: neither. The reader cannot move, so it lands after step 5",
+          "asks": [
+            "If I press Esc, is the partial answer or its cost kept anywhere?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/ui/viewer.go",
+                "lines": [
+                  55,
+                  58
+                ],
+                "show": [
+                  51,
+                  59
+                ],
+                "marks": [
+                  {
+                    "line": 56,
+                    "text": "panel open: every key goes to updateAsk"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "internal/ui/ask.go",
+                "lines": [
+                  109,
+                  113
+                ],
+                "show": [
+                  108,
+                  114
+                ],
+                "marks": [
+                  {
+                    "line": 110,
+                    "text": "only Esc / Ctrl+C: cancel"
+                  },
+                  {
+                    "line": 113,
+                    "text": "→ and every other key is dropped"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "While the panel is open, every key goes to updateAsk. While an answer is pending, only Esc and Ctrl+C do anything, and both cancel. → is swallowed. So v.index cannot change, and InsertAfter(v.index) uses the step where the question was asked.",
+              "basis": "fact"
+            },
+            {
+              "p": "The test pins this happy path. The answer becomes step 2, and the viewer shows it (ask_test.go:90-93).",
+              "basis": "fact"
+            },
+            {
+              "p": "Note what holds this together. Question.Index and v.index are equal only because input is blocked. answerDoneMsg (ask.go:49-53) does not say which step it belongs to.",
+              "basis": "fact"
+            },
+            {
+              "p": "In one sentence: an answer is a small tour, checked like a tour, and inserted after the step where it was asked. That works because the reader is held on that step until it arrives.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Where a senior stops",
+      "steps": [
+        {
+          "title": "The next change: let me read while it answers",
+          "asks": [
+            "Why not just keep the reader blocked forever?"
+          ],
+          "blocks": [
+            {
+              "timeline": {
+                "lanes": [
+                  "Reader",
+                  "Viewer",
+                  "LLM"
+                ],
+                "events": [
+                  {
+                    "lane": "Reader",
+                    "to": "Viewer",
+                    "text": "? at step 5"
+                  },
+                  {
+                    "lane": "Viewer",
+                    "to": "LLM",
+                    "text": "Answer(Index = step 5)"
+                  },
+                  {
+                    "lane": "LLM",
+                    "text": "reads code for minutes",
+                    "mark": "note"
+                  },
+                  {
+                    "lane": "Reader",
+                    "to": "Viewer",
+                    "text": "→ → (allowed now): step 7"
+                  },
+                  {
+                    "lane": "LLM",
+                    "to": "Viewer",
+                    "text": "answerDoneMsg (no step in it)"
+                  },
+                  {
+                    "lane": "Viewer",
+                    "text": "InsertAfter(v.index): after step 7",
+                    "mark": "bad"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The reader waits for minutes and can do nothing. The most likely next request is \"let me keep reading while it answers\". The obvious edit is to let arrow keys pass at ask.go:113. It compiles, and answers then land after whichever step the reader is on.",
+              "basis": "inferred"
+            },
+            {
+              "p": "The current test would not catch it. It never presses a key while the answer is pending (ask_test.go:77-86).",
+              "basis": "fact"
+            },
+            {
+              "p": "When a rule holds only because of what the user cannot do, the next person to remove that limit breaks the rule without seeing it. Put the rule in the data instead: the message should carry its own step.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Checking the fix before suggesting it",
+          "blocks": [
+            {
+              "snippet": {
+                "label": "Not in this repository: a possible fix",
+                "lang": "go",
+                "text": "type answerDoneMsg struct {\n\tindex int // the step the question was asked at\n\tsteps []tour.Step\n\tstats generate.Stats\n\terr   error\n}\n\n// in updateAsk, case answerDoneMsg:\nv.ctx.Tour.InsertAfter(msg.index, msg.steps)\nv.steps = v.ctx.Tour.Steps()\nif v.index \u003e msg.index {\n\tv.index += len(msg.steps) // stay on the step being read\n}"
+              }
+            },
+            {
+              "p": "Trace it with numbers (0-based). Ask at index 4, move to index 6, and get 2 answer steps. They become 5 and 6, and the old index 6 becomes 8. Since 6 \u003e 4, v.index becomes 8: the same step as before. If the reader moved back to index 2 instead, 2 \u003e 4 is false and the index stays at 2. Both are right.",
+              "basis": "inferred"
+            },
+            {
+              "p": "One thing it does not fix. askState holds one channel and one cancel (ask.go:35-45). Two questions in flight would need one state each. Today that cannot happen, because the panel is blocked.",
+              "basis": "fact"
+            },
+            {
+              "p": "Weight: Suggestion. The code is correct today. It is a trap for the next change, not a bug. The principle is to keep an invariant in the data, not in the order the user is allowed to act.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "What the cache file used to mean",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/generate.go",
+                "lines": [
+                  221,
+                  229
+                ],
+                "show": [
+                  221,
+                  229
+                ],
+                "marks": [
+                  {
+                    "line": 224,
+                    "text": "prompt version is part of the key"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Before this change, a cached tour was pure output. The same change, language, prompts and LLM gave the same key and the same file. The README says: \"The cache is safe to delete. Tours are written again when needed.\" (README.md:263)",
+              "basis": "fact"
+            },
+            {
+              "p": "Now app.go:198 writes the tour back with the reader's answers. Those answers come from questions only this reader asked, and each one shows its cost in dollars (i18n key ask.added). They cannot be \"written again\".",
+              "basis": "fact"
+            },
+            {
+              "p": "So the cache now holds data that is not derived and cannot be rebuilt. The README line is no longer fully true, and this diff does not update it.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "The rule above PromptVersion",
+          "question": true,
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/generate.go",
+                "lines": [
+                  34,
+                  35
+                ],
+                "show": [
+                  34,
+                  35
+                ]
+              }
+            },
+            {
+              "p": "This commit changed format.md, a prompt that writes tours. It left PromptVersion at \"v4\"."
+            },
+            {
+              "p": "The rule says it must be bumped. Should this commit have bumped it to \"v5\"?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: either choice loses something",
+          "asks": [
+            "Could saved answers be re-attached to a new tour by matching step titles?"
+          ],
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "Choice",
+                  "Old cached tours",
+                  "Answers saved in them"
+                ],
+                "rows": [
+                  [
+                    "Bump to v5",
+                    "written again, now with suggestions (costs a run)",
+                    "unreachable: no key points to them"
+                  ],
+                  [
+                    "Keep v4 (this commit)",
+                    "open as before, never get suggestions",
+                    "kept"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "The version was v4 before the change too (base generate.go:35), so it was not bumped. An old cached tour still opens (app.go:159). `?` still works: suggestions() returns nil (ask.go:61-63), so the panel shows only the free-text line.",
+              "basis": "fact"
+            },
+            {
+              "p": "The deeper point is the next prompt change. The day someone bumps to v5, every saved answer disappears from view. The files stay on disk, but no key leads to them.",
+              "basis": "inferred"
+            },
+            {
+              "p": "A tempting fix is to store answers apart from the tour, under a key without the prompt version. Check it with a value. An answer says \"after step 5\". A regenerated tour has different steps, so step 5 is now about something else. The fix moves the loss. It does not stop it.",
+              "basis": "opinion"
+            },
+            {
+              "p": "Weight: Question to the author. Was skipping the bump on purpose? If yes, write that next to the rule. Also change README.md:263 to say that answers are lost when the cache is deleted or the prompts change.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Opened from a file: the answer disappears without a word",
+          "asks": [
+            "Why not save answers for file-opened tours into the cache too?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/ui/ask.go",
+                "lines": [
+                  96,
+                  97
+                ],
+                "show": [
+                  93,
+                  101
+                ],
+                "marks": [
+                  {
+                    "line": 96,
+                    "text": "same message on both doors"
+                  },
+                  {
+                    "line": 97,
+                    "text": "nil for tour \u003cfile\u003e.json"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "For `tour \u003cfile\u003e.json`, Save is nil (main.go:168). The reader still sees \"The answer is the next step ($x.xx)\", the same message as the picker path. When they quit, the answer is gone.",
+              "basis": "fact"
+            },
+            {
+              "p": "The README sends people down exactly this path: \"anyone with the same repository can open it with tour \u003cfile\u003e.json\" (README.md:284). The people who receive a shared tour are the ones who lose their answers.",
+              "basis": "fact"
+            },
+            {
+              "p": "Weight: Suggestion. Not writing the user's file is right. But the reader should be told, for example with a different message: \"Not saved: this tour was opened from a file.\"",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "What the test proves, and what it does not",
+          "asks": [
+            "Is it bad that the test sets v.ask.sel directly instead of pressing up?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/ui/ask_test.go",
+                "lines": [
+                  81,
+                  93
+                ],
+                "show": [
+                  81,
+                  96
+                ],
+                "marks": [
+                  {
+                    "line": 81,
+                    "text": "drains the real goroutine's channel"
+                  },
+                  {
+                    "line": 91,
+                    "text": "position, Asked and the index checked"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The test drives the real generate.Answer against a real git repository. Only the LLM is replaced, at the Backend interface (ask_test.go:19-28). The export, parsing, validation and insertion all run for real.",
+              "basis": "fact"
+            },
+            {
+              "p": "That is the right place to cut. The LLM is slow and costs money. Everything on our side stays real.",
+              "basis": "opinion"
+            },
+            {
+              "p": "No test touches two branches: the failure branch (ask.go:89-91, where the tour stays unchanged and a message is shown) and the line that strips `question` and `asks` from answers (generate/ask.go:65-67). Delete either one, and every test still passes. I searched the tests for them and found none.",
+              "basis": "fact"
+            },
+            {
+              "p": "Weight: Suggestion. Add a backend that returns an error, and one that returns a step with `\"question\": true`.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Checked and fine, and the small things",
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "Worry",
+                  "Where I checked",
+                  "Verdict"
+                ],
+                "rows": [
+                  [
+                    "A shared tour's text goes into the prompt",
+                    "LLM is read-only, confined (claude.go:39-55); answer validated (generate.go:106-123)",
+                    "Fine"
+                  ],
+                  [
+                    "Every question exports base and head again",
+                    "workspace.go:32-56; the LLM run takes far longer",
+                    "Fine for now. Measure first"
+                  ],
+                  [
+                    "InsertAfter overwriting its own slice",
+                    "tour.go:319 copies the tail first; tour_test covers two chapters",
+                    "Fine"
+                  ],
+                  [
+                    "Panel drawn over the progress bar",
+                    "viewer.go:119 uses lines[:keep:keep]",
+                    "Fine, and careful"
+                  ],
+                  [
+                    "Progress events dropped",
+                    "ask.go:155-158 matches app.go:176-180; the done message blocks",
+                    "Fine"
+                  ],
+                  [
+                    "Esc while answering",
+                    "context canceled; CommandContext stops the CLI (claude.go:76)",
+                    "Fine"
+                  ]
+                ]
+              }
+            },
+            {
+              "list": [
+                "Nit: the README key table (README.md:229-237) has no `?`.",
+                "Nit: `/` also opens the panel (viewer.go:83), but the hint only shows `?`.",
+                "Nit: asking on a question step puts the answer between the question and its answer step.",
+                "Nit: the answer's language comes from the config, not the tour (main.go:166-168), so an English tour file opened in Japanese gets Japanese answers."
+              ]
+            },
+            {
+              "p": "In one sentence: the code is correct today. The two weak spots are rules that hold only by accident of the moment: the index holds because the reader is blocked, and the answers survive only while the prompt version stays the same.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Summary",
+      "steps": [
+        {
+          "title": "Verdict and review comments",
+          "blocks": [
+            {
+              "p": "The change reuses the export, the read-only LLM run and the validation (generate/ask.go:27-54). The one invariant it relies on holds today (viewer.go:55-58).",
+              "basis": "fact"
+            },
+            {
+              "p": "Overall it makes the codebase better. It adds a real feature with very little new trust or new machinery. The comments below are about the next change, not about bugs today.",
+              "basis": "opinion"
+            },
+            {
+              "list": [
+                "[Praise] The answer is a small tour. It passes the same validation and the same read-only LLM run as a tour, so it shows real code with marks, and it is checked.",
+                "[Suggestion] Put the step index in answerDoneMsg and shift v.index when needed. Then \"keep reading while it answers\" cannot put answers in the wrong place.",
+                "[Question] Was it on purpose not to bump PromptVersion? Saved answers now live under a key that includes it. Please write the decision down, and update README.md:263.",
+                "[Suggestion] Tell readers who opened a tour file that the answer will not be saved. Add tests for the failure branch and for stripping question/asks."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "What you relived",
+          "blocks": [
+            {
+              "list": [
+                "Stated the intent first, then checked the commit message's claim. \"Saved with the tour\" turned out true for one of the two ways in.",
+                "Followed the answer through the flow, past the diff, into generate.go, app.go and main.go, to see which guards it inherits.",
+                "Asked \"what if the reader moves?\" with real step numbers, and found the rule is held by blocked keys, not by data.",
+                "Imagined the next change (read while waiting) to measure how fragile that rule is.",
+                "Noticed that the cache changed meaning, from rebuildable output to saved user data, and that this collides with an existing rule.",
+                "Traced a fix with values before suggesting it, and said what it still does not cover.",
+                "Said \"fine\" only with a place in the code to back it up, and gave every finding a weight."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

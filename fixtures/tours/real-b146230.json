@@ -1,0 +1,848 @@
+{
+  "version": 1,
+  "title": "Diagrams drawn by the tool: what a senior checks",
+  "base": "b146230^",
+  "head": "b146230",
+  "chapters": [
+    {
+      "title": "The change",
+      "steps": [
+        {
+          "title": "What we are reading",
+          "blocks": [
+            {
+              "target": true
+            },
+            {
+              "quote": "Draw flows, timelines, file maps and line notes from structured blocks\nThe LLM now describes a diagram's content and the tool draws it, so shapes and colors stay consistent and changed parts stand out."
+            },
+            {
+              "p": "This repository is the tour tool itself. An LLM writes a tour as JSON. The tool checks it and draws it in the terminal.",
+              "basis": "fact"
+            },
+            {
+              "p": "One commit, 11 files. More than half of the added lines are one new file of drawing code.",
+              "basis": "fact"
+            },
+            {
+              "p": "In one sentence: the LLM now describes a diagram as data, and the tool takes over drawing it and checking it.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "What the change is for",
+      "steps": [
+        {
+          "title": "Who stops struggling, and our first guess",
+          "asks": [
+            "Why not just tell the LLM to draw better ASCII art?"
+          ],
+          "blocks": [
+            {
+              "p": "Before this change, the only way to draw a diagram was a `pre` block: text the LLM typed by hand, box by box.",
+              "basis": "fact"
+            },
+            {
+              "code": {
+                "file": "internal/generate/prompts/format.md",
+                "at": "base",
+                "lines": [
+                  28,
+                  28
+                ],
+                "note": "before: the only diagram block"
+              }
+            },
+            {
+              "p": "So each tour drew boxes its own way. Nothing showed which box had changed. A junior had to learn a new picture style in every tour.",
+              "basis": "inferred"
+            },
+            {
+              "list": [
+                "`flow`: boxes and arrows, colored by changed / new / same / external",
+                "`timeline`: lanes side by side, time going down",
+                "`files`: every changed file with a size bar, labeled by role",
+                "`marks`: a short note under one line of code"
+              ]
+            },
+            {
+              "p": "Our first guess: this change **only adds** new ways to draw. Existing tours should look the same, and checks should work as before. We will test this guess in the next chapters.",
+              "basis": "inferred"
+            },
+            {
+              "p": "In one sentence: readers get diagrams with a consistent look, and the tool, not the LLM, owns how they look.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The map",
+      "steps": [
+        {
+          "title": "Where the thinking goes",
+          "asks": [
+            "How can you tell drawing math is safe to skim?"
+          ],
+          "blocks": [
+            {
+              "files": {
+                "roles": [
+                  {
+                    "file": "internal/git/git.go",
+                    "role": "core",
+                    "note": "ParseFileStats: 24 lines that decide file names and counts"
+                  },
+                  {
+                    "file": "internal/render/frame.go",
+                    "role": "core",
+                    "note": "where blocks go on screen"
+                  },
+                  {
+                    "file": "internal/tour/tour.go",
+                    "role": "core",
+                    "note": "new types + checkDiagram"
+                  },
+                  {
+                    "file": "internal/render/check.go",
+                    "role": "core",
+                    "note": "marks and roles checked against git"
+                  },
+                  {
+                    "file": "internal/render/diagrams.go",
+                    "role": "core",
+                    "note": "320 lines, mostly drawing math: skim"
+                  },
+                  {
+                    "file": "internal/git/git_test.go",
+                    "role": "test"
+                  },
+                  {
+                    "file": "internal/render/blocks.go",
+                    "role": "mechanical",
+                    "note": "switch cases + marks under lines"
+                  },
+                  {
+                    "file": "internal/i18n/i18n.go",
+                    "role": "mechanical",
+                    "note": "same 8 keys in en and ja"
+                  },
+                  {
+                    "file": "internal/generate/generate.go",
+                    "role": "mechanical",
+                    "note": "PromptVersion v3 → v4"
+                  },
+                  {
+                    "file": "internal/generate/prompts/format.md",
+                    "role": "docs",
+                    "note": "the spec the LLM reads"
+                  },
+                  {
+                    "file": "internal/generate/lessons/teaching.md",
+                    "role": "docs"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "About 560 lines are added. The thinking goes to about 80 of them: the name and count parser, the layout split in `Frame`, and the two checks.",
+              "basis": "fact"
+            },
+            {
+              "p": "`diagrams.go` is big but low risk. A wrong number there draws a crooked box, and you see it the first time you open a tour. A wrong file name or a wrong check fails quietly.",
+              "basis": "opinion"
+            },
+            {
+              "p": "I checked that the mechanical files really are mechanical. `blocks.go` adds three `case` lines in the same shape as the others. `i18n.go` adds the same 8 keys to both languages.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "From the LLM's reply to the screen",
+          "asks": [
+            "What happens to a tour file someone saved last month?"
+          ],
+          "blocks": [
+            {
+              "flow": {
+                "nodes": [
+                  {
+                    "label": "LLM writes tour JSON",
+                    "kind": "external",
+                    "next": "flow / timeline / files / marks"
+                  },
+                  {
+                    "label": "parse: decode, unknown fields rejected",
+                    "kind": "same",
+                    "note": "generate.go:106"
+                  },
+                  {
+                    "label": "Validate + checkDiagram",
+                    "kind": "changed",
+                    "note": "tour.go: shape only, no git"
+                  },
+                  {
+                    "label": "Check: marks in range, roles name changed files",
+                    "kind": "changed",
+                    "note": "check.go: reads git",
+                    "next": "problems → ask LLM to fix (max 2)"
+                  },
+                  {
+                    "label": "Frame: lay out the step",
+                    "kind": "changed",
+                    "note": "frame.go"
+                  },
+                  {
+                    "label": "renderFlow / renderTimeline / renderFiles",
+                    "kind": "new",
+                    "note": "diagrams.go"
+                  },
+                  {
+                    "label": "FileStats → ParseFileStats",
+                    "kind": "new",
+                    "note": "git.go",
+                    "next": "raw diff text"
+                  },
+                  {
+                    "label": "git diff",
+                    "kind": "external"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "There are two ways in. A new tour comes through `parse`. A saved file comes through `tour.Load` (`main.go:140`). Both call `Validate` (`generate.go:119`, `tour.go:214`).",
+              "basis": "fact"
+            },
+            {
+              "p": "`Check` runs only on the generation path (`generate.go:122` is its only caller). A saved tour is drawn without it.",
+              "basis": "fact"
+            },
+            {
+              "p": "In one sentence: every diagram passes `Validate` before it is drawn, and the file map takes its names and numbers from git.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "How it works",
+      "steps": [
+        {
+          "title": "Two gates: what each one guards",
+          "asks": [
+            "Why does checkDiagram stop at the first error instead of listing all?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/tour/tour.go",
+                "lines": [
+                  287,
+                  293
+                ],
+                "show": [
+                  279,
+                  297
+                ],
+                "marks": [
+                  {
+                    "line": 288,
+                    "text": "an event's lane must be a declared lane"
+                  },
+                  {
+                    "line": 291,
+                    "text": "an arrow must go to another declared lane"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "`renderTimeline` finds a lane's column with `slices.Index` (`diagrams.go:96`). An unknown name gives -1, and the column math would start from a negative lane. Line 288 keeps that from ever reaching the renderer.",
+              "basis": "fact"
+            },
+            {
+              "p": "This rule needs only the JSON, so it lives in `Validate`, which every tour passes. Rules that need git (file length for marks, the list of changed files for roles) live in `Check`.",
+              "basis": "fact"
+            },
+            {
+              "p": "`Check` does not run for saved files, so its rules must be soft. They are. A mark outside the shown lines is never drawn (`blocks.go:81-83`). A role for an unknown file is never matched (`diagrams.go:263`). Nothing breaks. The note just goes missing.",
+              "basis": "fact"
+            },
+            {
+              "p": "The error texts list the allowed values (\"use same, changed, new or external\"). They are passed to the LLM as-is (`check.go:11`, `generate.go:145`), so one repair round is usually enough.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "The file map: the tool counts, the LLM only labels",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/tour/tour.go",
+                "lines": [
+                  80,
+                  84
+                ],
+                "show": [
+                  80,
+                  92
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "internal/render/check.go",
+                "lines": [
+                  53,
+                  62
+                ]
+              }
+            },
+            {
+              "p": "The LLM gives only a role per file. Names and line counts come from git. A role that names a file the change did not touch is sent back as a problem.",
+              "basis": "fact"
+            },
+            {
+              "p": "Compare the design not chosen: the LLM writes a table with `+12 −3` per file. Then numbers can be wrong, and nothing checks them. Here they cannot be wrong, because the LLM never writes them.",
+              "basis": "inferred"
+            },
+            {
+              "p": "The cost is that the map is only as right as the code that reads names and counts from the diff. We come back to that code in the next chapter.",
+              "basis": "inferred"
+            },
+            {
+              "p": "Small good habits around it: `PromptVersion` is bumped as its comment asks (`generate.go:34-35`), so cached tours made with the old prompt are regenerated.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "A step with a timeline in the middle",
+          "question": true,
+          "blocks": [
+            {
+              "p": "A tour has a step with three blocks, in this order: a paragraph \"Two requests arrive at once.\", then a `timeline`, then a paragraph \"So B's write wins and A's is lost.\""
+            },
+            {
+              "p": "The terminal is 140 columns wide. In what order does the reader see the three blocks?"
+            },
+            {
+              "code": {
+                "file": "internal/render/frame.go",
+                "at": "base",
+                "lines": [
+                  119,
+                  120
+                ],
+                "note": "the layout rule before this change"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Answer: the timeline drops to the bottom",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/render/frame.go",
+                "lines": [
+                  119,
+                  130
+                ],
+                "show": [
+                  119,
+                  131
+                ],
+                "marks": [
+                  {
+                    "line": 122,
+                    "text": "every timeline is taken out of the order"
+                  },
+                  {
+                    "line": 130,
+                    "text": "this comment still promises the original order"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "internal/render/frame.go",
+                "lines": [
+                  179,
+                  184
+                ],
+                "note": "timelines are added after everything else"
+              }
+            },
+            {
+              "p": "The reader sees both paragraphs first, then the timeline. The conclusion (\"B's write wins\") comes before the picture that explains it.",
+              "basis": "fact"
+            },
+            {
+              "p": "The move has a reason: a timeline needs the full width (line 119). But it happens on narrow screens too, under 110 columns (`frame.go:17`), where everything is already stacked full width.",
+              "basis": "fact"
+            },
+            {
+              "p": "`format.md` does not tell the LLM about this. So the LLM will keep writing \"the timeline above shows...\" in a paragraph that now appears above it.",
+              "basis": "fact"
+            },
+            {
+              "p": "Our first guess was wrong. This change does not only add drawings. It also changes where existing kinds of content end up.",
+              "basis": "inferred"
+            },
+            {
+              "p": "In one sentence: `Validate` guarantees that drawing never meets an unknown lane, kind or role, but the layout no longer guarantees that blocks appear in the order they were written.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Where a senior stops",
+      "steps": [
+        {
+          "title": "The line that picks the file name",
+          "question": true,
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/git/git.go",
+                "lines": [
+                  357,
+                  360
+                ],
+                "show": [
+                  352,
+                  375
+                ]
+              }
+            },
+            {
+              "p": "Say this change also edited a Japanese doc, `docs/設計.md`. What string ends up in `File` for it?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: probably not `docs/設計.md`",
+          "asks": [
+            "Why doesn't the existing per-file diff block have this problem?"
+          ],
+          "blocks": [
+            {
+              "rows": {
+                "label": "Header line → what line 358 returns",
+                "head": [
+                  "header line from git",
+                  "File"
+                ],
+                "data": [
+                  [
+                    "diff --git a/docs/a.md b/docs/a.md",
+                    "docs/a.md"
+                  ],
+                  [
+                    "diff --git \"a/docs/\\350\\250\\255\\350\\250\\210.md\" \"b/docs/\\350\\250\\255\\350\\250\\210.md\"",
+                    "ff --git \"a/docs/\\350..."
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "When the line has no ` b/`, `LastIndex` returns -1. Line 358 then takes `l[2:]`, and the name starts with `ff --git`. It does not panic, so nothing loud happens.",
+              "basis": "fact"
+            },
+            {
+              "p": "This repository never sets `core.quotePath`. `run` passes only `-C` and `--no-pager` (`git.go:52`).",
+              "basis": "fact"
+            },
+            {
+              "p": "So the header depends on git's default. Does git quote non-ASCII paths in this header by default? The `core.quotePath` setting says it does. One `git diff` in a test repo with a Japanese file name settles it before merge."
+            },
+            {
+              "p": "The test never meets this case. Both of its headers are plain ASCII (`git_test.go:32`, `git_test.go:41`).",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "What follows, if git quotes the name",
+          "asks": [
+            "Would the LLM really keep the right name on repair?"
+          ],
+          "blocks": [
+            {
+              "timeline": {
+                "lanes": [
+                  "LLM",
+                  "generate",
+                  "Check"
+                ],
+                "events": [
+                  {
+                    "lane": "LLM",
+                    "to": "generate",
+                    "text": "roles: docs/設計.md (the real name)"
+                  },
+                  {
+                    "lane": "generate",
+                    "to": "Check",
+                    "text": "check the tour"
+                  },
+                  {
+                    "lane": "Check",
+                    "text": "FileStats has `ff --git \"a/...`, not docs/設計.md",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "Check",
+                    "to": "generate",
+                    "text": "files: docs/設計.md is not one of the changed files"
+                  },
+                  {
+                    "lane": "generate",
+                    "to": "LLM",
+                    "text": "please fix (repair 1, then 2)"
+                  },
+                  {
+                    "lane": "LLM",
+                    "text": "the name is correct, so it may keep it",
+                    "mark": "note"
+                  },
+                  {
+                    "lane": "generate",
+                    "text": "after 2 repairs: InvalidTourError, no tour",
+                    "mark": "bad"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "After `MaxRepairs` (2) rounds with problems left, `settle` returns an error, and the user gets no tour (`generate.go:193-194`).",
+              "basis": "fact"
+            },
+            {
+              "p": "If the LLM drops the role instead, the tour is saved, but the file map shows the broken name. Either way, the tool's own spec tells the LLM to use `files` in every map chapter (`format.md:50`), so every Japanese-named file in a change hits this path.",
+              "basis": "inferred"
+            },
+            {
+              "p": "Weight: a question, not a must-fix. Whether it breaks depends on git's output, which these files cannot show. But the impact is large and checking takes one minute, so it should be checked before merge.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "A fix, checked against more than one case",
+          "asks": [
+            "Why not set core.quotePath=false in run instead?"
+          ],
+          "blocks": [
+            {
+              "snippet": {
+                "label": "Not in this repository: a possible fix in ParseFileStats",
+                "lang": "go",
+                "text": "// in ParseFileStats:  name := headerName(l)\nfunc headerName(l string) string {\n\tif strings.HasSuffix(l, `\"`) {\n\t\tif i := strings.LastIndex(l, ` \"b/`); i \u003e= 0 {\n\t\t\tif s, err := strconv.Unquote(l[i+1:]); err == nil {\n\t\t\t\treturn strings.TrimPrefix(s, \"b/\")\n\t\t\t}\n\t\t}\n\t}\n\treturn l[strings.LastIndex(l, \" b/\")+3:]\n}"
+              }
+            },
+            {
+              "table": {
+                "head": [
+                  "case",
+                  "result"
+                ],
+                "rows": [
+                  [
+                    "both sides quoted",
+                    "unquotes to docs/設計.md"
+                  ],
+                  [
+                    "rename a.md → 設計.md (only b quoted)",
+                    "line ends with \", still works"
+                  ],
+                  [
+                    "rename 設計.md → b.md (only a quoted)",
+                    "line ends with b.md, old path works"
+                  ],
+                  [
+                    "untracked file in worktree mode",
+                    "its diff comes from worktree.go:64 but goes through the same parser"
+                  ],
+                  [
+                    "a path that itself contains ` \"b/`",
+                    "still wrong; rare"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "Fixing the parser covers both callers (`Check` and `renderFiles`) and both diff sources at once.",
+              "basis": "inferred"
+            },
+            {
+              "p": "A flag in `run` would need to go in two places (`git.go:52` and `worktree.go:64`). Git also still quotes names with `\"`, tabs or newlines. Go's `strconv.Unquote` reads the octal escapes git writes. Add the quoted header as a third case in `TestParseFileStats`.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "A second parser for the same thing",
+          "asks": [
+            "Does the non-worktree target summary have the same mismatch?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/git/worktree.go",
+                "lines": [
+                  103,
+                  117
+                ],
+                "show": [
+                  102,
+                  117
+                ],
+                "marks": [
+                  {
+                    "line": 109,
+                    "text": "skips any line starting with --- or +++, even inside a hunk"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The repository already counted `+` and `−` lines in a diff, here. `ParseFileStats` is a second copy of that knowledge, and the two already disagree.",
+              "basis": "fact"
+            },
+            {
+              "rows": {
+                "label": "Deleting a SQL comment line `-- old note`",
+                "head": [
+                  "diff line",
+                  "worktreeStat",
+                  "ParseFileStats"
+                ],
+                "data": [
+                  [
+                    "--- old note",
+                    "not counted (line 109)",
+                    "counted (git.go:370)"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "For a worktree head, the target summary uses `worktreeStat` (`git.go:142-143`) and the file map uses `ParseFileStats`. One tour can show two different deletion counts for the same change. `ParseFileStats` is the right one, because it tracks `inHunk`.",
+              "basis": "fact"
+            },
+            {
+              "p": "Suggestion: build the worktree `Shortstat` from `FileStats` (file count = length, lines = sums) and delete `worktreeStat`. Then the knowledge of how to read a diff lives in one place.",
+              "basis": "inferred"
+            },
+            {
+              "p": "This is what DRY really means: not \"no similar-looking code\", but \"one piece of knowledge, one place\". Two copies drift, and these two already have.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "If you broke the key line, which test would fail?",
+          "asks": [
+            "Is TestParseFileStats itself a good test?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/tour/tour_test.go",
+                "lines": [
+                  23,
+                  28
+                ],
+                "note": "unchanged: the table of bad tours"
+              }
+            },
+            {
+              "p": "The only new test is `TestParseFileStats`. It does guard one key point: the header `--- a/src/a.ts` before `@@` must not count, and it expects `Deletions: 1` (`git_test.go:34`, `git_test.go:49`).",
+              "basis": "fact"
+            },
+            {
+              "p": "Delete the lane check (`tour.go:288`), the kind check (`tour.go:275`) or the mark range check (`check.go:43-47`), and no test fails. No test file mentions `Timeline`, `Flow`, `Marks` or `checkDiagram`.",
+              "basis": "fact"
+            },
+            {
+              "p": "The table above makes the fix cheap: one line per bad case, such as an unknown lane, 5 lanes or an unknown role. Line 288 protects the drawing code, so it deserves a test.",
+              "basis": "inferred"
+            }
+          ]
+        },
+        {
+          "title": "Looks worrying, but is fine",
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "worry",
+                  "where I checked",
+                  "verdict"
+                ],
+                "rows": [
+                  [
+                    "Old saved tours stop loading",
+                    "new fields are omitempty pointers; kinds() still counts one per block (tour.go:237)",
+                    "fine"
+                  ],
+                  [
+                    "Renderer trusts lane names",
+                    "Validate runs on both ways in (generate.go:119, tour.go:214)",
+                    "fine"
+                  ],
+                  [
+                    "A new message key missing in one language",
+                    "TestUsedKeysExist scans every i18n.T call (i18n_test.go:43)",
+                    "fine"
+                  ],
+                  [
+                    "git called on every redraw",
+                    "run caches by arguments (git.go:43-49); worktree path costs the same as the existing target block (git.go:142)",
+                    "fine for now"
+                  ],
+                  [
+                    "New imports that may not exist",
+                    "only `slices` from the standard library; go.mod says go 1.27.2",
+                    "fine"
+                  ],
+                  [
+                    "LLM text reaching the terminal",
+                    "labels and notes go through ParseInline, like existing p blocks",
+                    "no new risk"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "Each \"fine\" points at a line in this repository. Without that line, it would be a question, not a verdict.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Every finding, with its weight",
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "finding",
+                  "weight",
+                  "where"
+                ],
+                "rows": [
+                  [
+                    "Quoted file names become `ff --git ...`",
+                    "Question (high impact)",
+                    "git.go:358"
+                  ],
+                  [
+                    "Timeline always moves to the bottom; comment and prompt don't say so",
+                    "Suggestion",
+                    "frame.go:119-130, 179-184"
+                  ],
+                  [
+                    "Two diff counters that disagree",
+                    "Suggestion",
+                    "worktree.go:109 vs git.go:370"
+                  ],
+                  [
+                    "No tests for checkDiagram or the mark check",
+                    "Suggestion",
+                    "tour.go:265-306, check.go:43-47"
+                  ],
+                  [
+                    "Old binary opening a new tour fails with \"exactly one kind\" while the format version stays 1; tour files are shared (README: `tour \u003cfile\u003e.json`)",
+                    "Question",
+                    "tour.go:237"
+                  ],
+                  [
+                    "Check repeats renderCode's default 2-line range",
+                    "Nit",
+                    "check.go:39-42 vs blocks.go:60-63"
+                  ],
+                  [
+                    "Bar can take 21 cells when the width is 20 (3+4 lines: 9+12)",
+                    "Nit",
+                    "diagrams.go:291-292"
+                  ],
+                  [
+                    "IsVisual lists Timeline, but Frame removes timelines first",
+                    "Nit",
+                    "tour.go:151-154, frame.go:121-127"
+                  ],
+                  [
+                    "README does not list file maps or line notes",
+                    "Nit",
+                    "README.md:239-246"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "In one sentence: the file map is only as right as the name parser, and that parser has never seen a quoted name.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Summary",
+      "steps": [
+        {
+          "title": "Did this make the codebase better?",
+          "blocks": [
+            {
+              "p": "Yes. Diagrams are now data that the tool checks and draws in one style. File numbers come from git, not from the LLM. The checks are split well: hard rules in `Validate` for every tour, git-based rules in `Check`.",
+              "basis": "inferred"
+            },
+            {
+              "p": "I found no must-fix from the repository alone. One question should be answered before merge, because it can stop tour generation for changes with Japanese file names.",
+              "basis": "inferred"
+            },
+            {
+              "list": [
+                "**Good**: `files` takes only roles, and the tool reads names and counts from git. A role for an unchanged file goes back to the LLM with a clear message.",
+                "**Question**: `git.go:358`: does git quote non-ASCII names here? If yes, unquote in the parser (covers rename and worktree) and add the case to `TestParseFileStats`.",
+                "**Suggestion**: `frame.go:122`: timelines always move to the end. Either draw them where they are written, or say so in `format.md`, and fix the comment on line 130.",
+                "**Suggestion**: `worktree.go:103`: build the worktree `Shortstat` from `FileStats`, so diff counting lives in one place."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "What you practiced",
+          "blocks": [
+            {
+              "list": [
+                "Started from a guess (\"it only adds drawings\") and let the code correct it: the layout order changed, and a second diff parser appeared.",
+                "Left the diff on purpose: the old comment in `frame.go`, the older counter in `worktree.go`, and the two ways in, in `generate.go` and `main.go`.",
+                "Fed real values instead of stopping at \"looks right\": a Japanese file name, a deleted `-- note` line, a step with a timeline in the middle.",
+                "Checked a fix against renames and the worktree path before suggesting it, and said what it still misses.",
+                "Called things \"fine\" only with a line to point at, and gave every finding a weight."
+              ]
+            },
+            {
+              "p": "In one sentence: this change moves diagram drawing from the LLM to the tool and checks it well, but it relies on a new name parser and a new layout rule that nobody has tested yet.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

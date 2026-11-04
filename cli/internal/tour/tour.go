@@ -61,6 +61,9 @@ type FlowNode struct {
 	Next string `json:"next,omitempty"`
 	// Starts a separate flow (another request, a timer), so no arrow comes from the node before.
 	Start bool `json:"start,omitempty"`
+	// Optional: repo path of the file this node is, and the line range in it (head revision). Not for external nodes.
+	File  string  `json:"file,omitempty"`
+	Lines *[2]int `json:"lines,omitempty"`
 }
 
 // Timeline shows what happens over time on several lanes (requests, processes, the database), drawn by the tool.

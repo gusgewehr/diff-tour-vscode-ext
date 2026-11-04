@@ -1,0 +1,951 @@
+{
+  "version": 1,
+  "title": "From playback to generation: reading the tour generator like a senior",
+  "base": "9c18e24^",
+  "head": "9c18e24",
+  "chapters": [
+    {
+      "title": "The change",
+      "steps": [
+        {
+          "title": "One commit, about 1,100 new lines",
+          "blocks": [
+            {
+              "target": true
+            },
+            {
+              "quote": "Generate tours with Claude Code and choose the change to tour\n- Add a picker that lists branches ahead of the default branch, with the current branch selected, and accept a branch, a commit, or a range\n- Export the files before and after the change to the cache directory and run Claude Code there with read-only tools, streaming the files it reads\n- Validate the generated tour (format, files, lines, hunks, schemas) and ask the LLM to fix problems up to twice\n- Cache tours by merge base, head, language, prompt version and LLM\n- Show LLMs that cannot write tours yet as not supported in setup"
+            },
+            {
+              "p": "The commit message makes five claims. We will check each against the code. We will not take them on trust.",
+              "basis": "opinion"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "What is this change for?",
+      "steps": [
+        {
+          "title": "Before: a player. After: a writer and a player",
+          "blocks": [
+            {
+              "code": {
+                "file": "cmd/tour/main.go",
+                "at": "base",
+                "lines": [
+                  86,
+                  89
+                ],
+                "show": [
+                  83,
+                  89
+                ],
+                "note": "before the change",
+                "marks": [
+                  {
+                    "line": 86,
+                    "text": "exactly one argument: a hand-written tour file"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Before this change, `tour` could only play a tour file that someone wrote by hand. With no argument, it printed usage and exited.",
+              "basis": "fact"
+            },
+            {
+              "table": {
+                "head": [
+                  "Command",
+                  "After this change"
+                ],
+                "rows": [
+                  [
+                    "`tour`",
+                    "pick a local branch, compare with the default branch"
+                  ],
+                  [
+                    "`tour \u003cbranch\u003e`",
+                    "that local branch"
+                  ],
+                  [
+                    "`tour \u003ccommit\u003e`",
+                    "that one commit (parent → commit)"
+                  ],
+                  [
+                    "`tour a..b`",
+                    "from the fork point of a to b"
+                  ],
+                  [
+                    "`tour x.json`",
+                    "play a file, as before"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "Who stops struggling: a junior who has a branch but no hand-written tour. Before, they got nothing. Now Claude Code writes the tour in a few minutes. The tour is saved, so opening it again is instant.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "A first guess at where the risk is",
+          "asks": [
+            "Is the whole repository sent to the LLM, or only the diff?"
+          ],
+          "blocks": [
+            {
+              "p": "Before reading any line, a senior says what the change must get right. Here are two guesses.",
+              "basis": "opinion"
+            },
+            {
+              "list": [
+                "**Keep the LLM away from the repository.** The README promises `tour` never writes to the working tree or `.git`.",
+                "**LLM output is now input.** The viewer was built for files a person wrote. Now a model writes them."
+              ]
+            },
+            {
+              "p": "A junior often stops at these two because the commit message names them. A senior keeps one more question open: what happens when the slow, expensive part fails or is stopped halfway? We will see that this third question is where most findings are.",
+              "basis": "opinion"
+            },
+            {
+              "p": "In one sentence: the change promises that `tour` alone gets you from a branch to a checked, saved tour, without touching your repository.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The map",
+      "steps": [
+        {
+          "title": "Which files need thinking, and which are text",
+          "blocks": [
+            {
+              "files": {
+                "roles": [
+                  {
+                    "file": "internal/generate/generate.go",
+                    "role": "core",
+                    "note": "prompt, validation, repair loop, cache key"
+                  },
+                  {
+                    "file": "internal/ui/app.go",
+                    "role": "core",
+                    "note": "picker → generating → viewer; cancel"
+                  },
+                  {
+                    "file": "internal/generate/claude.go",
+                    "role": "core",
+                    "note": "CLI flags that keep the LLM read-only"
+                  },
+                  {
+                    "file": "internal/generate/workspace.go",
+                    "role": "core",
+                    "note": "exports base/ and head/"
+                  },
+                  {
+                    "file": "cmd/tour/main.go",
+                    "role": "core",
+                    "note": "argument → base and head"
+                  },
+                  {
+                    "file": "internal/render/check.go",
+                    "role": "core",
+                    "note": "files, lines, hunks exist?"
+                  },
+                  {
+                    "file": "internal/git/git.go",
+                    "role": "mechanical",
+                    "note": "one git command per new method"
+                  },
+                  {
+                    "file": "internal/ui/setup.go",
+                    "role": "mechanical",
+                    "note": "mark other LLMs unsupported"
+                  },
+                  {
+                    "file": "internal/i18n/i18n.go",
+                    "role": "mechanical",
+                    "note": "new messages, EN and JA"
+                  },
+                  {
+                    "file": "internal/generate/prompts/common.md",
+                    "role": "config",
+                    "note": "the prompt"
+                  },
+                  {
+                    "file": "internal/generate/prompts/format.md",
+                    "role": "config",
+                    "note": "the tour format, for the LLM"
+                  },
+                  {
+                    "file": "internal/generate/prompts/output.md",
+                    "role": "config"
+                  },
+                  {
+                    "file": "internal/generate/generate_test.go",
+                    "role": "test"
+                  },
+                  {
+                    "file": "internal/generate/workspace_test.go",
+                    "role": "test"
+                  },
+                  {
+                    "file": "README.md",
+                    "role": "docs"
+                  },
+                  {
+                    "file": "README.ja.md",
+                    "role": "docs"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Each new method in `git.go` wraps one git command and returns an empty value on failure, like the existing methods do. That makes it a quick read. The `i18n.go` changes are new message keys in both languages, with `setup.notYet` removed.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "The flow, including the parts that did not change",
+          "asks": [
+            "How long does the picker take to show up in a repo with many branches?"
+          ],
+          "blocks": [
+            {
+              "flow": {
+                "nodes": [
+                  {
+                    "label": "main: picker or resolve()",
+                    "kind": "changed",
+                    "next": "base, head",
+                    "file": "cmd/tour/main.go",
+                    "lines": [
+                      157,
+                      170
+                    ]
+                  },
+                  {
+                    "label": "App.start: saved tour?",
+                    "kind": "new",
+                    "next": "no → goroutine",
+                    "file": "internal/ui/app.go",
+                    "lines": [
+                      142,
+                      173
+                    ]
+                  },
+                  {
+                    "label": "PrepareWorkspace",
+                    "kind": "new",
+                    "note": "git archive of merge-base and head",
+                    "file": "internal/generate/workspace.go",
+                    "lines": [
+                      31,
+                      51
+                    ]
+                  },
+                  {
+                    "label": "ClaudeCode.Run",
+                    "kind": "new",
+                    "next": "final text",
+                    "file": "internal/generate/claude.go",
+                    "lines": [
+                      71,
+                      123
+                    ]
+                  },
+                  {
+                    "label": "claude -p (Read, Grep, Glob)",
+                    "kind": "external"
+                  },
+                  {
+                    "label": "parse + render.Check",
+                    "kind": "new",
+                    "next": "problems → repair, up to 2",
+                    "file": "internal/generate/generate.go",
+                    "lines": [
+                      89,
+                      106
+                    ]
+                  },
+                  {
+                    "label": "SaveCached",
+                    "kind": "new",
+                    "file": "internal/generate/generate.go",
+                    "lines": [
+                      218,
+                      231
+                    ]
+                  },
+                  {
+                    "label": "Viewer (playback)",
+                    "kind": "same",
+                    "note": "internal/ui/viewer.go, unchanged"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Time plan: most of our time goes to `Generate` (about 40 lines), `App.start` and the key handling in `App.Update` (about 50 lines), and the flags in `claudeArgs` (10 lines). The rest is wiring, text, and UI drawing.",
+              "basis": "inferred"
+            },
+            {
+              "p": "In one sentence: an argument becomes two commits, those commits become an exported folder, the folder becomes LLM text, and only text that passes the checks is saved and played.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "How it works",
+      "steps": [
+        {
+          "title": "The sandbox: a copy, not the repository",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/workspace.go",
+                "lines": [
+                  22,
+                  23
+                ],
+                "show": [
+                  15,
+                  23
+                ],
+                "marks": [
+                  {
+                    "line": 22,
+                    "text": "why a copy: the LLM's tools stay inside this folder"
+                  }
+                ]
+              }
+            },
+            {
+              "code": {
+                "file": "internal/generate/claude.go",
+                "lines": [
+                  47,
+                  53
+                ],
+                "show": [
+                  45,
+                  55
+                ],
+                "marks": [
+                  {
+                    "line": 48,
+                    "text": "no shell, no web, no MCP servers"
+                  },
+                  {
+                    "line": 49,
+                    "text": "only three read tools"
+                  },
+                  {
+                    "line": 53,
+                    "text": "the prompt is one command-line argument"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The LLM never sees `.git` or the working tree. It reads two exported trees plus the diff and the commit messages. Because it has no git, it cannot run a git command that writes.",
+              "basis": "fact"
+            },
+            {
+              "p": "The export uses `git archive` of a commit. So uncommitted files, such as a local `.env`, should never be in the copy.",
+              "basis": "inferred"
+            },
+            {
+              "p": "The flags are not a guess. The experiment notes say they were checked with `claude --help` on Claude Code 2.1.291. They also say that reading a file outside the folder by absolute path was denied.",
+              "basis": "fact"
+            },
+            {
+              "code": {
+                "file": "experiments/generate/README.md",
+                "lines": [
+                  35,
+                  39
+                ],
+                "show": [
+                  35,
+                  39
+                ],
+                "note": "unchanged"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Main moves on",
+          "question": true,
+          "blocks": [
+            {
+              "p": "Yesterday you ran `tour` on `feature` and the tour was saved. Today teammates push 5 commits to `main`, and you pull them. `feature` has not changed. You run `tour` and pick `feature` again."
+            },
+            {
+              "p": "Is the saved tour opened, or does Claude Code write a new one? Is the answer correct for the reader?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: it is reused, and that is right",
+          "asks": [
+            "What if I rebase feature onto the new main?",
+            "What if two branches point to the same commit?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/generate.go",
+                "lines": [
+                  172,
+                  172
+                ],
+                "show": [
+                  169,
+                  177
+                ],
+                "marks": [
+                  {
+                    "line": 172,
+                    "text": "fork point + head hash, not branch names"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The key uses the fork point of `main` and `feature`, and the hash of `feature`. New commits on `main` do not move the fork point, so the key is the same and the saved tour opens.",
+              "basis": "fact"
+            },
+            {
+              "code": {
+                "file": "internal/render/blocks.go",
+                "lines": [
+                  27,
+                  32
+                ],
+                "show": [
+                  24,
+                  32
+                ],
+                "note": "unchanged"
+              }
+            },
+            {
+              "p": "This is correct because the tour's \"before\" code has always been the fork point, not the tip of `main`. The workspace exports the fork point too (`workspace.go:35`). Key, workspace, diff, and viewer all agree on what \"before\" means.",
+              "basis": "fact"
+            },
+            {
+              "code": {
+                "file": "internal/generate/workspace_test.go",
+                "lines": [
+                  59,
+                  61
+                ],
+                "show": [
+                  43,
+                  61
+                ],
+                "marks": [
+                  {
+                    "line": 44,
+                    "text": "main moves after the fork"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The experiment notes record that this exact mistake happened once: `base/` got the tip of `main` (`experiments/generate/README.md:65`). This test fails if someone repeats it. That is a test written from a real bug.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "The new trust boundary: parse",
+          "asks": [
+            "Could the LLM put terminal escape codes into a paragraph?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/generate.go",
+                "lines": [
+                  96,
+                  105
+                ],
+                "show": [
+                  89,
+                  106
+                ],
+                "marks": [
+                  {
+                    "line": 96,
+                    "text": "unknown keys are a problem, not ignored"
+                  },
+                  {
+                    "line": 101,
+                    "text": "names forced to what we asked for"
+                  },
+                  {
+                    "line": 105,
+                    "text": "files, lines, hunks checked against git"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Before this change, every tour JSON was written by a person who knew the format. Now it is model output. The model may also have read text that someone else wrote, for example in a teammate's branch. `parse` is where that output is checked before it reaches the viewer and the cache.",
+              "basis": "fact"
+            },
+            {
+              "p": "Line 101 removes a whole kind of failure. If the model wrote `main ` with a typo, the viewer would read a different commit, or no commit at all. Forcing the names is better than rejecting them, because there is nothing to repair.",
+              "basis": "fact"
+            },
+            {
+              "p": "The model's `file` values reach git as one argument `ref:file` (`git.go:66-67`), and diffs put `--` before the path (`git.go:76`). So a strange path cannot become a git option, and git only reads from the commit's tree.",
+              "basis": "fact"
+            },
+            {
+              "p": "A senior calls a place like this a **trust boundary**: the point where data from outside starts being treated as your own.",
+              "basis": "opinion"
+            },
+            {
+              "p": "In one sentence: the mechanism promises that the model only reads a copy, and that only output which matches the format and points at real lines is kept.",
+              "basis": "fact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Where a senior stops",
+      "steps": [
+        {
+          "title": "The repair loop, traced with values",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/generate.go",
+                "lines": [
+                  140,
+                  159
+                ],
+                "show": [
+                  140,
+                  159
+                ],
+                "marks": [
+                  {
+                    "line": 141,
+                    "text": "first decode error, or first Validate error, or all Check errors"
+                  },
+                  {
+                    "line": 145,
+                    "text": "after 2 repairs: give up"
+                  },
+                  {
+                    "line": 154,
+                    "text": "a new Run with the repair prompt"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "This is not a rare path. The experiment notes say one run in four produced invalid JSON (`experiments/generate/README.md:145`).",
+              "basis": "fact"
+            },
+            {
+              "timeline": {
+                "lanes": [
+                  "Generate",
+                  "Claude Code",
+                  "parse"
+                ],
+                "events": [
+                  {
+                    "lane": "Generate",
+                    "to": "Claude Code",
+                    "text": "run 1: full prompt"
+                  },
+                  {
+                    "lane": "parse",
+                    "text": "invalid JSON: missing comma",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "Generate",
+                    "to": "Claude Code",
+                    "text": "run 2: repair prompt"
+                  },
+                  {
+                    "lane": "parse",
+                    "text": "decodes; Validate: basis on a list",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "Generate",
+                    "to": "Claude Code",
+                    "text": "run 3: repair prompt"
+                  },
+                  {
+                    "lane": "parse",
+                    "text": "Validate ok; Check: 2 bad line ranges",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "Generate",
+                    "text": "Repairs = 2 → InvalidTourError",
+                    "mark": "bad"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "The values are made up, but the order is real. A decode error stops before Validate. `Validate` returns only its first error (`tour.go:163-193`). `Check` runs only after Validate passes. So problems can show up one layer at a time, and each layer uses up a repair.",
+              "basis": "inferred"
+            }
+          ]
+        },
+        {
+          "title": "What does run 2 know?",
+          "question": true,
+          "blocks": [
+            {
+              "p": "In run 2, Claude Code gets the list of problems and its previous JSON."
+            },
+            {
+              "p": "Does it still have the tour format that run 1 had: the block table, the rules for `basis`, and the chapter plan?"
+            }
+          ]
+        },
+        {
+          "title": "Answer: no. And after the last try, everything is dropped",
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/generate/generate.go",
+                "lines": [
+                  108,
+                  117
+                ],
+                "show": [
+                  108,
+                  118
+                ],
+                "marks": [
+                  {
+                    "line": 112,
+                    "text": "problems"
+                  },
+                  {
+                    "line": 115,
+                    "text": "previous JSON; no format, no rules"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "Each `Run` starts a new `claude` process (`claude.go:76`) with `--no-session-persistence` (`claude.go:51`) and no flag to resume. The workspace holds no format file (`workspace.go:17-20`). So for a problem like `unknown field \"marks\"`, the model has to guess the format from memory.",
+              "basis": "fact"
+            },
+            {
+              "p": "After the third failure, the user gets only an error, even though most of the tour may be fine. The viewer already shows a bad block as a ⚠ line instead of crashing (`blocks.go:56-58`). The user paid for three runs; the experiment notes record about $0.46–$0.55 for one run.",
+              "basis": "fact"
+            },
+            {
+              "snippet": {
+                "label": "Not in this repository: a suggested direction",
+                "lang": "go",
+                "text": "spec, _ := prompts.ReadFile(\"prompts/format.md\")\nres, err = backend.Run(ctx, ws.Dir,\n    repairPrompt(string(spec), previous, problems), onEvent)\n...\n// after MaxRepairs: if decode and Validate passed,\n// open the tour with its ⚠ blocks, but do not save it"
+              }
+            },
+            {
+              "p": "Check the fix before proposing it. Sending the spec fixes the \"model guesses\" problem. Opening the tour without saving matters: there is no command to force a rewrite, so a saved broken tour would stick. What remains: the user pays again on the next try. A test with a fake `Backend` (bad, bad, good) would pin the count of 2 repairs. The interface exists, but no test uses it.",
+              "basis": "inferred"
+            },
+            {
+              "p": "Weight: **suggestion**. Nothing is corrupted. The cost is money and a failure the user cannot act on.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Pressing q while the tour is being written",
+          "asks": [
+            "Could an orphaned claude still write a tour into the cache?"
+          ],
+          "blocks": [
+            {
+              "code": {
+                "file": "internal/ui/app.go",
+                "lines": [
+                  230,
+                  235
+                ],
+                "show": [
+                  229,
+                  235
+                ],
+                "marks": [
+                  {
+                    "line": 232,
+                    "text": "asks to stop"
+                  },
+                  {
+                    "line": 234,
+                    "text": "quits now; does not wait"
+                  }
+                ]
+              }
+            },
+            {
+              "timeline": {
+                "lanes": [
+                  "UI",
+                  "goroutine",
+                  "claude",
+                  "cache dir"
+                ],
+                "events": [
+                  {
+                    "lane": "cache dir",
+                    "text": "work/\u003ckey\u003e: base/ and head/ trees",
+                    "mark": "note"
+                  },
+                  {
+                    "lane": "UI",
+                    "text": "user presses q"
+                  },
+                  {
+                    "lane": "UI",
+                    "to": "goroutine",
+                    "text": "cancel()"
+                  },
+                  {
+                    "lane": "UI",
+                    "text": "tea.Quit → main returns → exit",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "goroutine",
+                    "text": "defer ws.Remove() never runs",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "cache dir",
+                    "text": "both trees stay on disk",
+                    "mark": "bad"
+                  },
+                  {
+                    "lane": "claude",
+                    "text": "killed only if exec saw ctx first",
+                    "mark": "note"
+                  }
+                ]
+              }
+            },
+            {
+              "p": "A junior reads `defer ws.Remove()` (`generate.go:127`) and assumes cleanup. But Go does not wait for goroutines when `main` returns, and nothing here waits for `doneMsg`. The copy stays until the same key is generated again, when `PrepareWorkspace` removes it first (`workspace.go:32`).",
+              "basis": "inferred"
+            },
+            {
+              "p": "Proposed fix: on q, call `cancel()`, show \"Cancelling…\", and quit when `doneMsg` arrives. Set `cmd.WaitDelay` in `Run` so a child process that keeps stdout open cannot hang the wait. Let a second q force the quit. Weight: **suggestion**. It leaves a full copy of the code in the cache folder for every cancelled branch.",
+              "basis": "opinion"
+            }
+          ]
+        },
+        {
+          "title": "Other suggestions, shorter",
+          "asks": [
+            "Why not always use origin/main as the default branch?"
+          ],
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "Weight",
+                  "Where",
+                  "What a senior sees"
+                ],
+                "rows": [
+                  [
+                    "Suggestion",
+                    "`git.go:203-205`",
+                    "If local `main` exists, it wins over `origin/main`. Local main last pulled 3 weeks ago + branch made from `origin/main` → old fork point → teammates' commits in the tour. The picker's commit count is the only hint."
+                  ],
+                  [
+                    "Suggestion",
+                    "`generate.go:27-28`",
+                    "`PromptVersion` is bumped by hand. If someone forgets, old tours are served with no error. Hashing the embedded prompts into the key removes that step. The format is also known in 3 places: `tour.go`, `prompts/format.md`, `render/check.go`."
+                  ],
+                  [
+                    "Suggestion",
+                    "`README.md:58`",
+                    "Says \"the code of the change is sent\". The model can read every committed file at both commits (`workspace.go:17-18`). The setup screen says \"the code of the repository\", and the README should match it."
+                  ],
+                  [
+                    "Suggestion",
+                    "`generate_test.go`",
+                    "No test drives `Generate` or `ClaudeCode.Run`. The repair count, the cost sum, and the stream parsing are unchecked."
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "All four were checked in the code. None of them corrupts data. Each makes the next change or the user's trust harder.",
+              "basis": "fact"
+            }
+          ]
+        },
+        {
+          "title": "Open questions and nits",
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "Weight",
+                  "Where",
+                  "Question"
+                ],
+                "rows": [
+                  [
+                    "Question",
+                    "`claude.go:45-55`",
+                    "Read-only depends on CLI flags checked on 2.1.291. Who checks again when the CLI updates? Does an unknown flag make `claude` exit with an error (closed) instead of being ignored (open)?"
+                  ],
+                  [
+                    "Question",
+                    "`claude.go:53`, `generate.go:115`",
+                    "The repair prompt carries the whole previous JSON (9–15k chars) as one argument. Does it fit the OS limit, especially on Windows? Can the CLI read the prompt from stdin instead?"
+                  ],
+                  [
+                    "Question",
+                    "`text.go:137`",
+                    "Model text goes to the terminal as-is. A `\\u001b` in JSON becomes ESC. Strip control characters in `parse`?"
+                  ],
+                  [
+                    "Question",
+                    "`app.go:31-50`",
+                    "The picker runs 3 git commands and reads 1 file per local branch before it shows anything. How many branches do users have?"
+                  ]
+                ]
+              }
+            },
+            {
+              "list": [
+                "Nit: progress events always say \"reading\" (`generate.go:133`), so the status leaves \"Fixing problems\" on the first file read (`app.go:195`).",
+                "Nit: only local branches count as branches (`main.go:189`). `tour origin/x` or a tag tours one commit.",
+                "Nit: the key uses hashes, but the saved tour stores branch names. Two branches at one commit share a tour that names the first branch.",
+                "Nit: there is no way to force a rewrite except deleting a hashed file. Two runs on one key share `work/\u003ckey\u003e` (`workspace.go:32`).",
+                "Nit: only a `.json` name plays a file now (`main.go:117`)."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Places a junior may worry about, but need not",
+          "blocks": [
+            {
+              "table": {
+                "head": [
+                  "Worry",
+                  "Why it is fine here",
+                  "Checked at"
+                ],
+                "rows": [
+                  [
+                    "No timeout on `claude`",
+                    "One local user who sees a clock and can press q",
+                    "`app.go:230-235`, `claude.go:76`"
+                  ],
+                  [
+                    "Retries pile up load",
+                    "At most 2 repairs, one process, one user",
+                    "`generate.go:31`, `145`"
+                  ],
+                  [
+                    "Playing a file skips first-run setup",
+                    "Playback never needs an LLM; setup still runs before generating",
+                    "`main.go:117-132`, `140-151`"
+                  ],
+                  [
+                    "Old config says `codex`",
+                    "Clear error that names it and points to `tour setup`",
+                    "`main.go:202-216`"
+                  ],
+                  [
+                    "Half-written cache file",
+                    "Load error → written again, no crash",
+                    "`app.go:144`"
+                  ],
+                  [
+                    "Path guard in `extract` looks paranoid",
+                    "Cheap, local, and it skips symlinks",
+                    "`workspace.go:73-76`"
+                  ]
+                ]
+              }
+            },
+            {
+              "p": "Each \"fine\" above points to the line that makes it fine. That is the difference between \"probably fine\" and \"fine\".",
+              "basis": "opinion"
+            },
+            {
+              "p": "In one sentence: the happy path keeps its promises, while the failure paths (repair, give-up, cancel) are where the promises get thin.",
+              "basis": "inferred"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Summary",
+      "steps": [
+        {
+          "title": "Did this make the codebase better?",
+          "blocks": [
+            {
+              "p": "Yes. It turns a player into a tool that writes tours. It keeps the read-only promise by design, and it puts a real check between model output and the viewer.",
+              "basis": "opinion"
+            },
+            {
+              "p": "No finding shows lost data or broken permissions from facts in this repository, so nothing is a must-fix.",
+              "basis": "inferred"
+            },
+            {
+              "list": [
+                "**Good**: the fork point is used everywhere (key, workspace, diff, viewer), and `workspace_test.go` guards the bug that once happened.",
+                "**Suggestion**: give the repair run the format, and on final failure open the tour with ⚠ blocks without saving it. Add a fake-`Backend` test for the loop.",
+                "**Suggestion**: on q, cancel and wait for the goroutine so `ws.Remove()` runs. Set `WaitDelay`.",
+                "**Question**: who re-checks the CLI flags and the argument length when Claude Code updates or on Windows?"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "What you practiced",
+          "blocks": [
+            {
+              "list": [
+                "You named the goal and the risks before reading lines, then let the code correct the guess.",
+                "You went outside the diff: `blocks.go` and the experiment notes explained why the fork point is everywhere.",
+                "You traced the repair loop with values and found that problems show up one layer at a time.",
+                "You did not trust a name: `defer ws.Remove()` looks like cleanup, but nothing waits for it.",
+                "You weighed each finding and showed the line behind every \"no need to worry\"."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
