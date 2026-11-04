@@ -59,7 +59,21 @@ Plans:
   4. User can set language, LLM, `minFiles` and CLI path in Settings, and sees a clear notice if the CLI or Claude Code is missing
   5. The extension builds into a VSIX that installs and runs on Windows
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Manifest, build/test tooling, route icon, settings module, git change model with temp-repo tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — CLI/Claude detection, grouped QuickPick, TOUR tree, activation and internal routing commands
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — Activation smoke test, README, VSIX package + contents check, local install via code CLI
+
 **UI hint**: yes
 
 ### Phase 3: Small-change rule
@@ -162,7 +176,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Verify diff-tour CLI JSON + headless fork | 3/3 | Complete    | 2026-11-04 |
-| 2. Extension skeleton + change picker | 0/TBD | Not started | - |
+| 2. Extension skeleton + change picker | 0/3 | Not started | - |
 | 3. Small-change rule | 0/TBD | Not started | - |
 | 4. CLI runner, Writing progress, tour cache | 0/TBD | Not started | - |
 | 5. Document layout, outline tree, tour state | 0/TBD | Not started | - |
