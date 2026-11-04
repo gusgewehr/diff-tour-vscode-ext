@@ -103,7 +103,20 @@ Plans:
   4. When done, user gets "Your tour is ready"; choosing it later under SAVED opens with no LLM call, and an existing tour of the same change offers "Skip to the tour"
   5. Failures (not signed in, invalid after repairs, git errors) show a readable message with the next action
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Pure core: JSONL reducer, error mapping, runner with stdin-EOF + taskkill cancel, atomic tour cache, fake-tour fixture replay tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — Writing Webview: shared nonce/CSP helper, WritingPanel controller, stage cards, READING NOW log, EXPORT DIRECTORY card, Cancel/Skip
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-03-PLAN.md — Wire startTour: notification, status bar, cache on done, "Your tour is ready", error actions, Skip; smoke, package, reinstall VSIX
 **UI hint**: yes
 
 ### Phase 5: Document layout, outline tree, tour state
