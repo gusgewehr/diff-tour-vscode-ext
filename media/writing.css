@@ -1,0 +1,29 @@
+body { font-family: var(--vscode-font-family); color: var(--vscode-foreground); background: var(--vscode-editor-background); padding: 16px 24px; }
+h1 { font-size: 1.4em; margin: 0; }
+h2 { font-size: 0.8em; letter-spacing: 0.08em; color: var(--vscode-descriptionForeground); margin: 20px 0 6px; }
+header .label { color: var(--vscode-descriptionForeground); margin-top: 2px; }
+.stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+.stage { border: 1px dashed var(--vscode-panel-border); border-radius: 6px; padding: 10px 12px; }
+.stage.active { border: 1px solid var(--vscode-focusBorder); }
+.stage.done { border: 1px solid var(--vscode-panel-border); }
+.stage-title { font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.stage p { margin: 6px 0 0; font-size: 0.9em; color: var(--vscode-descriptionForeground); }
+.stage p.repair { color: var(--vscode-foreground); }
+.stage.todo { opacity: 0.7; }
+.mark { color: var(--vscode-testing-iconPassed); }
+.spinner { width: 12px; height: 12px; border: 2px solid var(--vscode-focusBorder); border-top-color: transparent; border-radius: 50%; animation: rot 0.9s linear infinite; }
+@keyframes rot { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+.log { font-family: var(--vscode-editor-font-family); font-size: 0.9em; max-height: 40vh; overflow-y: auto; border: 1px solid var(--vscode-panel-border); border-radius: 4px; padding: 6px 8px; }
+.row { display: flex; gap: 10px; padding: 1px 0; }
+.row .time, .row .tool { color: var(--vscode-descriptionForeground); }
+.row .path { flex: 1; word-break: break-all; }
+.tag { background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); border-radius: 8px; padding: 0 8px; font-size: 0.85em; }
+.empty { color: var(--vscode-descriptionForeground); }
+.export ul { margin: 0; padding-left: 20px; font-family: var(--vscode-editor-font-family); }
+.note { color: var(--vscode-descriptionForeground); font-size: 0.9em; }
+.actions { display: flex; gap: 8px; margin-top: 20px; }
+button { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 6px 14px; cursor: pointer; border-radius: 2px; }
+button:hover { background: var(--vscode-button-hoverBackground); }
+button.secondary { background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+button.secondary:hover { background: var(--vscode-button-secondaryHoverBackground); }
