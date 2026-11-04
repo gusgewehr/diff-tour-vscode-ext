@@ -201,7 +201,7 @@ export async function missingNotice(what: string[], messages: string[], deps: De
   const dirs = [deps.extensionPath, ...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath)];
   const fork = dirs.map((d) => path.join(d, 'cli', 'FORK.md')).find((p) => fs.existsSync(p));
   if (fork) { await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fork)); return; }
-  const lines = ['Build the fork: cd cli && go build -o bin/tour.exe ./cmd/tour, then set difftour.cliPath.'];
+  const lines = ['Build the forked CLI from the diff-tour-vscode repository (cd cli && go build -o bin/tour.exe ./cmd/tour), then set difftour.cliPath to the full path of that tour.exe.'];
   if (what.includes('claude')) lines.push('Install Claude Code: npm install -g @anthropic-ai/claude-code, then run claude once.');
   void vscode.window.showInformationMessage(lines.join(' '), { modal: true });
 }

@@ -38,7 +38,8 @@ export function activate(context: vscode.ExtensionContext): void {
     cwd: () => model.cwd, hideSmall: () => small.hide(), refresh: () => void model.refresh(), output,
   }).catch(err));
   reg('difftour.internal.revealWriting', () => revealWriting());
-  reg('difftour.internal.openSavedTour', (p: string) => tours.open(p).catch(err));
+  // the tour reads code from model.cwd, which is only set once the change model has loaded
+  reg('difftour.internal.openSavedTour', (p: string) => model.ensureLoaded().then(() => tours.open(p)).catch(err));
   reg('difftour.internal.revealTour', () => tours.reveal());
   reg('difftour.internal.gotoStep', (i: unknown) => { if (typeof i === 'number' && Number.isInteger(i)) tours.goto(i); });
   registerCodeOpen(context, tours, () => model.cwd);
@@ -57,7 +58,7 @@ export function activate(context: vscode.ExtensionContext): void {
   }), vscode.window.registerWebviewPanelSerializer('difftour.tour', {
     async deserializeWebviewPanel(panel: vscode.WebviewPanel, state: unknown) {
       const p = (state as { path?: unknown } | undefined)?.path;
-      if (typeof p === 'string' && fs.existsSync(p)) await tours.open(p, panel); else panel.dispose();
+      if (typeof p === 'string' && fs.existsSync(p)) { await model.ensureLoaded(); await tours.open(p, panel); } else panel.dispose();
     },
   }));
 
