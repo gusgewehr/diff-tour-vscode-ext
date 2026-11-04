@@ -112,7 +112,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — Writing Webview: shared nonce/CSP helper, WritingPanel controller, stage cards, READING NOW log, EXPORT DIRECTORY card, Cancel/Skip
+- [x] 04-02-PLAN.md — Writing Webview: shared nonce/CSP helper, WritingPanel controller, stage cards, READING NOW log, EXPORT DIRECTORY card, Cancel/Skip
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
