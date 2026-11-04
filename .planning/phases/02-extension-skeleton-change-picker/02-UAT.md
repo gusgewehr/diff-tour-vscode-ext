@@ -1,5 +1,5 @@
 ---
-status: testing
+status: partial
 phase: 02-extension-skeleton-change-picker
 source: [02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md]
 started: 2026-11-04T12:55:48.354Z

@@ -1,5 +1,5 @@
 ---
-status: testing
+status: partial
 phase: 06-difftour-read-only-provider-side-by-side-diff
 source: [06-01-SUMMARY.md, 06-02-SUMMARY.md]
 started: 2026-11-04T12:55:48.354Z

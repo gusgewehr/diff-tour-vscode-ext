@@ -1,5 +1,5 @@
 ---
-status: testing
+status: partial
 phase: 04-cli-runner-writing-progress-tour-cache
 source: [04-01-SUMMARY.md, 04-02-SUMMARY.md, 04-03-SUMMARY.md]
 started: 2026-11-04T12:55:48.354Z

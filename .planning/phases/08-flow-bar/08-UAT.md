@@ -1,5 +1,5 @@
 ---
-status: testing
+status: partial
 phase: 08-flow-bar
 source: [08-01-SUMMARY.md]
 started: 2026-11-04T12:55:48.354Z

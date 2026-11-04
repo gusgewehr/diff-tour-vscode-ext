@@ -1,5 +1,5 @@
 ---
-status: testing
+status: partial
 phase: 05-document-layout-outline-tree-tour-state
 source: [05-01-SUMMARY.md, 05-02-SUMMARY.md, 05-03-SUMMARY.md]
 started: 2026-11-04T12:55:48.354Z

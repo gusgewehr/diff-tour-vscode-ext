@@ -1,5 +1,5 @@
 ---
-status: testing
+status: partial
 phase: 03-small-change-rule
 source: [03-01-SUMMARY.md]
 started: 2026-11-04T12:55:48.354Z
