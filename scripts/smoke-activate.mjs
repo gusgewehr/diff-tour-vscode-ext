@@ -10,6 +10,7 @@ const views = [];
 const handlers = new Map();
 const execs = [];
 const posts = [];
+const warnings = [];
 const panel = { title: '', onMsg: undefined, onDispose: undefined };
 const memento = new Map();
 let failed = '';
@@ -28,6 +29,9 @@ const base = {
     registerWebviewPanelSerializer: () => dispose,
     showErrorMessage: async (m) => { console.error('showErrorMessage:', m); },
     showInformationMessage: async () => undefined,
+    showWarningMessage: async (m) => { warnings.push(m); },
+    onDidChangeActiveTextEditor: () => dispose,
+    visibleTextEditors: [],
     createWebviewPanel: (_t, title) => {
       panel.title = title;
       panel.html = '';
@@ -86,13 +90,22 @@ try {
   const key = [...memento.keys()].find((k) => k.startsWith('difftour.state.file-'));
   assert.ok(key, 'state key'); assert.equal(memento.get(key).step, 1);
   assert.ok(execs.some((a) => a[0] === 'setContext' && a[1] === 'difftour.tourActive' && a[2] === true), 'context true');
+  const tid = key.slice('difftour.state.'.length);
+  const diffs = () => execs.filter((a) => a[0] === 'vscode.diff').length;
+  const w0 = warnings.length;
+  await handlers.get('difftour.internal.openCode')({ tourId: tid, file: 'a.ts', at: 'head', lines: [1, 2] });
+  await handlers.get('difftour.internal.openCode')({ tourId: 'wrong', file: 'a.ts', at: 'head', lines: [1, 2] });
+  await handlers.get('difftour.internal.openCode')({ bogus: 1 });
+  assert.equal(diffs(), 0, 'no diff without toured SHAs / matching id');
+  assert.equal(warnings.length - w0, 3, 'warning path ran');
+  for (const c of ['backToStep', 'prevStep', 'nextStep']) await handlers.get('difftour.' + c)();
   panel.onDispose();
   assert.ok(execs.some((a) => a[0] === 'setContext' && a[2] === false), 'context false');
 } catch (e) { failed = `exception: ${e?.stack ?? e}`; }
 
-const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.revealWriting', 'difftour.internal.openSavedTour', 'difftour.internal.revealTour', 'difftour.internal.gotoStep', 'difftour.internal.openCode'];
+const want = ['difftour.tourChange', 'difftour.refreshChanges', 'difftour.internal.choose', 'difftour.internal.openSmallChange', 'difftour.internal.openSmallChangeFile', 'difftour.internal.startTour', 'difftour.internal.revealWriting', 'difftour.internal.openSavedTour', 'difftour.internal.revealTour', 'difftour.internal.gotoStep', 'difftour.internal.openCode', 'difftour.backToStep', 'difftour.prevStep', 'difftour.nextStep'];
 const missing = want.filter((c) => !commands.includes(c)).concat(['difftour.changes', 'difftour.smallChange', 'difftour.outline'].filter((v) => !views.includes(v)).map((v) => `view ${v}`));
 if (failed || missing.length) {
   console.error(`smoke FAILED: ${failed} missing: ${missing.join(', ')}`);
   process.exitCode = 1;
-} else console.log('smoke ok: 11 commands, 3 views, tour opened');
+} else console.log('smoke ok: 14 commands, 3 views, tour opened');

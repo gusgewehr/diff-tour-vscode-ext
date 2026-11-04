@@ -8,7 +8,9 @@
     "vscode": "^1.110.0"
   },
   "main": "./dist/extension.js",
-  "activationEvents": ["onWebviewPanel:difftour.tour"],
+  "activationEvents": [
+    "onWebviewPanel:difftour.tour"
+  ],
   "categories": [
     "Other"
   ],
@@ -31,6 +33,24 @@
         "title": "Refresh changes",
         "category": "diff-tour",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "difftour.backToStep",
+        "title": "Back to step",
+        "category": "diff-tour",
+        "icon": "$(arrow-left)"
+      },
+      {
+        "command": "difftour.prevStep",
+        "title": "Previous step",
+        "category": "diff-tour",
+        "icon": "$(chevron-left)"
+      },
+      {
+        "command": "difftour.nextStep",
+        "title": "Next step",
+        "category": "diff-tour",
+        "icon": "$(chevron-right)"
       }
     ],
     "keybindings": [
@@ -38,6 +58,11 @@
         "command": "difftour.tourChange",
         "key": "ctrl+alt+t",
         "mac": "cmd+alt+t"
+      },
+      {
+        "command": "difftour.backToStep",
+        "key": "escape",
+        "when": "difftour.inTourCode && editorTextFocus && !editorHasSelection && !findWidgetVisible && !suggestWidgetVisible && !inSnippetMode"
       }
     ],
     "viewsContainers": {
@@ -78,6 +103,37 @@
           "command": "difftour.tourChange",
           "when": "view == difftour.changes",
           "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "difftour.backToStep",
+          "when": "difftour.inTourCode",
+          "group": "navigation@1"
+        },
+        {
+          "command": "difftour.prevStep",
+          "when": "difftour.inTourCode",
+          "group": "navigation@2"
+        },
+        {
+          "command": "difftour.nextStep",
+          "when": "difftour.inTourCode",
+          "group": "navigation@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "difftour.backToStep",
+          "when": "difftour.inTourCode"
+        },
+        {
+          "command": "difftour.prevStep",
+          "when": "difftour.inTourCode"
+        },
+        {
+          "command": "difftour.nextStep",
+          "when": "difftour.inTourCode"
         }
       ]
     },
