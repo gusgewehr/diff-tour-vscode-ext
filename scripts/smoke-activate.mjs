@@ -14,6 +14,8 @@ const warnings = [];
 const clipboard = [];
 const panel = { title: '', onMsg: undefined, onDispose: undefined };
 const memento = new Map();
+const viewProviders = new Map();
+const flowPosts = [];
 let failed = '';
 process.on('unhandledRejection', (e) => { failed = `unhandledRejection: ${e}`; process.exitCode = 1; });
 
@@ -28,6 +30,7 @@ const base = {
   commands: { registerCommand: (id, fn) => { commands.push(id); handlers.set(id, fn); return dispose; }, executeCommand: async (...a) => { execs.push(a); return undefined; } },
   window: {
     registerWebviewPanelSerializer: () => dispose,
+    registerWebviewViewProvider: (id, p) => { viewProviders.set(id, p); return dispose; },
     setStatusBarMessage: () => dispose,
     showErrorMessage: async (m) => { console.error('showErrorMessage:', m); },
     showInformationMessage: async () => undefined,
@@ -106,6 +109,17 @@ try {
   assert.equal(diffs(), 0, 'no diff without toured SHAs / matching id');
   assert.equal(warnings.length - w0, 3, 'warning path ran');
   for (const c of ['backToStep', 'prevStep', 'nextStep']) await handlers.get('difftour.' + c)();
+  assert.ok(viewProviders.has('difftour.flowBar'), 'flow view provider');
+  let fmsg; const fhtml = { v: '' };
+  viewProviders.get('difftour.flowBar').resolveWebviewView({ show() {}, onDidDispose() {}, webview: { cspSource: 'vscode-resource:', options: {}, set html(v) { fhtml.v = v; }, get html() { return fhtml.v; }, asWebviewUri: (u) => ({ toString: () => 'vscode-resource:' + u.fsPath }), postMessage: async (m) => { flowPosts.push(m); return true; }, onDidReceiveMessage: (fn) => { fmsg = fn; return dispose; } } });
+  assert.ok(fhtml.v.includes('flow.js') && fhtml.v.includes("script-src 'nonce-"), 'flow html');
+  fmsg({ type: 'ready' }); await settle();
+  assert.equal(flowPosts.at(-1).type, 'bar'); assert.ok(Array.isArray(flowPosts.at(-1).paths));
+  const fn = flowPosts.length;
+  fmsg({ type: 'click', path: 'x' }); fmsg(null); fmsg({ type: 'click', path: 99, node: 99 }); await settle();
+  assert.equal(flowPosts.length, fn, 'invalid flow messages ignored');
+  const pj = JSON.parse((await import('node:fs')).readFileSync(path.join(root, 'package.json'), 'utf8')).contributes;
+  assert.ok(pj.viewsContainers.panel.some((c) => c.id === 'difftourFlow') && pj.views.difftourFlow.some((v) => v.id === 'difftour.flowBar'), 'flow contributions');
   panel.onDispose();
   assert.ok(execs.some((a) => a[0] === 'setContext' && a[2] === false), 'context false');
 } catch (e) { failed = `exception: ${e?.stack ?? e}`; }
@@ -115,4 +129,4 @@ const missing = want.filter((c) => !commands.includes(c)).concat(['difftour.chan
 if (failed || missing.length) {
   console.error(`smoke FAILED: ${failed} missing: ${missing.join(', ')}`);
   process.exitCode = 1;
-} else console.log('smoke ok: 14 commands, 3 views, tour opened');
+} else console.log('smoke ok: 14 commands, 3 views, flow bar view, tour opened');
