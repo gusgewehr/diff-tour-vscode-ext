@@ -104,6 +104,24 @@ export async function countFiles(cwd: string, baseSha: string, headSha: string):
   return (await git(cwd, ['diff', '--name-only', '-z', baseSha, headSha])).split('\0').filter(Boolean).length;
 }
 
+export interface ChangedFile { status: string; path: string; oldPath?: string }
+
+export function parseNameStatus(out: string): ChangedFile[] {
+  const t = out.split('\0');
+  const files: ChangedFile[] = [];
+  for (let i = 0; i < t.length && t[i]; ) {
+    const status = t[i][0];
+    if (status === 'R' || status === 'C') { files.push({ status, oldPath: t[i + 1], path: t[i + 2] }); i += 3; }
+    else { files.push({ status, path: t[i + 1] }); i += 2; }
+  }
+  return files;
+}
+
+export async function listChangedFiles(cwd: string, baseSha: string, headSha: string): Promise<ChangedFile[]> {
+  if (baseSha.startsWith('-') || headSha.startsWith('-')) throw new Error('invalid ref');
+  return parseNameStatus(await git(cwd, ['diff', '--name-status', '-z', '-M', baseSha, headSha]));
+}
+
 export async function resolveTarget(cwd: string, kind: TargetKind, label: string, base: string, head: string): Promise<Target> {
   if (base.startsWith('-') || head.startsWith('-')) throw new Error(`${label}: invalid ref`);
   const headSha = (await git(cwd, ['rev-parse', '--verify', `${head}^{commit}`])).trim();

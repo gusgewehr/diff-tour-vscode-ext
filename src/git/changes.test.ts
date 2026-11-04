@@ -6,7 +6,7 @@ import * as path from 'node:path';
 import { execFile } from 'node:child_process';
 import {
   git, detectBase, resolveTarget, compareCandidates, parseLog, parseRange, describeCount,
-  listSavedTours, listPrs, fetchPr, mapLimit, countFiles, recentCommits,
+  listSavedTours, listPrs, fetchPr, mapLimit, countFiles, recentCommits, parseNameStatus, listChangedFiles,
 } from './changes';
 
 const dirs: string[] = [];
@@ -121,4 +121,29 @@ test('mapLimit', async () => {
   const r = await mapLimit([1, 2, 3, 4, 5], 2, async (n) => { cur++; max = Math.max(max, cur); await new Promise((x) => setTimeout(x, 5)); cur--; return n * 2; });
   assert.deepEqual(r, [2, 4, 6, 8, 10]);
   assert.ok(max <= 2);
+});
+
+test('parseNameStatus', () => {
+  assert.deepEqual(parseNameStatus('M\0a.ts\0A\0b.ts\0D\0c.ts\0R100\0old.ts\0new.ts\0'), [
+    { status: 'M', path: 'a.ts' }, { status: 'A', path: 'b.ts' }, { status: 'D', path: 'c.ts' },
+    { status: 'R', path: 'new.ts', oldPath: 'old.ts' },
+  ]);
+  assert.deepEqual(parseNameStatus(''), []);
+});
+
+test('listChangedFiles M A D R', async () => {
+  const r = await mkRepo();
+  const w = (f: string, c: string) => fs.writeFileSync(path.join(r, f), c);
+  w('m', 'm1\n'); w('d', 'd1\n'); w('old', 'rename me with enough content\nline2\nline3\n');
+  await git(r, ['add', '-A']); await git(r, ['commit', '-m', 'a']);
+  const base = (await git(r, ['rev-parse', 'HEAD'])).trim();
+  w('m', 'm2\n'); fs.rmSync(path.join(r, 'd')); w('n', 'new\n');
+  await git(r, ['mv', 'old', 'renamed']);
+  await git(r, ['add', '-A']); await git(r, ['commit', '-m', 'b']);
+  const head = (await git(r, ['rev-parse', 'HEAD'])).trim();
+  const by = Object.fromEntries((await listChangedFiles(r, base, head)).map((f) => [f.path, f]));
+  assert.equal(by['m'].status, 'M');
+  assert.equal(by['n'].status, 'A');
+  assert.equal(by['d'].status, 'D');
+  assert.deepEqual(by['renamed'], { status: 'R', path: 'renamed', oldPath: 'old' });
 });
