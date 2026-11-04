@@ -6,7 +6,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 
 ## Phases
 
-- [ ] **Phase 1: Verify diff-tour CLI JSON + headless fork** - Document the real tour schema, fork the CLI for headless JSON/JSONL output, prove it on Windows with Claude Code
+- [x] **Phase 1: Verify diff-tour CLI JSON + headless fork** - Document the real tour schema, fork the CLI for headless JSON/JSONL output, prove it on Windows with Claude Code (completed 2026-11-04)
 - [ ] **Phase 2: Extension skeleton + change picker** - Settings, TOUR view container, "Tour a change" QuickPick, VSIX build
 - [ ] **Phase 3: Small-change rule** - Changes under `minFiles` open in the standard `vscode.diff` with no LLM call
 - [ ] **Phase 4: CLI runner, Writing progress, tour cache** - Run the fork with a cancellable Writing view and cache the tour
@@ -44,7 +44,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Windows proof: cancel tests, 3 real Claude Code tours as fixtures, flow-mapping decision
+- [x] 01-03-PLAN.md — Windows proof: cancel tests, 3 real Claude Code tours as fixtures, flow-mapping decision
 
 ### Phase 2: Extension skeleton + change picker
 
@@ -161,7 +161,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Verify diff-tour CLI JSON + headless fork | 2/3 | In Progress|  |
+| 1. Verify diff-tour CLI JSON + headless fork | 3/3 | Complete   | 2026-11-04 |
 | 2. Extension skeleton + change picker | 0/TBD | Not started | - |
 | 3. Small-change rule | 0/TBD | Not started | - |
 | 4. CLI runner, Writing progress, tour cache | 0/TBD | Not started | - |

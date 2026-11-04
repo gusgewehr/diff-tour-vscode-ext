@@ -12,8 +12,8 @@
 - [x] **CLI-03**: The fork emits a JSONL progress stream on stdout: stage changes (export, write, check, show), each LLM tool read (tool, path, NOT IN DIFF / BASE tag), repairs, done, error. Human text goes to stderr
 - [x] **CLI-04**: The fork accepts the LLM provider and language as flags, so no interactive setup runs
 - [x] **CLI-05**: Closing stdin or killing the fork stops generation and the LLM child process tree on Windows, leaving no orphan processes or export directories
-- [ ] **CLI-06**: A headless run on Windows with Claude Code produces a valid tour of a 10+ file change, and at least 3 real tours are saved as test fixtures
-- [ ] **CLI-07**: A decision is recorded, based on the sampled real tours, for the flow node → file → step mapping: derive it from code blocks, or add optional `file`/`lines` to flow nodes in the fork
+- [x] **CLI-06**: A headless run on Windows with Claude Code produces a valid tour of a 10+ file change, and at least 3 real tours are saved as test fixtures
+- [x] **CLI-07**: A decision is recorded, based on the sampled real tours, for the flow node → file → step mapping: derive it from code blocks, or add optional `file`/`lines` to flow nodes in the fork
 
 ### PICK: skeleton and change picker
 
@@ -126,8 +126,8 @@
 | CLI-03 | Phase 1 | Complete |
 | CLI-04 | Phase 1 | Complete |
 | CLI-05 | Phase 1 | Complete |
-| CLI-06 | Phase 1 | Pending |
-| CLI-07 | Phase 1 | Pending |
+| CLI-06 | Phase 1 | Complete |
+| CLI-07 | Phase 1 | Complete |
 | PICK-01 | Phase 2 | Pending |
 | PICK-02 | Phase 2 | Pending |
 | PICK-03 | Phase 2 | Pending |
