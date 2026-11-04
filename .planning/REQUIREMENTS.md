@@ -17,14 +17,14 @@
 
 ### PICK: skeleton and change picker
 
-- [ ] **PICK-01**: User can run "Tour a change" from the command palette and a keybinding that does not shadow a default VS Code binding
-- [ ] **PICK-02**: The QuickPick groups changes as COMPARED WITH main (current branch, committed only, other branches), SAVED (saved tours), OTHER (a single commit…, a range…, a saved tour file…)
-- [ ] **PICK-03**: Each change item shows its changed-file count and outcome (`14 files · tour` / `3 files · opens git diff`), and the footer explains cost/time ("A new tour takes 2 to 5 minutes…")
-- [ ] **PICK-04**: PRs with review requested appear as a group when the `gh` CLI is available, and the group is hidden otherwise
-- [ ] **PICK-05**: A TOUR view container in the activity bar lists the same groups
-- [ ] **PICK-06**: User can configure `difftour.language`, `difftour.llm` (default Claude Code), `difftour.minFiles` (default 10) and the CLI path in Settings
-- [ ] **PICK-07**: If the forked CLI or Claude Code is not found, user sees a notice saying what is missing and how to install it
-- [ ] **PICK-08**: The extension builds into a VSIX that installs and runs on Windows
+- [x] **PICK-01**: User can run "Tour a change" from the command palette and a keybinding that does not shadow a default VS Code binding
+- [x] **PICK-02**: The QuickPick groups changes as COMPARED WITH main (current branch, committed only, other branches), SAVED (saved tours), OTHER (a single commit…, a range…, a saved tour file…)
+- [x] **PICK-03**: Each change item shows its changed-file count and outcome (`14 files · tour` / `3 files · opens git diff`), and the footer explains cost/time ("A new tour takes 2 to 5 minutes…")
+- [x] **PICK-04**: PRs with review requested appear as a group when the `gh` CLI is available, and the group is hidden otherwise
+- [x] **PICK-05**: A TOUR view container in the activity bar lists the same groups
+- [x] **PICK-06**: User can configure `difftour.language`, `difftour.llm` (default Claude Code), `difftour.minFiles` (default 10) and the CLI path in Settings
+- [x] **PICK-07**: If the forked CLI or Claude Code is not found, user sees a notice saying what is missing and how to install it
+- [x] **PICK-08**: The extension builds into a VSIX that installs and runs on Windows
 
 ### SMALL: small-change rule
 
@@ -128,14 +128,14 @@
 | CLI-05 | Phase 1 | Complete |
 | CLI-06 | Phase 1 | Complete |
 | CLI-07 | Phase 1 | Complete |
-| PICK-01 | Phase 2 | Pending |
-| PICK-02 | Phase 2 | Pending |
-| PICK-03 | Phase 2 | Pending |
-| PICK-04 | Phase 2 | Pending |
-| PICK-05 | Phase 2 | Pending |
-| PICK-06 | Phase 2 | Pending |
-| PICK-07 | Phase 2 | Pending |
-| PICK-08 | Phase 2 | Pending |
+| PICK-01 | Phase 2 | Complete |
+| PICK-02 | Phase 2 | Complete |
+| PICK-03 | Phase 2 | Complete |
+| PICK-04 | Phase 2 | Complete |
+| PICK-05 | Phase 2 | Complete |
+| PICK-06 | Phase 2 | Complete |
+| PICK-07 | Phase 2 | Complete |
+| PICK-08 | Phase 2 | Complete |
 | SMALL-01 | Phase 3 | Pending |
 | SMALL-02 | Phase 3 | Pending |
 | SMALL-03 | Phase 3 | Pending |
