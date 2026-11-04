@@ -10,6 +10,7 @@ import { startTour, revealWriting } from './cli/startTour';
 import { TourController } from './tour/controller';
 import { registerCodeOpen } from './tour/openCode';
 import { OutlineTree } from './views/outlineTree';
+import { FlowBarView } from './views/flowBarView';
 
 export function activate(context: vscode.ExtensionContext): void {
   const deps: Deps = {
@@ -41,6 +42,14 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('difftour.internal.revealTour', () => tours.reveal());
   reg('difftour.internal.gotoStep', (i: unknown) => { if (typeof i === 'number' && Number.isInteger(i)) tours.goto(i); });
   registerCodeOpen(context, tours, () => model.cwd);
+  const flowBar = new FlowBarView(context.extensionUri, () => tours.session, () => tours.reveal());
+  let wasActive = false;
+  context.subscriptions.push(vscode.window.registerWebviewViewProvider(FlowBarView.viewType, flowBar, { webviewOptions: { retainContextWhenHidden: true } }), tours.onDidChange(() => {
+    flowBar.refresh();
+    const active = !!tours.session;
+    if (active && !wasActive) flowBar.show();
+    wasActive = active;
+  }));
   const outline = vscode.window.createTreeView('difftour.outline', { treeDataProvider: new OutlineTree(tours) });
   context.subscriptions.push(outline, tours.onDidChange(() => {
     const t = tours.session;

@@ -72,6 +72,13 @@
           "title": "Tour",
           "icon": "media/route.svg"
         }
+      ],
+      "panel": [
+        {
+          "id": "difftourFlow",
+          "title": "Tour flow",
+          "icon": "media/route.svg"
+        }
       ]
     },
     "views": {
@@ -89,6 +96,14 @@
           "id": "difftour.smallChange",
           "name": "Small change",
           "when": "difftour.hasSmallChange"
+        }
+      ],
+      "difftourFlow": [
+        {
+          "type": "webview",
+          "id": "difftour.flowBar",
+          "name": "Tour flow",
+          "when": "difftour.tourActive"
         }
       ]
     },
@@ -205,7 +220,7 @@
     }
   },
   "scripts": {
-    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node22 --external:vscode --sourcemap --outfile=dist/extension.js && esbuild src/webview/writing/main.ts --bundle --platform=browser --format=iife --target=es2022 --minify --outfile=dist/webview/writing.js && esbuild src/webview/tour/main.ts --bundle --platform=browser --format=iife --target=es2022 --minify --outfile=dist/webview/tour.js",
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node22 --external:vscode --sourcemap --outfile=dist/extension.js && esbuild src/webview/writing/main.ts --bundle --platform=browser --format=iife --target=es2022 --minify --outfile=dist/webview/writing.js && esbuild src/webview/tour/main.ts --bundle --platform=browser --format=iife --target=es2022 --minify --outfile=dist/webview/tour.js && esbuild src/webview/flow/main.ts --bundle --platform=browser --format=iife --target=es2022 --minify --outfile=dist/webview/flow.js",
     "typecheck": "tsc --noEmit",
     "test": "esbuild \"src/**/*.test.ts\" --bundle --platform=node --format=cjs --target=node22 --external:vscode --outdir=dist-test && node --test \"dist-test/**/*.test.js\"",
     "smoke": "node scripts/smoke-activate.mjs",

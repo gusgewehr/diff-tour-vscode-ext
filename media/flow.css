@@ -1,0 +1,32 @@
+body { padding: 0; margin: 0; }
+#root {
+  display: flex; flex-direction: row; align-items: center; gap: 6px;
+  height: 48px; padding: 0 10px; box-sizing: border-box;
+  overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+  font-family: var(--vscode-font-family); font-size: var(--vscode-font-size);
+  color: var(--vscode-foreground);
+}
+.label { text-transform: uppercase; font-size: 10px; letter-spacing: .08em; color: var(--vscode-descriptionForeground); flex: 0 0 auto; }
+.label.on { color: var(--vscode-focusBorder); }
+.arrow { color: var(--vscode-descriptionForeground); flex: 0 0 auto; }
+.sep { width: 1px; height: 24px; background: var(--vscode-panel-border); flex: 0 0 auto; margin: 0 4px; }
+.chip {
+  height: 30px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto;
+  display: inline-flex; align-items: center; gap: 6px; padding: 0 10px;
+  font: inherit; color: inherit; cursor: pointer;
+  background: var(--vscode-editorWidget-background, transparent);
+  border: 1px solid var(--vscode-panel-border); border-left: 3px solid var(--vscode-disabledForeground);
+  border-radius: 3px;
+}
+.chip .text { overflow: hidden; text-overflow: ellipsis; }
+.chip.kind-new { border-left-color: var(--vscode-charts-green); }
+.chip.kind-changed { border-left-color: var(--vscode-charts-orange); }
+.chip.kind-same { border-left-color: var(--vscode-disabledForeground); }
+.chip.kind-external { border: 1px dashed var(--vscode-disabledForeground); cursor: default; }
+.chip.visited { opacity: .7; }
+.chip.current {
+  flex: 0 0 auto; max-width: none; opacity: 1;
+  border-color: var(--vscode-focusBorder);
+  background: color-mix(in srgb, var(--vscode-focusBorder) 15%, transparent);
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--vscode-focusBorder); flex: 0 0 auto; }
