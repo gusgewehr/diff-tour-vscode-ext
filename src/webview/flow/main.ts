@@ -17,17 +17,20 @@ function span(cls: string, text = ''): HTMLSpanElement {
 function render(b: Bar): void {
   const kids: Node[] = [span('label' + (b.active ? ' on' : ''), S.flow)];
   let cur: HTMLElement | undefined;
+  // one row per flow, stacked top to bottom
   b.paths.forEach((path, pi) => {
-    if (pi) kids.push(span('sep'));
+    const row = document.createElement('div');
+    row.className = 'row';
+    kids.push(row);
     path.forEach((n, ni) => {
-      if (ni) kids.push(span('arrow', '→'));
+      if (ni) row.append(span('arrow', '→'));
       const c = document.createElement('button');
       c.className = `chip kind-${n.kind}` + (n.current ? ' current' : '') + (n.visited ? ' visited' : '');
       c.title = n.tip;
       if (n.current) { c.append(span('dot')); cur = c; }
       c.append(span('text', n.label));
       if (n.kind !== 'external') c.addEventListener('click', () => vscode.postMessage({ type: 'click', path: pi, node: ni }));
-      kids.push(c);
+      row.append(c);
     });
   });
   root.replaceChildren(...kids);

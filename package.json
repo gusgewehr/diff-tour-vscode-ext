@@ -2,7 +2,7 @@
   "name": "diff-tour",
   "displayName": "diff-tour",
   "publisher": "difftour",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "%description%",
   "engines": {
     "vscode": "^1.110.0"

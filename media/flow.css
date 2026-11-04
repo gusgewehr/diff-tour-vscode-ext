@@ -1,15 +1,15 @@
 body { padding: 0; margin: 0; }
 #root {
-  display: flex; flex-direction: row; align-items: center; gap: 6px;
-  height: 48px; padding: 0 10px; box-sizing: border-box;
-  overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+  display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+  padding: 6px 10px; box-sizing: border-box;
+  overflow-y: auto; white-space: nowrap;
   font-family: var(--vscode-font-family); font-size: var(--vscode-font-size);
   color: var(--vscode-foreground);
 }
-.label { text-transform: uppercase; font-size: 10px; letter-spacing: .08em; color: var(--vscode-descriptionForeground); flex: 0 0 auto; }
+.row { display: flex; flex-direction: row; align-items: center; gap: 6px; flex: 0 0 auto; min-height: 36px; overflow-x: auto; overflow-y: hidden; }
+.label { align-self: flex-start; text-transform: uppercase; font-size: 10px; letter-spacing: .08em; color: var(--vscode-descriptionForeground); flex: 0 0 auto; }
 .label.on { color: var(--vscode-focusBorder); }
 .arrow { color: var(--vscode-descriptionForeground); flex: 0 0 auto; }
-.sep { width: 1px; height: 24px; background: var(--vscode-panel-border); flex: 0 0 auto; margin: 0 4px; }
 .chip {
   height: 30px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto;
   display: inline-flex; align-items: center; gap: 6px; padding: 0 10px;
