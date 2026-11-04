@@ -161,7 +161,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Verify diff-tour CLI JSON + headless fork | 3/3 | Complete   | 2026-11-04 |
+| 1. Verify diff-tour CLI JSON + headless fork | 3/3 | Complete    | 2026-11-04 |
 | 2. Extension skeleton + change picker | 0/TBD | Not started | - |
 | 3. Small-change rule | 0/TBD | Not started | - |
 | 4. CLI runner, Writing progress, tour cache | 0/TBD | Not started | - |

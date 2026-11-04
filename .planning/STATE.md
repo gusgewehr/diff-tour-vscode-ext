@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Roadmap created
-last_updated: "2026-11-04T02:44:24.660Z"
+status: ready_to_plan
+stopped_at: Phase 1 complete (3/3) — ready to discuss Phase 2
+last_updated: 2026-11-04T05:42:05.183Z
 last_activity: 2026-11-03 -- Completed 01-02 headless mode
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 3
   completed_plans: 3
-  percent: 100
+  percent: 0
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-03)
 
 **Core value:** A reviewer can walk an LLM-written tour of a git change inside VS Code, and every piece of code the tour points to opens read-only, side by side, at the exact commit the tour talks about.
-**Current focus:** Phase 1: Verify diff-tour CLI JSON + headless fork
+**Current focus:** Phase 2 — extension skeleton + change picker
 
 ## Current Position
 
-Phase: 1 of 8 (Verify diff-tour CLI JSON + headless fork)
-Plan: 3 of 3 in current phase (01-03 complete)
-Status: Phase 1 plans complete
-Last activity: 2026-11-04 -- Phase 1 planning complete
+Phase: 2 of 8 (extension skeleton + change picker)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-04
 
 Progress: [██████████] 100% of phase 1
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100% of phase 1
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 3
 - Average duration: -
 - Total execution time: 0 hours
 
