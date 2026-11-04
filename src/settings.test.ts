@@ -10,7 +10,8 @@ test('languageFromLocale', () => {
   assert.equal(languageFromLocale('zh-tw'), 'zh-Hant');
   assert.equal(languageFromLocale('es-mx'), 'es');
   assert.equal(languageFromLocale('ru'), 'ru');
-  assert.equal(languageFromLocale('pt-br'), 'en');
+  for (const l of ['pt-br', 'pt', 'pt-pt']) assert.equal(languageFromLocale(l), 'pt-BR');
+  assert.equal(readSettings(cfg({ language: 'pt-BR' }), 'en').language, 'pt-BR');
   assert.equal(languageFromLocale(''), 'en');
 });
 

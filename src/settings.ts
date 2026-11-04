@@ -1,8 +1,8 @@
-export type Language = 'en' | 'ja' | 'zh' | 'zh-Hant' | 'es' | 'ru';
+export type Language = 'en' | 'ja' | 'zh' | 'zh-Hant' | 'es' | 'ru' | 'pt-BR';
 export interface Settings { language: Language; llm: string; minFiles: number; cliPath: string; claudePath: string; baseBranch: string }
 export interface ConfigLike { get<T>(key: string, defaultValue: T): T }
 
-const LANGS: string[] = ['en', 'ja', 'zh', 'zh-Hant', 'es', 'ru'];
+const LANGS: string[] = ['en', 'ja', 'zh', 'zh-Hant', 'es', 'ru', 'pt-BR'];
 
 export function languageFromLocale(locale: string): Language {
   const l = (locale || '').toLowerCase();
@@ -11,6 +11,7 @@ export function languageFromLocale(locale: string): Language {
   if (l.startsWith('zh')) return 'zh';
   if (l.startsWith('es')) return 'es';
   if (l.startsWith('ru')) return 'ru';
+  if (l.startsWith('pt')) return 'pt-BR';
   return 'en';
 }
 
