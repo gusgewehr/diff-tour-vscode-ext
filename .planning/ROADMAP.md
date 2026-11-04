@@ -116,7 +116,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04-03-PLAN.md — Wire startTour: notification, status bar, cache on done, "Your tour is ready", error actions, Skip; smoke, package, reinstall VSIX
+- [x] 04-03-PLAN.md — Wire startTour: notification, status bar, cache on done, "Your tour is ready", error actions, Skip; smoke, package, reinstall VSIX
 **UI hint**: yes
 
 ### Phase 5: Document layout, outline tree, tour state
