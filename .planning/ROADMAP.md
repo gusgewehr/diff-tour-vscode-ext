@@ -68,7 +68,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — CLI/Claude detection, grouped QuickPick, TOUR tree, activation and internal routing commands
+- [x] 02-02-PLAN.md — CLI/Claude detection, grouped QuickPick, TOUR tree, activation and internal routing commands
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
