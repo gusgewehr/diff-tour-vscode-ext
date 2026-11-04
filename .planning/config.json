@@ -28,7 +28,8 @@
     "skip_discuss": true,
     "code_review": false,
     "code_review_depth": "standard",
-    "ui_review": false
+    "ui_review": false,
+    "use_worktrees": false
   },
   "ship": {
     "pr_body_sections": [

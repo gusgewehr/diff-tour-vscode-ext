@@ -40,7 +40,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Headless --json mode: JSONL progress, --llm/--lang, --count, stdin/signal cancel, taskkill tree + job object
+- [x] 01-02-PLAN.md — Headless --json mode: JSONL progress, --llm/--lang, --count, stdin/signal cancel, taskkill tree + job object
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -161,7 +161,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Verify diff-tour CLI JSON + headless fork | 1/3 | In Progress|  |
+| 1. Verify diff-tour CLI JSON + headless fork | 2/3 | In Progress|  |
 | 2. Extension skeleton + change picker | 0/TBD | Not started | - |
 | 3. Small-change rule | 0/TBD | Not started | - |
 | 4. CLI runner, Writing progress, tour cache | 0/TBD | Not started | - |

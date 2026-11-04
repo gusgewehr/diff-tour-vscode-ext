@@ -8,10 +8,10 @@
 ### CLI: verify and fork diff-tour
 
 - [x] **CLI-01**: The real upstream tour JSON schema (from `internal/tour/tour.go` and `tours/example-coupons.*.json`) is documented with a gap table against the prototype's assumptions (`tour-data.js`)
-- [ ] **CLI-02**: The forked `tour` generates a tour without a TTY, writes the validated tour file, and prints a final machine-readable result (protocol version, cache key, file path, resolved base/head SHAs, cached yes/no)
-- [ ] **CLI-03**: The fork emits a JSONL progress stream on stdout: stage changes (export, write, check, show), each LLM tool read (tool, path, NOT IN DIFF / BASE tag), repairs, done, error. Human text goes to stderr
-- [ ] **CLI-04**: The fork accepts the LLM provider and language as flags, so no interactive setup runs
-- [ ] **CLI-05**: Closing stdin or killing the fork stops generation and the LLM child process tree on Windows, leaving no orphan processes or export directories
+- [x] **CLI-02**: The forked `tour` generates a tour without a TTY, writes the validated tour file, and prints a final machine-readable result (protocol version, cache key, file path, resolved base/head SHAs, cached yes/no)
+- [x] **CLI-03**: The fork emits a JSONL progress stream on stdout: stage changes (export, write, check, show), each LLM tool read (tool, path, NOT IN DIFF / BASE tag), repairs, done, error. Human text goes to stderr
+- [x] **CLI-04**: The fork accepts the LLM provider and language as flags, so no interactive setup runs
+- [x] **CLI-05**: Closing stdin or killing the fork stops generation and the LLM child process tree on Windows, leaving no orphan processes or export directories
 - [ ] **CLI-06**: A headless run on Windows with Claude Code produces a valid tour of a 10+ file change, and at least 3 real tours are saved as test fixtures
 - [ ] **CLI-07**: A decision is recorded, based on the sampled real tours, for the flow node → file → step mapping: derive it from code blocks, or add optional `file`/`lines` to flow nodes in the fork
 
@@ -122,10 +122,10 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | CLI-01 | Phase 1 | Complete |
-| CLI-02 | Phase 1 | Pending |
-| CLI-03 | Phase 1 | Pending |
-| CLI-04 | Phase 1 | Pending |
-| CLI-05 | Phase 1 | Pending |
+| CLI-02 | Phase 1 | Complete |
+| CLI-03 | Phase 1 | Complete |
+| CLI-04 | Phase 1 | Complete |
+| CLI-05 | Phase 1 | Complete |
 | CLI-06 | Phase 1 | Pending |
 | CLI-07 | Phase 1 | Pending |
 | PICK-01 | Phase 2 | Pending |
