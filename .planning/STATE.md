@@ -77,3 +77,4 @@ Last session: 2026-11-04T05:59:15.577Z
 Stopped at: Completed 08-01-PLAN.md
 Resume file: None
 | 2026-11-04 | fast | Bundle CLI in per-platform VSIXs (0.1.1) | ✅ |
+| 2026-11-04 | fast | Find claude outside PATH + difftour.claudePath (0.1.2) | ✅ |
