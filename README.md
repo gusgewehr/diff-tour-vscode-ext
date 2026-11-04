@@ -10,7 +10,7 @@ To build from source (needs Node and Go): `npm install && npm run package`, whic
 
 ## Usage
 
-Run **diff-tour: Tour a change** from the command palette, press Ctrl+Alt+T (Cmd+Alt+T on macOS), or use the Tour view in the activity bar.
+Run **diff-tour: Tour a change** from the command palette, press Ctrl+Alt+T (Ctrl+Shift+Alt+T on Linux, where GNOME uses Ctrl+Alt+T for the terminal; Cmd+Alt+T on macOS), or use the Tour view in the activity bar.
 
 ## Settings
 

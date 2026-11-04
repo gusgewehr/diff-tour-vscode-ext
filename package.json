@@ -2,7 +2,7 @@
   "name": "diff-tour",
   "displayName": "diff-tour",
   "publisher": "difftour",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "%description%",
   "engines": {
     "vscode": "^1.110.0"
@@ -64,7 +64,8 @@
       {
         "command": "difftour.tourChange",
         "key": "ctrl+alt+t",
-        "mac": "cmd+alt+t"
+        "mac": "cmd+alt+t",
+        "linux": "ctrl+shift+alt+t"
       },
       {
         "command": "difftour.backToStep",
