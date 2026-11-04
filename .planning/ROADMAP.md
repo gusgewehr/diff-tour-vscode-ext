@@ -36,7 +36,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Vendor upstream into cli/, build tour.exe on Windows, write docs/tour-schema.md with gap table
+- [x] 01-01-PLAN.md — Vendor upstream into cli/, build tour.exe on Windows, write docs/tour-schema.md with gap table
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -161,7 +161,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Verify diff-tour CLI JSON + headless fork | 0/3 | Not started | - |
+| 1. Verify diff-tour CLI JSON + headless fork | 1/3 | In Progress|  |
 | 2. Extension skeleton + change picker | 0/TBD | Not started | - |
 | 3. Small-change rule | 0/TBD | Not started | - |
 | 4. CLI runner, Writing progress, tour cache | 0/TBD | Not started | - |
