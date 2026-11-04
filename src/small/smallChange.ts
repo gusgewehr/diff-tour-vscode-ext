@@ -46,7 +46,7 @@ export class SmallChange implements vscode.TreeDataProvider<Node> {
 
   async open(target: Target): Promise<void> {
     const cwd = this.getCwd();
-    if (!cwd) throw new Error('Open a folder that contains a git repository.');
+    if (!cwd) throw new Error(vscode.l10n.t('Open a folder that contains a git repository.'));
     this.files = await listChangedFiles(cwd, target.baseSha, target.headSha);
     this.cwd = cwd;
     this.target = target;
@@ -64,10 +64,11 @@ export class SmallChange implements vscode.TreeDataProvider<Node> {
       this.status.command = 'difftour.tourChange';
     }
     this.status.text = statusText(n, min);
-    this.status.tooltip = 'Changes under difftour.minFiles files open in the standard diff without a tour. Change the setting to tour smaller changes. Click to pick a change.';
+    this.status.tooltip = vscode.l10n.t('Changes under difftour.minFiles files open in the standard diff without a tour. Change the setting to tour smaller changes. Click to pick a change.');
     this.status.show();
-    void vscode.window.showInformationMessage(noticeText(n, min), 'Open Settings').then((c) => {
-      if (c === 'Open Settings') void vscode.commands.executeCommand('workbench.action.openSettings', 'difftour.minFiles');
+    const openSettings = vscode.l10n.t('Open Settings');
+    void vscode.window.showInformationMessage(noticeText(n, min), openSettings).then((c) => {
+      if (c === openSettings) void vscode.commands.executeCommand('workbench.action.openSettings', 'difftour.minFiles');
     });
     await this.openFile(0);
   }
@@ -92,7 +93,7 @@ export class SmallChange implements vscode.TreeDataProvider<Node> {
     const item = new vscode.TreeItem(node.file.path, vscode.TreeItemCollapsibleState.None);
     item.description = node.file.status;
     item.resourceUri = vscode.Uri.file(path.join(this.cwd, node.file.path));
-    item.command = { command: 'difftour.internal.openSmallChangeFile', title: 'Open diff', arguments: [node.index] };
+    item.command = { command: 'difftour.internal.openSmallChangeFile', title: vscode.l10n.t('Open diff'), arguments: [node.index] };
     return item;
   }
 }

@@ -25,7 +25,7 @@ export function registerCodeOpen(context: vscode.ExtensionContext, tours: TourCo
     const s = tours.session;
     const root = cwd();
     if (!a || !s || s.id !== a.tourId || !s.meta.baseSha || !s.meta.headSha || !root) {
-      return warn('Cannot open code: no matching tour with toured commits.');
+      return warn(vscode.l10n.t('Cannot open code: no matching tour with toured commits.'));
     }
     const { baseSha, headSha } = s.meta;
     const ck = `${s.id}:${baseSha}:${headSha}`;
@@ -35,7 +35,7 @@ export function registerCodeOpen(context: vscode.ExtensionContext, tours: TourCo
     if (plan.missing) return warn(plan.missing);
     if (plan.unchanged) {
       const sha = a.at === 'base' ? baseSha : headSha;
-      if (!(await blobExists(root, sha, a.file))) return warn(`${a.file} is not in ${sha.slice(0, 7)} at this commit`);
+      if (!(await blobExists(root, sha, a.file))) return warn(vscode.l10n.t('{0} is not in {1} at this commit', a.file, sha.slice(0, 7)));
     }
     const left = tourUri(plan.left, baseSha, root);
     const right = tourUri(plan.right, headSha, root);
@@ -56,7 +56,7 @@ export function registerCodeOpen(context: vscode.ExtensionContext, tours: TourCo
     const s = tours.session;
     const on = !!s && vscode.window.activeTextEditor?.document.uri.scheme === SCHEME;
     void vscode.commands.executeCommand('setContext', 'difftour.inTourCode', on);
-    if (on && s) { bar.text = `$(arrow-left) Back to step ${s.index + 1}`; bar.show(); } else bar.hide();
+    if (on && s) { bar.text = vscode.l10n.t('$(arrow-left) Back to step {0}', s.index + 1); bar.show(); } else bar.hide();
   };
   const reg = (id: string, fn: (...a: any[]) => unknown) => vscode.commands.registerCommand(id, fn);
   context.subscriptions.push(

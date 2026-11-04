@@ -21,7 +21,7 @@ export class TourController implements vscode.Disposable {
   constructor(private context: vscode.ExtensionContext, private cwd: () => string | undefined) {
     this.status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     this.status.command = 'difftour.internal.revealTour';
-    this.status.tooltip = 'Show the tour';
+    this.status.tooltip = vscode.l10n.t('Show the tour');
   }
 
   get session(): TourSession | undefined { return this._session; }
@@ -29,7 +29,7 @@ export class TourController implements vscode.Disposable {
   async open(tourPath: string, existing?: vscode.WebviewPanel): Promise<void> {
     let r;
     try { r = await resolveTour(tourPath, this.cwd()); } catch (e) {
-      void vscode.window.showErrorMessage('Could not open the tour: ' + ((e as Error).message ?? e));
+      void vscode.window.showErrorMessage(vscode.l10n.t('Could not open the tour: {0}', String((e as Error).message ?? e)));
       existing?.dispose();
       return;
     }
@@ -43,7 +43,7 @@ export class TourController implements vscode.Disposable {
       this.emitter.fire();
     });
     void vscode.commands.executeCommand('setContext', 'difftour.tourActive', true);
-    const title = r.tour.title || 'Tour';
+    const title = r.tour.title || vscode.l10n.t('Tour');
     if (!this.panel) {
       this.panel = new TourPanel(this.context.extensionUri, title, (i) => this.handle(i), () => this.end(), existing);
     } else { this.panel.setTitle(title); this.panel.reveal(); }
@@ -61,7 +61,7 @@ export class TourController implements vscode.Disposable {
     if (this._session !== s || s.index !== i) return; // stale: the step moved while git was running
     this.panel?.post(renderMessage(s, data));
   }
-  private updateStatus(): void { if (this._session) this.status.text = `$(book) Step ${this._session.index + 1} / ${this._session.steps.length}`; }
+  private updateStatus(): void { if (this._session) this.status.text = vscode.l10n.t('$(book) Step {0} / {1}', this._session.index + 1, this._session.steps.length); }
 
   private handle(i: Intent): void {
     const s = this._session;
@@ -78,11 +78,11 @@ export class TourController implements vscode.Disposable {
         const step = s.current.step;
         const t = i.block !== undefined ? codeTargetForBlock(step, i.block) : primaryCode(step);
         if (t) void vscode.commands.executeCommand('difftour.internal.openCode', { tourId: s.id, ...t });
-        else void vscode.window.showInformationMessage('This step has no code to open.');
+        else void vscode.window.showInformationMessage(vscode.l10n.t('This step has no code to open.'));
         break;
       }
       case 'copy':
-        void vscode.env.clipboard.writeText(i.text).then(() => vscode.window.setStatusBarMessage('$(check) Snippet copied', 2000));
+        void vscode.env.clipboard.writeText(i.text).then(() => vscode.window.setStatusBarMessage(vscode.l10n.t('$(check) Snippet copied'), 2000));
         break;
       case 'openFile':
         void vscode.commands.executeCommand('difftour.internal.openCode', { tourId: s.id, file: i.file, at: i.at ?? 'head', lines: [i.line, i.end ?? i.line] });

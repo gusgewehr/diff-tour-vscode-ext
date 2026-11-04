@@ -28,8 +28,8 @@ export class OutlineTree implements vscode.TreeDataProvider<Node> {
     item.id = 'st-' + n.index;
     const icon = s.state.done[n.index] ? 'pass-filled' : n.index === s.index ? 'play-circle' : f.step.question ? 'question' : 'circle-large-outline';
     item.iconPath = new vscode.ThemeIcon(icon);
-    if (s.state.notes[n.index]) item.description = '✎ note';
-    item.command = { command: 'difftour.internal.gotoStep', title: 'Go to step', arguments: [n.index] };
+    if (s.state.notes[n.index]) item.description = vscode.l10n.t('✎ note');
+    item.command = { command: 'difftour.internal.gotoStep', title: vscode.l10n.t('Go to step'), arguments: [n.index] };
     return item;
   }
 }

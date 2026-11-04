@@ -3,6 +3,7 @@ import { PLACEHOLDER, showBlob } from '../git/blob';
 import { codeView, diffView, parseHunks, splitLines, type Row } from './align';
 import { flowPaths, nodeTargets, type NodeTarget } from './flow';
 import type { At, FileRole, FlatStep } from './model';
+import { t } from '../l10n';
 
 export interface CodeData { kind: 'code'; file: string; sections: Row[][]; lines?: [number, number]; added: number; removed: number; newFile: boolean; deleted: boolean; unchanged: boolean; approximate: boolean; missing?: string }
 export interface TourCommit { sha: string; subject: string; ai: boolean }
@@ -57,7 +58,6 @@ export function groupFiles(roles: FileRole[], stats: NumStat, deleted: Set<strin
 
 export interface EnrichInput { cwd?: string; baseSha: string; headSha: string; base: string; head: string; steps: FlatStep[] }
 
-const NO_GIT = 'Code unavailable: this tour has no toured commits';
 
 export class StepEnricher {
   private cache = new Map<number, Promise<(BlockData | null)[]>>();
@@ -104,7 +104,7 @@ export class StepEnricher {
       case 'code': case 'diff': {
         const file = b.kind === 'code' ? b.code.file : b.diff.file;
         const fail = (missing: string, approximate = false): CodeData => ({ kind: 'code', file, sections: [], added: 0, removed: 0, newFile: false, deleted: false, unchanged: false, approximate, missing });
-        if (!this.ok) return fail(NO_GIT);
+        if (!this.ok) return fail(t('Code unavailable: this tour has no toured commits'));
         const changes: ChangedFile[] = await this.changes();
         const c = changes.find((x) => x.path === file || x.oldPath === file);
         const oldPath = c?.status === 'A' ? undefined : (c?.oldPath ?? file);
@@ -121,13 +121,13 @@ export class StepEnricher {
           return parseHunks(await git(this.cwd, ['diff', `-U${u}`, '--no-color', '--no-ext-diff', '-M', baseSha, headSha, '--', ...paths]));
         };
         if (b.kind === 'diff') {
-          if (!c) return fail(`no changes in ${file}`);
+          if (!c) return fail(t('no changes in {0}', file));
           const v = diffView(await hunksOf(3), b.diff.hunks);
-          if (!v.sections.length) return fail(`no changes in ${file}`);
+          if (!v.sections.length) return fail(t('no changes in {0}', file));
           return { kind: 'code', file, sections: v.sections, added: v.added, removed: v.removed, newFile, deleted, unchanged: false, approximate: v.approximate };
         }
         const side = at === 'base' ? ol : nl;
-        if (!Array.isArray(side)) return fail(`${file} not found at ${at === 'base' ? this.i.base : this.i.head}`, true);
+        if (!Array.isArray(side)) return fail(t('{0} not found at {1}', file, at === 'base' ? this.i.base : this.i.head), true);
         const other = (at === 'base' ? nl : ol) as string[] | undefined;
         const arr = (x: string[] | undefined) => x ?? [];
         const v = codeView({
