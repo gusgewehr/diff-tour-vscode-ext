@@ -8,7 +8,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 
 - [x] **Phase 1: Verify diff-tour CLI JSON + headless fork** - Document the real tour schema, fork the CLI for headless JSON/JSONL output, prove it on Windows with Claude Code (completed 2026-11-04)
 - [x] **Phase 2: Extension skeleton + change picker** - Settings, TOUR view container, "Tour a change" QuickPick, VSIX build (completed 2026-11-04)
-- [ ] **Phase 3: Small-change rule** - Changes under `minFiles` open in the standard `vscode.diff` with no LLM call
+- [x] **Phase 3: Small-change rule** - Changes under `minFiles` open in the standard `vscode.diff` with no LLM call (completed 2026-11-04)
 - [ ] **Phase 4: CLI runner, Writing progress, tour cache** - Run the fork with a cancellable Writing view and cache the tour
 - [ ] **Phase 5: Document layout, outline tree, tour state** - Webview tour document with outline, navigation, notes and persisted state
 - [ ] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
@@ -177,7 +177,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Verify diff-tour CLI JSON + headless fork | 3/3 | Complete    | 2026-11-04 |
 | 2. Extension skeleton + change picker | 3/3 | Complete    | 2026-11-04 |
-| 3. Small-change rule | 0/TBD | Not started | - |
+| 3. Small-change rule | 1/1 | Complete   | 2026-11-04 |
 | 4. CLI runner, Writing progress, tour cache | 0/TBD | Not started | - |
 | 5. Document layout, outline tree, tour state | 0/TBD | Not started | - |
 | 6. difftour: read-only provider + side-by-side diff | 0/TBD | Not started | - |

@@ -28,9 +28,9 @@
 
 ### SMALL: small-change rule
 
-- [ ] **SMALL-01**: When the change has fewer than `difftour.minFiles` files (counted against the merge-base, the same way the CLI counts), no LLM is called and the first changed file opens in the standard `vscode.diff`
-- [ ] **SMALL-02**: User sees the list of changed files (M/A/D) for that change and can open each in the standard diff
-- [ ] **SMALL-03**: User sees "3 files changed. Changes under 10 files open in the standard diff, without a tour." with a link to the setting, and the status bar shows `No tour · 3 files (under 10)`
+- [x] **SMALL-01**: When the change has fewer than `difftour.minFiles` files (counted against the merge-base, the same way the CLI counts), no LLM is called and the first changed file opens in the standard `vscode.diff`
+- [x] **SMALL-02**: User sees the list of changed files (M/A/D) for that change and can open each in the standard diff
+- [x] **SMALL-03**: User sees "3 files changed. Changes under 10 files open in the standard diff, without a tour." with a link to the setting, and the status bar shows `No tour · 3 files (under 10)`
 
 ### WRITE: writing the tour
 
@@ -136,9 +136,9 @@
 | PICK-06 | Phase 2 | Complete |
 | PICK-07 | Phase 2 | Complete |
 | PICK-08 | Phase 2 | Complete |
-| SMALL-01 | Phase 3 | Pending |
-| SMALL-02 | Phase 3 | Pending |
-| SMALL-03 | Phase 3 | Pending |
+| SMALL-01 | Phase 3 | Complete |
+| SMALL-02 | Phase 3 | Complete |
+| SMALL-03 | Phase 3 | Complete |
 | WRITE-01 | Phase 4 | Pending |
 | WRITE-02 | Phase 4 | Pending |
 | WRITE-03 | Phase 4 | Pending |
