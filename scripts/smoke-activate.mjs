@@ -27,6 +27,7 @@ class EventEmitter {
   dispose() {}
 }
 const base = {
+  l10n: { t: (m, ...a) => m.replace(/\{(\d+)\}/g, (s, i) => (a[i] === undefined ? s : String(a[i]))) },
   commands: { registerCommand: (id, fn) => { commands.push(id); handlers.set(id, fn); return dispose; }, executeCommand: async (...a) => { execs.push(a); return undefined; } },
   window: {
     registerWebviewPanelSerializer: () => dispose,

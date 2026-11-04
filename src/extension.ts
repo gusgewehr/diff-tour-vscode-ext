@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { readSettings } from './settings';
+import { setTranslator } from './l10n';
 import { ChangeModel, Deps, Entry, choose, setCurrentModel, showPicker } from './pick';
 import { ChangesTree } from './views/changesTree';
 import type { Target } from './git/changes';
@@ -13,6 +14,7 @@ import { OutlineTree } from './views/outlineTree';
 import { FlowBarView } from './views/flowBarView';
 
 export function activate(context: vscode.ExtensionContext): void {
+  setTranslator((m, ...a) => vscode.l10n.t(m, ...a), vscode.env.language);
   // a VSIX packed on Windows loses the exec bit, so restore it on the bundled CLI
   if (process.platform !== 'win32') fs.chmod(path.join(context.extensionPath, 'cli', 'bin', 'tour'), 0o755, () => {});
   const deps: Deps = {
@@ -56,7 +58,7 @@ export function activate(context: vscode.ExtensionContext): void {
   const outline = vscode.window.createTreeView('difftour.outline', { treeDataProvider: new OutlineTree(tours) });
   context.subscriptions.push(outline, tours.onDidChange(() => {
     const t = tours.session;
-    outline.description = t ? `${t.understoodCount()} of ${t.steps.length} understood` : undefined;
+    outline.description = t ? vscode.l10n.t('{0} of {1} understood', t.understoodCount(), t.steps.length) : undefined;
   }), vscode.window.registerWebviewPanelSerializer('difftour.tour', {
     async deserializeWebviewPanel(panel: vscode.WebviewPanel, state: unknown) {
       const p = (state as { path?: unknown } | undefined)?.path;

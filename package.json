@@ -3,11 +3,12 @@
   "displayName": "diff-tour",
   "publisher": "difftour",
   "version": "0.1.2",
-  "description": "Walk an LLM-written tour of a git change inside VS Code.",
+  "description": "%description%",
   "engines": {
     "vscode": "^1.110.0"
   },
   "main": "./dist/extension.js",
+  "l10n": "./l10n",
   "activationEvents": [
     "onWebviewPanel:difftour.tour"
   ],
@@ -17,38 +18,38 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
-      "description": "diff-tour runs git and the tour CLI in the workspace."
+      "description": "%untrusted.description%"
     }
   },
   "contributes": {
     "commands": [
       {
         "command": "difftour.tourChange",
-        "title": "Tour a change",
+        "title": "%command.tourChange.title%",
         "category": "diff-tour",
         "icon": "$(git-compare)"
       },
       {
         "command": "difftour.refreshChanges",
-        "title": "Refresh changes",
+        "title": "%command.refreshChanges.title%",
         "category": "diff-tour",
         "icon": "$(refresh)"
       },
       {
         "command": "difftour.backToStep",
-        "title": "Back to step",
+        "title": "%command.backToStep.title%",
         "category": "diff-tour",
         "icon": "$(arrow-left)"
       },
       {
         "command": "difftour.prevStep",
-        "title": "Previous step",
+        "title": "%command.prevStep.title%",
         "category": "diff-tour",
         "icon": "$(chevron-left)"
       },
       {
         "command": "difftour.nextStep",
-        "title": "Next step",
+        "title": "%command.nextStep.title%",
         "category": "diff-tour",
         "icon": "$(chevron-right)"
       }
@@ -69,14 +70,14 @@
       "activitybar": [
         {
           "id": "difftour",
-          "title": "Tour",
+          "title": "%container.difftour.title%",
           "icon": "media/route.svg"
         }
       ],
       "panel": [
         {
           "id": "difftourFlow",
-          "title": "Tour flow",
+          "title": "%container.difftourFlow.title%",
           "icon": "media/route.svg"
         }
       ]
@@ -85,16 +86,16 @@
       "difftour": [
         {
           "id": "difftour.changes",
-          "name": "Changes"
+          "name": "%view.changes.name%"
         },
         {
           "id": "difftour.outline",
-          "name": "Tour",
+          "name": "%view.outline.name%",
           "when": "difftour.tourActive"
         },
         {
           "id": "difftour.smallChange",
-          "name": "Small change",
+          "name": "%view.smallChange.name%",
           "when": "difftour.hasSmallChange"
         }
       ],
@@ -102,7 +103,7 @@
         {
           "type": "webview",
           "id": "difftour.flowBar",
-          "name": "Tour flow",
+          "name": "%view.flowBar.name%",
           "when": "difftour.tourActive"
         }
       ]
@@ -164,19 +165,21 @@
             "zh",
             "zh-Hant",
             "es",
-            "ru"
+            "ru",
+            "pt-BR"
           ],
           "enumDescriptions": [
-            "Auto (from the VS Code display language)",
-            "English",
-            "Japanese",
-            "Chinese (Simplified)",
-            "Chinese (Traditional)",
-            "Spanish",
-            "Russian"
+            "%config.language.enum.auto%",
+            "%config.language.enum.en%",
+            "%config.language.enum.ja%",
+            "%config.language.enum.zh%",
+            "%config.language.enum.zh-Hant%",
+            "%config.language.enum.es%",
+            "%config.language.enum.ru%",
+            "%config.language.enum.pt-BR%"
           ],
           "default": "",
-          "description": "Language of the generated tour."
+          "description": "%config.language.description%"
         },
         "difftour.llm": {
           "type": "string",
@@ -189,38 +192,38 @@
             "pi"
           ],
           "enumDescriptions": [
-            "Claude Code (the only provider tested in v1)",
-            "Untested in v1",
-            "Untested in v1",
-            "Untested in v1",
-            "Untested in v1",
-            "Untested in v1"
+            "%config.llm.enum.claude%",
+            "%config.llm.enum.codex%",
+            "%config.llm.enum.gemini%",
+            "%config.llm.enum.opencode%",
+            "%config.llm.enum.copilot%",
+            "%config.llm.enum.pi%"
           ],
           "default": "claude",
-          "description": "LLM CLI that writes the tour."
+          "description": "%config.llm.description%"
         },
         "difftour.minFiles": {
           "type": "integer",
           "default": 10,
           "minimum": 1,
-          "description": "Changes with fewer files open in the standard diff without a tour."
+          "description": "%config.minFiles.description%"
         },
         "difftour.cliPath": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "description": "Path to the tour executable. Empty = the CLI bundled with the extension, then `tour` on PATH. The official diff-tour CLI does not work (no --json mode)."
+          "description": "%config.cliPath.description%"
         },
         "difftour.claudePath": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "description": "Full path to the Claude Code executable (run `which claude` in a terminal). Empty = PATH, then ~/.local/bin, ~/.claude/local and your login shell."
+          "description": "%config.claudePath.description%"
         },
         "difftour.baseBranch": {
           "type": "string",
           "default": "",
-          "description": "Empty = auto: origin/HEAD, then main, then master."
+          "description": "%config.baseBranch.description%"
         }
       }
     }
