@@ -8,6 +8,7 @@ import type { Target } from './git/changes';
 import { SmallChange } from './small/smallChange';
 import { startTour, revealWriting } from './cli/startTour';
 import { TourController } from './tour/controller';
+import { registerCodeOpen } from './tour/openCode';
 import { OutlineTree } from './views/outlineTree';
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -39,8 +40,7 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('difftour.internal.openSavedTour', (p: string) => tours.open(p).catch(err));
   reg('difftour.internal.revealTour', () => tours.reveal());
   reg('difftour.internal.gotoStep', (i: unknown) => { if (typeof i === 'number' && Number.isInteger(i)) tours.goto(i); });
-  // Stub: Phase 6 replaces this with the read-only side-by-side open.
-  reg('difftour.internal.openCode', (a: { file?: string; lines?: number[]; at?: string }) => vscode.window.showInformationMessage(`Open ${a?.file}:${a?.lines?.[0]} at ${a?.at}. Read-only code opens in a later update.`));
+  registerCodeOpen(context, tours, () => model.cwd);
   const outline = vscode.window.createTreeView('difftour.outline', { treeDataProvider: new OutlineTree(tours) });
   context.subscriptions.push(outline, tours.onDidChange(() => {
     const t = tours.session;
