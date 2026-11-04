@@ -2,6 +2,8 @@ import type { Intent, RenderMsg } from '../../tour/messages';
 import { el } from './dom';
 import { renderBlock } from './blocks/index';
 import './blocks/p';
+import './blocks/code';
+import './blocks/repo';
 import { keyAction } from './keys';
 
 declare function acquireVsCodeApi(): { postMessage(m: unknown): void; setState(s: unknown): void };
@@ -30,7 +32,7 @@ function buildContent(m: RenderMsg): void {
   const head = el('header');
   head.append(el('h1', 'tour-title', m.title), el('div', 'refs', `${m.base} → ${m.head}`));
   doc.append(head, el('div', 'chapter', `${m.chapterTitle} · Step ${m.index + 1} / ${m.total}`), el('h2', 'step-title', m.step.title));
-  m.step.blocks.forEach((b, i) => doc.append(renderBlock(b, { index: i, step: m.step, post })));
+  m.step.blocks.forEach((b, i) => doc.append(renderBlock(b, { index: i, step: m.step, post, data: m.blockData?.[i] ?? null, base: m.base, head: m.head })));
 
   noteVisible = m.note !== '';
   noteCard = el('section', 'note-card');

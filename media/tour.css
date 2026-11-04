@@ -35,8 +35,46 @@ button.tick:hover { background: var(--vscode-foreground); }
 :focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: 1px; }
 body.vscode-light .tick.unvisited { opacity: .45; }
 body.vscode-high-contrast .note-card, body.vscode-high-contrast-light .note-card,
+body.vscode-high-contrast .block.code, body.vscode-high-contrast-light .block.code,
 body.vscode-high-contrast .block-fallback, body.vscode-high-contrast-light .block-fallback,
 body.vscode-high-contrast nav.bar, body.vscode-high-contrast-light nav.bar,
 body.vscode-high-contrast .tick, body.vscode-high-contrast-light .tick { border: 1px solid var(--vscode-contrastBorder); }
 body.vscode-high-contrast .tick, body.vscode-high-contrast-light .tick,
 body.vscode-high-contrast .tick.visited, body.vscode-high-contrast-light .tick.visited { opacity: 1; }
+
+/* code / diff */
+.block.code { border: 1px solid var(--vscode-panel-border); border-radius: 8px; overflow: hidden; }
+.code-head { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 8px 12px; background: var(--vscode-editorWidget-background); }
+.code-dir, .code-stat, .code-note { color: var(--vscode-descriptionForeground); }
+.code-file { font-family: var(--vscode-editor-font-family); font-weight: 600; }
+.badge { font-size: 10.5px; text-transform: uppercase; border-radius: 4px; padding: 1px 6px; }
+.badge.approx { color: var(--vscode-editorWarning-foreground); border: 1px solid currentColor; }
+.code-head button.icon { margin-left: auto; background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); padding: 2px 8px; }
+.code-cols, .code-row { display: grid; }
+.code-cols > div { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px; }
+.col-before { color: var(--vscode-charts-red); }
+.col-after { color: var(--vscode-charts-green); }
+.code-body { overflow-x: auto; }
+.cell { font-family: var(--vscode-editor-font-family); font-size: var(--vscode-editor-font-size); line-height: 20px; display: flex; min-width: 0; }
+.cell .ln { width: 40px; flex: none; text-align: right; padding-right: 10px; color: var(--vscode-descriptionForeground); user-select: none; }
+.cell .lt { white-space: pre; }
+.cell.del { background: var(--vscode-diffEditor-removedLineBackground); }
+.cell.add { background: var(--vscode-diffEditor-insertedLineBackground); }
+.cell.empty { background: repeating-linear-gradient(135deg, transparent 0 4px, var(--vscode-editorWidget-border) 4px 5px); }
+.code-row.focus .cell { box-shadow: inset 2px 0 0 var(--vscode-focusBorder); background-image: linear-gradient(var(--vscode-editor-selectionBackground), var(--vscode-editor-selectionBackground)); }
+.mark-text { font-style: italic; color: var(--vscode-descriptionForeground); padding-left: 50px; }
+.code-gap { text-align: center; color: var(--vscode-descriptionForeground); }
+.code-missing { padding: 12px; color: var(--vscode-descriptionForeground); }
+
+/* target / files */
+.block.target, .block.files { border: 1px solid var(--vscode-panel-border); border-radius: 8px; background: var(--vscode-textCodeBlock-background); }
+.target-head { padding: 10px 12px; font-family: var(--vscode-editor-font-family); }
+.commit { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 4px 12px; font-size: 13px; }
+.commit .sha { font-family: var(--vscode-editor-font-family); color: var(--vscode-descriptionForeground); }
+.badge.ai { color: var(--vscode-charts-purple); border: 1px solid currentColor; }
+.files-group { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--vscode-descriptionForeground); padding: 8px 12px 2px; }
+button.file-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; max-width: none; text-align: left; background: transparent; color: var(--vscode-foreground); padding: 4px 8px; border-radius: 5px; white-space: normal; overflow: visible; text-overflow: clip; }
+button.file-row:hover { background: var(--vscode-list-hoverBackground); }
+.file-row .fnote { grid-column: 1 / -1; color: var(--vscode-descriptionForeground); font-size: 12px; }
+.fstat .add { color: var(--vscode-charts-green); }
+.fstat .del { color: var(--vscode-charts-red); }
