@@ -1,5 +1,5 @@
 export type Language = 'en' | 'ja' | 'zh' | 'zh-Hant' | 'es' | 'ru';
-export interface Settings { language: Language; llm: string; minFiles: number; cliPath: string; baseBranch: string }
+export interface Settings { language: Language; llm: string; minFiles: number; cliPath: string; claudePath: string; baseBranch: string }
 export interface ConfigLike { get<T>(key: string, defaultValue: T): T }
 
 const LANGS: string[] = ['en', 'ja', 'zh', 'zh-Hant', 'es', 'ru'];
@@ -22,6 +22,7 @@ export function readSettings(config: ConfigLike, locale: string): Settings {
     llm: config.get<string>('llm', '') || 'claude',
     minFiles: Number.isFinite(min) ? Math.max(1, Math.floor(min)) : 10,
     cliPath: String(config.get<string>('cliPath', '') ?? '').trim(),
+    claudePath: String(config.get<string>('claudePath', '') ?? '').trim(),
     baseBranch: String(config.get<string>('baseBranch', '') ?? '').trim(),
   };
 }

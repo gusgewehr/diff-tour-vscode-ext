@@ -2,7 +2,7 @@
   "name": "diff-tour",
   "displayName": "diff-tour",
   "publisher": "difftour",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Walk an LLM-written tour of a git change inside VS Code.",
   "engines": {
     "vscode": "^1.110.0"
@@ -209,7 +209,13 @@
           "type": "string",
           "default": "",
           "scope": "machine",
-          "description": "Path to the tour executable. Empty = cli/bin/tour.exe next to the workspace/extension, then `tour` on PATH."
+          "description": "Path to the tour executable. Empty = the CLI bundled with the extension, then `tour` on PATH. The official diff-tour CLI does not work (no --json mode)."
+        },
+        "difftour.claudePath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Full path to the Claude Code executable (run `which claude` in a terminal). Empty = PATH, then ~/.local/bin, ~/.claude/local and your login shell."
         },
         "difftour.baseBranch": {
           "type": "string",

@@ -3,12 +3,12 @@ import { parseLine, type CliEvent, type DoneEvent, type ErrorEvent } from './pro
 import type { Target } from '../git/changes';
 import type { Settings } from '../settings';
 
-export interface SpawnSpec { command: string; args: string[]; cwd?: string }
+export interface SpawnSpec { command: string; args: string[]; cwd?: string; env?: NodeJS.ProcessEnv }
 export interface RunResult { exitCode: number | null; done?: DoneEvent; error?: ErrorEvent; cancelled: boolean; stderrTail: string[]; spawnError?: string }
 export interface RunHandle { cancel(): void; done: Promise<RunResult> }
 
 export function run(spec: SpawnSpec, onEvent: (e: CliEvent) => void, opts: { log?: (line: string) => void; graceMs?: number } = {}): RunHandle {
-  const child = spawn(spec.command, spec.args, { cwd: spec.cwd, shell: false, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
+  const child = spawn(spec.command, spec.args, { cwd: spec.cwd, env: spec.env, shell: false, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
   let done: DoneEvent | undefined;
   let error: ErrorEvent | undefined;
   let cancelRequested = false;

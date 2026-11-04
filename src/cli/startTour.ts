@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'node:path';
 import type { Settings } from '../settings';
 import type { Target } from '../git/changes';
-import { detectTools } from './detect';
+import { detectTools, envWithDir } from './detect';
 import { run, cliArgs, type RunHandle } from './runner';
 import { initialState, reduce, currentStage, type ProgressState } from './progress';
 import { findExisting, saveTour } from './cache';
@@ -37,7 +37,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
   const cwd = d.cwd();
   if (!cwd) throw new Error('Open a folder that contains a git repository.');
   const roots = [...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath), d.extensionPath];
-  const { cli, missing } = await detectTools(settings, roots);
+  const { cli, claude, missing } = await detectTools(settings, roots);
   if (missing.length || !cli) {
     await missingNotice(missing.map((m) => m.what), missing.map((m) => m.message), { settings: d.settings, savedDir: d.savedDir, extensionPath: d.extensionPath });
     return;
@@ -69,7 +69,7 @@ export async function startTour(target: Target, d: WriteDeps): Promise<void> {
     result = await vscode.window.withProgress(
       { location: vscode.ProgressLocation.Notification, title: `Writing tour: ${target.label}`, cancellable: true },
       (progress, token) => {
-        handle = run({ command: cli, args, cwd }, (e) => {
+        handle = run({ command: cli, args, cwd, env: claude ? envWithDir(path.dirname(claude)) : undefined }, (e) => {
           state = reduce(state, e);
           panel.update(state);
           progress.report({ message: currentStage(state) + (state.reads[0] ? ` · ${state.reads[0].path}` : '') });

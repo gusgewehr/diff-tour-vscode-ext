@@ -207,7 +207,7 @@ export async function routeTarget(target: Target, deps: Deps): Promise<void> {
 
 export async function missingNotice(what: string[], messages: string[], deps: Deps): Promise<void> {
   const choice = await vscode.window.showErrorMessage(messages.join('\n'), 'Open Settings', 'How to install');
-  if (choice === 'Open Settings') { await vscode.commands.executeCommand('workbench.action.openSettings', 'difftour.cliPath'); return; }
+  if (choice === 'Open Settings') { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:difftour.diff-tour'); return; }
   if (choice !== 'How to install') return;
   const dirs = [deps.extensionPath, ...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath)];
   const fork = dirs.map((d) => path.join(d, 'cli', 'FORK.md')).find((p) => fs.existsSync(p));
