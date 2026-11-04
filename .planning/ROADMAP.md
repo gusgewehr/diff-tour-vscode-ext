@@ -222,5 +222,5 @@ Plans:
 | 4. CLI runner, Writing progress, tour cache | 3/3 | Complete    | 2026-11-04 |
 | 5. Document layout, outline tree, tour state | 3/3 | Complete    | 2026-11-04 |
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
-| 7. Webview tour blocks | 3/3 | Complete   | 2026-11-04 |
+| 7. Webview tour blocks | 3/3 | Complete    | 2026-11-04 |
 | 8. Flow bar | 0/TBD | Not started | - |

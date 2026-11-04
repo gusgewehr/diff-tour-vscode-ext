@@ -66,13 +66,13 @@
 
 ### BLOCK: Webview tour blocks
 
-- [ ] **BLOCK-01**: Paragraphs render inline code, bold and clickable file links, with the basis tag (Verified / From the code / Senior view) when present
-- [ ] **BLOCK-02**: Code blocks render side by side (BEFORE | AFTER) with line-LCS alignment, line numbers on both sides, removed/added tints, a hatched missing side, the focused range highlighted, and marks under the lines they refer to
-- [ ] **BLOCK-03**: Timeline, flow, schema, table, list, quote, target and files blocks render per the design references
-- [ ] **BLOCK-04**: Upstream block types not in the design (`diff`, `rows`, `pre`) render, and any unknown type shows a muted fallback without breaking the step
-- [ ] **BLOCK-05**: Example snippets render dashed amber with "Not in this repository…" and Copy, and are never applied to files
-- [ ] **BLOCK-06**: Question steps show "Stop and predict before you go on", a textarea and "Show the answer"; the user's guess appears on the answer step
-- [ ] **BLOCK-07**: A code reference whose lines don't exist at the commit is clamped and flagged as approximate instead of failing the tour
+- [x] **BLOCK-01**: Paragraphs render inline code, bold and clickable file links, with the basis tag (Verified / From the code / Senior view) when present
+- [x] **BLOCK-02**: Code blocks render side by side (BEFORE | AFTER) with line-LCS alignment, line numbers on both sides, removed/added tints, a hatched missing side, the focused range highlighted, and marks under the lines they refer to
+- [x] **BLOCK-03**: Timeline, flow, schema, table, list, quote, target and files blocks render per the design references
+- [x] **BLOCK-04**: Upstream block types not in the design (`diff`, `rows`, `pre`) render, and any unknown type shows a muted fallback without breaking the step
+- [x] **BLOCK-05**: Example snippets render dashed amber with "Not in this repository…" and Copy, and are never applied to files
+- [x] **BLOCK-06**: Question steps show "Stop and predict before you go on", a textarea and "Show the answer"; the user's guess appears on the answer step
+- [x] **BLOCK-07**: A code reference whose lines don't exist at the commit is clamped and flagged as approximate instead of failing the tour
 
 ### FLOW: flow bar
 
@@ -162,13 +162,13 @@
 | CODE-04 | Phase 6 | Complete |
 | CODE-05 | Phase 6 | Complete |
 | CODE-06 | Phase 6 | Complete |
-| BLOCK-01 | Phase 7 | Pending |
-| BLOCK-02 | Phase 7 | Pending |
-| BLOCK-03 | Phase 7 | Pending |
-| BLOCK-04 | Phase 7 | Pending |
-| BLOCK-05 | Phase 7 | Pending |
-| BLOCK-06 | Phase 7 | Pending |
-| BLOCK-07 | Phase 7 | Pending |
+| BLOCK-01 | Phase 7 | Complete |
+| BLOCK-02 | Phase 7 | Complete |
+| BLOCK-03 | Phase 7 | Complete |
+| BLOCK-04 | Phase 7 | Complete |
+| BLOCK-05 | Phase 7 | Complete |
+| BLOCK-06 | Phase 7 | Complete |
+| BLOCK-07 | Phase 7 | Complete |
 | FLOW-01 | Phase 8 | Pending |
 | FLOW-02 | Phase 8 | Pending |
 | FLOW-03 | Phase 8 | Pending |

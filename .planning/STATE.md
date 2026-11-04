@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Roadmap created
-last_updated: "2026-11-04T06:40:21.574Z"
+status: ready_to_plan
+stopped_at: Phase 7 complete (3/3) — ready to discuss Phase 08
+last_updated: 2026-11-04T06:47:06.616Z
 last_activity: 2026-11-04 -- Phase 7 planning complete
 progress:
   total_phases: 8
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-03)
 
 **Core value:** A reviewer can walk an LLM-written tour of a git change inside VS Code, and every piece of code the tour points to opens read-only, side by side, at the exact commit the tour talks about.
-**Current focus:** Phase 07 — webview tour blocks
+**Current focus:** Phase 08 — flow bar
 
 ## Current Position
 
-Phase: 07 of 8 (webview tour blocks)
-Plan: 3 of 3 complete
-Status: Phase 7 plans complete, pending verification
-Last activity: 2026-11-04 -- Phase 7 planning complete
+Phase: 08 of 8 (flow bar)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-04
 
 Progress: [██████████] 100%
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 15
+- Total plans completed: 18
 - Average duration: -
 - Total execution time: 0 hours
 
