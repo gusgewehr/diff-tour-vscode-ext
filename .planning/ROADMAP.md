@@ -16,7 +16,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment
  (completed 2026-11-04)
 - [x] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
-- [ ] **Phase 9: Brazilian Portuguese (pt-BR) localization** - Tours, CLI messages and the whole extension UI in pt-BR
+- [x] **Phase 9: Brazilian Portuguese (pt-BR) localization** - Tours, CLI messages and the whole extension UI in pt-BR (completed 2026-11-04)
 
 ## Phase Details
 
@@ -232,12 +232,12 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 09-01-PLAN.md — CLI pt-BR (i18n table, Parse/Detect, LLM language rule) + extension languageFromLocale
-- [ ] 09-02-PLAN.md — Extension host l10n: package.nls*, l10n shim, runtime strings, pt-BR bundle, coverage test
+- [x] 09-01-PLAN.md — CLI pt-BR (i18n table, Parse/Detect, LLM language rule) + extension languageFromLocale
+- [x] 09-02-PLAN.md — Extension host l10n: package.nls*, l10n shim, runtime strings, pt-BR bundle, coverage test
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 09-03-PLAN.md — Webview string table (Writing, Tour, Flow) embedded via data-strings
+- [x] 09-03-PLAN.md — Webview string table (Writing, Tour, Flow) embedded via data-strings
 
 ## Progress
 
@@ -251,5 +251,5 @@ Plans:
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
 | 7. Webview tour blocks | 3/3 | Complete    | 2026-11-04 |
 | 8. Flow bar | 1/1 | Complete    | 2026-11-04 |
-| 9. Brazilian Portuguese (pt-BR) localization | 0/3 | Planned | - |
+| 9. Brazilian Portuguese (pt-BR) localization | 3/3 | Complete    | 2026-11-04 |
 
