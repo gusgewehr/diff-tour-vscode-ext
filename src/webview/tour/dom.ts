@@ -1,5 +1,6 @@
 import type { Intent } from '../../tour/messages';
 import { tokenize } from './inline';
+import { S } from '../strings';
 
 export function el(tag: string, cls?: string, text?: string): HTMLElement {
   const e = document.createElement(tag);
@@ -17,7 +18,7 @@ export function renderInline(text: string, post: (m: Intent) => void): DocumentF
     else {
       const a = el('a', 'file-link', t.v) as HTMLAnchorElement;
       a.href = '#';
-      a.title = 'Open file';
+      a.title = S.openFile;
       a.addEventListener('click', (e) => {
         e.preventDefault();
         post({ type: 'openFile', file: t.file, line: t.line, ...(t.end !== undefined ? { end: t.end } : {}) });

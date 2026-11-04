@@ -1,5 +1,6 @@
 import { el } from '../dom';
 import { errorBox, register } from './index';
+import { S } from '../../strings';
 
 register('target', (block, ctx) => {
   if (block.kind !== 'target') throw new Error('not a target block');
@@ -9,11 +10,11 @@ register('target', (block, ctx) => {
   const head = el('div', 'target-head');
   head.append(el('span', 'ref', ctx.base), el('span', 'arrow', ' ← '), el('span', 'ref', ctx.head));
   sec.append(head);
-  if (d?.kind !== 'target' || d.commits.length === 0) { sec.append(el('div', 'code-missing', 'No commit list (no toured commits)')); return sec; }
+  if (d?.kind !== 'target' || d.commits.length === 0) { sec.append(el('div', 'code-missing', S.noCommitList)); return sec; }
   for (const c of d.commits) {
     const r = el('div', 'commit');
     r.append(el('span', 'sha', c.sha), el('span', 'subject', c.subject));
-    if (c.ai) r.append(el('span', 'badge ai', 'AI CO-AUTHOR'));
+    if (c.ai) r.append(el('span', 'badge ai', S.aiCoAuthor));
     sec.append(r);
   }
   return sec;
@@ -21,7 +22,7 @@ register('target', (block, ctx) => {
 
 function stat(a: number | null, d: number | null, binary: boolean): HTMLElement {
   const s = el('span', 'fstat');
-  if (a === null || d === null) { if (binary) s.textContent = 'binary'; return s; }
+  if (a === null || d === null) { if (binary) s.textContent = S.binary; return s; }
   s.append(el('span', 'add', `+${a}`), document.createTextNode(' '), el('span', 'del', `−${d}`));
   return s;
 }

@@ -3,6 +3,7 @@ import * as assert from 'node:assert/strict';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { format, t } from './l10n';
+import { EN } from './webview/strings';
 
 const root = process.cwd();
 const readJson = (f: string) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
@@ -35,6 +36,14 @@ test('every t() literal has a pt-BR bundle entry with matching placeholders', ()
   }
   assert.deepEqual([...new Set(missing)], []);
   for (const [k, v] of Object.entries(bundle)) assert.equal(placeholders(v), placeholders(k), k);
+});
+
+test('every webview string table value has a pt-BR bundle entry', () => {
+  const bundle: Record<string, string> = readJson('l10n/bundle.l10n.pt-br.json');
+  for (const v of Object.values(EN)) {
+    assert.ok(v in bundle, v);
+    assert.equal(placeholders(bundle[v]), placeholders(v), v);
+  }
 });
 
 test('package.json %keys% exist in both nls files, which share a key set', () => {

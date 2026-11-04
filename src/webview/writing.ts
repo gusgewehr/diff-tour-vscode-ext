@@ -19,7 +19,7 @@ export class WritingPanel {
     if (this.disposed) return;
     if (this.panel) { this.panel.reveal(undefined, true); return; }
     const u = this.extensionUri;
-    const panel = vscode.window.createWebviewPanel('difftour.writing', 'Writing tour', { viewColumn: vscode.ViewColumn.Active, preserveFocus: true }, {
+    const panel = vscode.window.createWebviewPanel('difftour.writing', vscode.l10n.t('Writing tour'), { viewColumn: vscode.ViewColumn.Active, preserveFocus: true }, {
       enableScripts: true,
       retainContextWhenHidden: false,
       localResourceRoots: [vscode.Uri.joinPath(u, 'dist', 'webview'), vscode.Uri.joinPath(u, 'media')],
@@ -31,7 +31,7 @@ export class WritingPanel {
       nonce: nonce(),
       scriptUri: w.asWebviewUri(vscode.Uri.joinPath(u, 'dist', 'webview', 'writing.js')).toString(),
       styleUris: [w.asWebviewUri(vscode.Uri.joinPath(u, 'media', 'writing.css')).toString()],
-      title: 'Writing tour',
+      title: vscode.l10n.t('Writing tour'),
     });
     w.onDidReceiveMessage((m: { type?: string }) => {
       if (m?.type === 'ready') this.post();

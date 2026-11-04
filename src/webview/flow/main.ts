@@ -1,6 +1,9 @@
 declare function acquireVsCodeApi(): { postMessage(m: unknown): void };
 const vscode = acquireVsCodeApi();
+import { S, applyStrings } from '../strings';
+
 const root = document.getElementById('root')!;
+applyStrings(root.dataset.strings);
 
 interface N { label: string; kind: string; current: boolean; visited: boolean; tip: string }
 interface Bar { paths: N[][]; active: boolean }
@@ -12,7 +15,7 @@ function span(cls: string, text = ''): HTMLSpanElement {
 }
 
 function render(b: Bar): void {
-  const kids: Node[] = [span('label' + (b.active ? ' on' : ''), 'FLOW')];
+  const kids: Node[] = [span('label' + (b.active ? ' on' : ''), S.flow)];
   let cur: HTMLElement | undefined;
   b.paths.forEach((path, pi) => {
     if (pi) kids.push(span('sep'));

@@ -1,16 +1,20 @@
 import type { ProgressState } from '../../cli/progress';
 import { STAGES } from '../../cli/progress';
+import { format } from '../../l10n';
+import { S, applyStrings } from '../strings';
 
 declare function acquireVsCodeApi(): { postMessage(m: unknown): void };
 const vscode = acquireVsCodeApi();
 const root = document.getElementById('root')!;
+applyStrings(root.dataset.strings);
 
-const STAGE_TEXT: Record<string, [string, string]> = {
-  export: ['1 · Export', 'git archive, git diff and git log into a cache directory. Only files git tracks.'],
-  write: ['2 · Write', 'The LLM reads with Read, Grep and Glob, then writes the tour as JSON.'],
-  check: ['3 · Check', 'Every file and line the tour points to must exist. Mistakes go back to the LLM, at most twice.'],
-  show: ['4 · Show', 'Code on screen is read from git at the right commit, never copied from the reply.'],
-};
+// built at render time so it sees the applied string table
+const stageText = (): Record<string, [string, string]> => ({
+  export: [`1 · ${S.stageExport}`, S.stageExportDesc],
+  write: [`2 · ${S.stageWrite}`, S.stageWriteDesc],
+  check: [`3 · ${S.stageCheck}`, S.stageCheckDesc],
+  show: [`4 · ${S.stageShow}`, S.stageShowDesc],
+});
 
 function el(tag: string, cls?: string, text?: string): HTMLElement {
   const e = document.createElement(tag);
@@ -28,10 +32,11 @@ function button(text: string, type: string, secondary = false): HTMLElement {
 function render(label: string, canSkip: boolean, s: ProgressState): void {
   const frag = document.createDocumentFragment();
   const head = el('header');
-  head.append(el('h1', '', 'Writing tour'), el('div', 'label', label));
+  head.append(el('h1', '', S.writingTour), el('div', 'label', label));
   frag.append(head);
 
   const stages = el('div', 'stages');
+  const STAGE_TEXT = stageText();
   for (const n of STAGES) {
     const [title, body] = STAGE_TEXT[n];
     const card = el('div', `stage ${s.stages[n]}`);
@@ -40,15 +45,15 @@ function render(label: string, canSkip: boolean, s: ProgressState): void {
     if (s.stages[n] === 'done') t.append(el('span', 'mark', '✓'));
     if (s.stages[n] === 'active') t.append(el('span', 'spinner'));
     card.append(t, el('p', '', body));
-    if (n === 'check' && s.repairs > 0) card.append(el('p', 'repair', `Repair ${s.repairs} of 2`));
+    if (n === 'check' && s.repairs > 0) card.append(el('p', 'repair', format(S.repairCount, s.repairs)));
     stages.append(card);
   }
   frag.append(stages);
 
   const reading = el('section');
-  reading.append(el('h2', '', 'READING NOW'));
+  reading.append(el('h2', '', S.readingNow));
   const log = el('div', 'log');
-  if (!s.reads.length) log.append(el('div', 'empty', 'Waiting for the LLM to read…'));
+  if (!s.reads.length) log.append(el('div', 'empty', S.waitingForLlm));
   for (const r of s.reads) {
     const row = el('div', 'row');
     row.append(el('span', 'time', r.time), el('span', 'tool', r.tool), el('span', 'path', r.path));
@@ -59,15 +64,15 @@ function render(label: string, canSkip: boolean, s: ProgressState): void {
   frag.append(reading);
 
   const exp = el('section', 'export');
-  exp.append(el('h2', '', 'EXPORT DIRECTORY'));
+  exp.append(el('h2', '', S.exportDirectory));
   const ul = el('ul');
   for (const f of ['base/', 'head/', 'change.diff', 'commits.txt', 'lessons/']) ul.append(el('li', '', f));
-  exp.append(ul, el('p', 'note', 'Deleted once the tour is written. Read, Grep and Glob only; no writes, no network.'));
+  exp.append(ul, el('p', 'note', S.exportNote));
   frag.append(exp);
 
   const actions = el('div', 'actions');
-  actions.append(button('Cancel', 'cancel', true));
-  if (canSkip) actions.append(button('Skip to the tour', 'skip'));
+  actions.append(button(S.cancel, 'cancel', true));
+  if (canSkip) actions.append(button(S.skipToTour, 'skip'));
   frag.append(actions);
 
   root.replaceChildren(frag);

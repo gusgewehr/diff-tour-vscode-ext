@@ -8,11 +8,14 @@ import './blocks/snippet';
 import './blocks/code';
 import './blocks/repo';
 import { keyAction } from './keys';
+import { format } from '../../l10n';
+import { S, applyStrings } from '../strings';
 
 declare function acquireVsCodeApi(): { postMessage(m: unknown): void; setState(s: unknown): void };
 const vscode = acquireVsCodeApi();
 const post = (m: Intent) => vscode.postMessage(m);
 const root = document.getElementById('root')!;
+applyStrings(root.dataset.strings);
 
 const doc = el('main', 'doc');
 const bar = el('nav', 'bar');
@@ -34,22 +37,22 @@ function buildContent(m: RenderMsg): void {
   doc.replaceChildren();
   const head = el('header');
   head.append(el('h1', 'tour-title', m.title), el('div', 'refs', `${m.base} → ${m.head}`));
-  doc.append(head, el('div', 'chapter', `${m.chapterTitle} · Step ${m.index + 1} / ${m.total}`), el('h2', 'step-title', m.step.title));
+  doc.append(head, el('div', 'chapter', `${m.chapterTitle} · ${format(S.stepOf, m.index + 1, m.total)}`), el('h2', 'step-title', m.step.title));
   if (m.step.question) {
     const q = el('section', 'question-card');
     const ta = document.createElement('textarea');
     ta.value = m.guess;
-    ta.setAttribute('aria-label', 'Your guess');
-    ta.placeholder = 'Write what you expect before reading the answer';
+    ta.setAttribute('aria-label', S.yourGuess);
+    ta.placeholder = S.guessPlaceholder;
     ta.addEventListener('input', () => post({ type: 'guess', text: ta.value }));
-    const show = el('button', '', 'Show the answer') as HTMLButtonElement;
+    const show = el('button', '', S.showAnswer) as HTMLButtonElement;
     show.disabled = m.nextTitle === undefined;
     show.addEventListener('click', () => post({ type: 'next' }));
-    q.append(el('div', 'q-label', 'STOP AND PREDICT'), el('div', 'q-title', 'Stop and predict before you go on'), ta, show);
+    q.append(el('div', 'q-label', S.stopAndPredictLabel), el('div', 'q-title', S.stopAndPredictTitle), ta, show);
     doc.append(q);
   } else if (m.previousGuess !== undefined) {
     const g = el('section', 'guess-card');
-    g.append(el('div', 'q-label', 'YOUR GUESS'), m.previousGuess ? el('div', 'guess-text', m.previousGuess) : el('div', 'guess-text none', 'You did not write a guess.'));
+    g.append(el('div', 'q-label', S.yourGuessLabel), m.previousGuess ? el('div', 'guess-text', m.previousGuess) : el('div', 'guess-text none', S.noGuess));
     doc.append(g);
   }
   m.step.blocks.forEach((b, i) => doc.append(renderBlock(b, { index: i, step: m.step, post, data: m.blockData?.[i] ?? null, base: m.base, head: m.head })));
@@ -59,9 +62,9 @@ function buildContent(m: RenderMsg): void {
   noteCard.hidden = !noteVisible;
   noteArea = document.createElement('textarea');
   noteArea.value = m.note;
-  noteArea.setAttribute('aria-label', 'My note');
+  noteArea.setAttribute('aria-label', S.myNote);
   noteArea.addEventListener('input', () => post({ type: 'note', text: noteArea!.value }));
-  noteCard.append(el('div', 'note-label', 'MY NOTE'), el('div', 'note-hint', 'Private. Kept in VS Code, never in the repository.'), noteArea);
+  noteCard.append(el('div', 'note-label', S.myNoteLabel), el('div', 'note-hint', S.noteHint), noteArea);
   doc.append(noteCard);
   window.scrollTo(0, 0);
 }
@@ -73,19 +76,19 @@ function btn(text: string, cls: string, onClick: () => void): HTMLButtonElement 
 }
 
 function buildBar(m: RenderMsg): void {
-  const prev = btn(m.prevTitle !== undefined ? `← ${m.index} · ${m.prevTitle}` : '← Prev', 'secondary nav-prev', () => post({ type: 'prev' }));
+  const prev = btn(m.prevTitle !== undefined ? `← ${m.index} · ${m.prevTitle}` : S.prev, 'secondary nav-prev', () => post({ type: 'prev' }));
   prev.disabled = m.prevTitle === undefined;
   const ticks = el('div', 'ticks');
   m.ticks.forEach((t, i) => {
     const b = btn('', `tick ${t.state}`, () => post({ type: 'goto', index: i }));
-    b.setAttribute('aria-label', `Go to step ${i + 1} (${t.state})`);
+    b.setAttribute('aria-label', format(S.gotoStep, i + 1, t.state));
     if (t.state === 'current') b.setAttribute('aria-current', 'step');
     ticks.append(b);
   });
-  const u = btn(m.understood ? 'Understood ✓ (U)' : 'Mark as understood (U)', 'secondary', () => post({ type: 'understood' }));
+  const u = btn(m.understood ? S.understood : S.markUnderstood, 'secondary', () => post({ type: 'understood' }));
   u.setAttribute('aria-pressed', String(m.understood));
-  const note = btn('Note (N)', 'secondary', toggleNote);
-  const next = btn(m.nextTitle !== undefined ? `${m.index + 2} · ${m.nextTitle} →` : 'Next →', 'nav-next', () => post({ type: 'next' }));
+  const note = btn(S.note, 'secondary', toggleNote);
+  const next = btn(m.nextTitle !== undefined ? `${m.index + 2} · ${m.nextTitle} →` : S.next, 'nav-next', () => post({ type: 'next' }));
   next.disabled = m.nextTitle === undefined;
   bar.replaceChildren(prev, ticks, u, note, next);
 }

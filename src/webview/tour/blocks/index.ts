@@ -2,6 +2,7 @@ import type { Intent } from '../../../tour/messages';
 import type { Block, Step } from '../../../tour/model';
 import type { BlockData } from '../../../tour/enrich';
 import { el } from '../dom';
+import { S } from '../../strings';
 
 export interface BlockCtx { index: number; step: Step; post(m: Intent): void; data?: BlockData | null; base: string; head: string }
 export type BlockRenderer = (block: Block, ctx: BlockCtx) => HTMLElement;
@@ -11,7 +12,7 @@ export function register(kind: Block['kind'], fn: BlockRenderer): void { registr
 
 function fallback(block: Block): HTMLElement {
   const d = el('div', 'block-fallback');
-  d.append(el('strong', '', block.kind), document.createTextNode(' block: not shown in this version'));
+  d.append(el('strong', '', block.kind), document.createTextNode(S.blockNotShown));
   return d;
 }
 

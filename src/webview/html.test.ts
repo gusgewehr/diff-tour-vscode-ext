@@ -12,7 +12,10 @@ test('webviewHtml', () => {
   assert.ok(!h.includes('unsafe-inline'));
   assert.ok(h.includes('<script nonce="abc" src="u/a.js">'));
   assert.ok(h.includes('<link rel="stylesheet" href="u/a.css">'));
-  assert.ok(h.includes('<div id="root">'));
+  assert.ok(h.includes('<div id="root" data-strings="'));
+  assert.ok(h.includes('<html lang="en">'));
+  const ds = /data-strings="([^"]*)"/.exec(h);
+  assert.ok(ds && !ds[1].includes('<') && ds[1].includes('&quot;'));
   assert.ok(h.includes('<title>&lt;script&gt;&amp;</title>'));
 });
 

@@ -20,7 +20,7 @@ export class FlowBarView implements vscode.WebviewViewProvider {
       nonce: nonce(),
       scriptUri: w.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'webview', 'flow.js')).toString(),
       styleUris: [w.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'flow.css')).toString()],
-      title: 'Tour flow',
+      title: vscode.l10n.t('Tour flow'),
     });
     w.onDidReceiveMessage((m: unknown) => this.onMessage(m));
     view.onDidDispose(() => { if (this.view === view) this.view = undefined; });

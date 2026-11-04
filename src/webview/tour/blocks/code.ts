@@ -1,6 +1,8 @@
 import type { Row } from '../../../tour/align';
 import type { CodeData } from '../../../tour/enrich';
 import { el } from '../dom';
+import { format } from '../../../l10n';
+import { S } from '../../strings';
 import { errorBox, register, type BlockCtx } from './index';
 
 function cell(c: Row['left']): HTMLElement {
@@ -17,17 +19,17 @@ function build(d: CodeData, ctx: BlockCtx, note?: string): HTMLElement {
   head.append(el('span', 'code-file', d.file.slice(i + 1)), el('span', 'code-dir', i >= 0 ? d.file.slice(0, i) : ''));
   if (d.lines) head.append(el('span', 'code-lines', d.lines[0] === d.lines[1] ? `L ${d.lines[0]}` : `L ${d.lines[0]}–${d.lines[1]}`));
   if (!d.missing) {
-    head.append(el('span', 'code-stat', d.newFile ? 'new file' : d.deleted ? 'deleted' : d.unchanged ? 'no change in these lines' : `+${d.added} −${d.removed} here`));
+    head.append(el('span', 'code-stat', d.newFile ? S.newFile : d.deleted ? S.deleted : d.unchanged ? S.noChange : format(S.addedRemoved, d.added, d.removed)));
   }
   if (d.approximate) {
-    const b = el('span', 'badge approx', 'approximate');
-    b.title = 'The tour referenced lines that do not exist at this commit; shown clamped';
+    const b = el('span', 'badge approx', S.approximate);
+    b.title = S.approximateTitle;
     head.append(b);
   }
   if (note) head.append(el('span', 'code-note', note));
-  const open = el('button', 'icon', 'open ↗');
-  open.setAttribute('aria-label', 'Open read-only diff');
-  open.title = 'Open read-only diff';
+  const open = el('button', 'icon', S.open);
+  open.setAttribute('aria-label', S.openDiff);
+  open.title = S.openDiff;
   open.addEventListener('click', () => ctx.post({ type: 'openCode', block: ctx.index }));
   head.append(open);
   sec.append(head);
@@ -37,8 +39,8 @@ function build(d: CodeData, ctx: BlockCtx, note?: string): HTMLElement {
   const colRow = el('div', 'code-cols');
   colRow.style.gridTemplateColumns = cols;
   colRow.append(
-    el('div', 'col-before', `↶ BEFORE · ${ctx.base}${d.newFile ? ' · this file did not exist' : ''}`),
-    el('div', 'col-after', `AFTER · ${ctx.head}${d.deleted ? ' · this file was deleted' : ''}`),
+    el('div', 'col-before', format(S.beforeAt, ctx.base) + (d.newFile ? S.fileDidNotExist : '')),
+    el('div', 'col-after', format(S.afterAt, ctx.head) + (d.deleted ? S.fileWasDeleted : '')),
   );
   sec.append(colRow);
 
@@ -69,13 +71,13 @@ register('code', (block, ctx) => {
   if (block.kind !== 'code' && block.kind !== 'diff') throw new Error('not a code block');
   const data = ctx.data;
   if (data?.kind === 'error') return errorBox(data.message);
-  if (data?.kind !== 'code') return el('div', 'block-fallback', 'Code not loaded');
+  if (data?.kind !== 'code') return el('div', 'block-fallback', S.codeNotLoaded);
   return build(data, ctx, block.kind === 'code' ? block.code.note : undefined);
 });
 register('diff', (block, ctx) => {
   if (block.kind !== 'diff') throw new Error('not a diff block');
   const data = ctx.data;
   if (data?.kind === 'error') return errorBox(data.message);
-  if (data?.kind !== 'code') return el('div', 'block-fallback', 'Code not loaded');
+  if (data?.kind !== 'code') return el('div', 'block-fallback', S.codeNotLoaded);
   return build(data, ctx);
 });

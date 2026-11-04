@@ -1,5 +1,7 @@
 import { el, renderInline } from '../dom';
 import { register } from './index';
+import { format } from '../../../l10n';
+import { S } from '../../strings';
 
 register('quote', (block) => {
   if (block.kind !== 'quote') throw new Error('not a quote block');
@@ -47,8 +49,8 @@ register('rows', (block) => {
   const r = block.rows;
   const d = el('div', 'block rows');
   const head = el('div', 'rows-head');
-  const tag = el('span', 'badge tag', r.tag || 'example');
-  if (!r.tag || r.tag === 'example') tag.title = 'Made-up data for the explanation';
+  const tag = el('span', 'badge tag', r.tag || S.exampleTag);
+  if (!r.tag || r.tag === 'example') tag.title = S.exampleTagTitle;
   head.append(tag, el('span', 'rows-label', r.label));
   const added = new Set(r.added ?? []);
   const t = el('table', 'tour-table');
@@ -72,11 +74,11 @@ register('schema', (block) => {
   const s = block.schema;
   const d = el('div', 'block schema');
   const head = el('div', 'schema-head');
-  head.append(el('span', 'badge', 'SCHEMA'), el('span', 'schema-mig', 'migrations: ' + s.migrations));
+  head.append(el('span', 'badge', S.schema), el('span', 'schema-mig', format(S.migrations, s.migrations)));
   d.append(head);
   const focus = s.focus ?? [];
   const tables = s.tables?.length ? s.tables : [...new Set(focus.map((f) => f.split('.')[0]))];
-  if (!tables.length) { d.append(el('div', 'code-missing', 'No tables named')); return d; }
+  if (!tables.length) { d.append(el('div', 'code-missing', S.noTables)); return d; }
   const grid = el('div', 'schema-grid');
   for (const t of tables) {
     const card = el('div', 'schema-table');

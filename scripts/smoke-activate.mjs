@@ -114,6 +114,7 @@ try {
   let fmsg; const fhtml = { v: '' };
   viewProviders.get('difftour.flowBar').resolveWebviewView({ show() {}, onDidDispose() {}, webview: { cspSource: 'vscode-resource:', options: {}, set html(v) { fhtml.v = v; }, get html() { return fhtml.v; }, asWebviewUri: (u) => ({ toString: () => 'vscode-resource:' + u.fsPath }), postMessage: async (m) => { flowPosts.push(m); return true; }, onDidReceiveMessage: (fn) => { fmsg = fn; return dispose; } } });
   assert.ok(fhtml.v.includes('flow.js') && fhtml.v.includes("script-src 'nonce-"), 'flow html');
+  assert.ok(fhtml.v.includes('data-strings='), 'flow strings');
   fmsg({ type: 'ready' }); await settle();
   assert.equal(flowPosts.at(-1).type, 'bar'); assert.ok(Array.isArray(flowPosts.at(-1).paths));
   const fn = flowPosts.length;

@@ -1,5 +1,7 @@
 import { el } from '../dom';
 import { register } from './index';
+import { format } from '../../../l10n';
+import { S } from '../../strings';
 
 register('timeline', (block) => {
   if (block.kind !== 'timeline') throw new Error('not a timeline block');
@@ -56,12 +58,12 @@ register('flow', (block, ctx) => {
       const t = data?.nodes[ni];
       if (t) {
         for (const s of t.steps) {
-          const c = el('button', 'secondary chip', 'code in step ' + (s + 1));
+          const c = el('button', 'secondary chip', format(S.codeInStep, s + 1));
           c.addEventListener('click', () => ctx.post({ type: 'goto', index: s }));
           card.append(c);
         }
         if (!t.steps.length && t.file) {
-          const a = el('a', 'file-link', 'open file') as HTMLAnchorElement;
+          const a = el('a', 'file-link', S.openFileLower) as HTMLAnchorElement;
           a.href = '#';
           const file = t.file;
           a.addEventListener('click', (e) => {
