@@ -45,15 +45,15 @@
 
 ### DOC: Document layout and state
 
-- [ ] **DOC-01**: A tour opens in a Document Webview: tour title, the current step's blocks, and a sticky bottom navigation bar
-- [ ] **DOC-02**: An outline tree shows chapters → steps with done / current / question / note icons and "x of N understood"; clicking a step opens it
-- [ ] **DOC-03**: User can go prev/next (buttons showing step number + title, ← → keys) and jump via clickable progress ticks (current / understood / visited / unvisited)
-- [ ] **DOC-04**: User can mark a step as understood (U)
-- [ ] **DOC-05**: User can write a private note per step (N), stored with the extension's state and never in the repo
-- [ ] **DOC-06**: Current step, understood, visited, notes and guesses persist per tour and restore after closing the panel or reloading VS Code
-- [ ] **DOC-07**: The Webview follows the user's VS Code theme (dark, light, high contrast) and loads fonts and assets locally with no network
-- [ ] **DOC-08**: LLM-written text is rendered safely: no script or HTML injection from tour content
-- [ ] **DOC-09**: Single-letter shortcuts do not fire while the user is typing in a note or question box
+- [x] **DOC-01**: A tour opens in a Document Webview: tour title, the current step's blocks, and a sticky bottom navigation bar
+- [x] **DOC-02**: An outline tree shows chapters → steps with done / current / question / note icons and "x of N understood"; clicking a step opens it
+- [x] **DOC-03**: User can go prev/next (buttons showing step number + title, ← → keys) and jump via clickable progress ticks (current / understood / visited / unvisited)
+- [x] **DOC-04**: User can mark a step as understood (U)
+- [x] **DOC-05**: User can write a private note per step (N), stored with the extension's state and never in the repo
+- [x] **DOC-06**: Current step, understood, visited, notes and guesses persist per tour and restore after closing the panel or reloading VS Code
+- [x] **DOC-07**: The Webview follows the user's VS Code theme (dark, light, high contrast) and loads fonts and assets locally with no network
+- [x] **DOC-08**: LLM-written text is rendered safely: no script or HTML injection from tour content
+- [x] **DOC-09**: Single-letter shortcuts do not fire while the user is typing in a note or question box
 
 ### CODE: read-only code at the toured commit
 
@@ -147,15 +147,15 @@
 | WRITE-06 | Phase 4 | Complete |
 | WRITE-07 | Phase 4 | Complete |
 | WRITE-08 | Phase 4 | Complete |
-| DOC-01 | Phase 5 | Pending |
-| DOC-02 | Phase 5 | Pending |
-| DOC-03 | Phase 5 | Pending |
-| DOC-04 | Phase 5 | Pending |
-| DOC-05 | Phase 5 | Pending |
-| DOC-06 | Phase 5 | Pending |
-| DOC-07 | Phase 5 | Pending |
-| DOC-08 | Phase 5 | Pending |
-| DOC-09 | Phase 5 | Pending |
+| DOC-01 | Phase 5 | Complete |
+| DOC-02 | Phase 5 | Complete |
+| DOC-03 | Phase 5 | Complete |
+| DOC-04 | Phase 5 | Complete |
+| DOC-05 | Phase 5 | Complete |
+| DOC-06 | Phase 5 | Complete |
+| DOC-07 | Phase 5 | Complete |
+| DOC-08 | Phase 5 | Complete |
+| DOC-09 | Phase 5 | Complete |
 | CODE-01 | Phase 6 | Pending |
 | CODE-02 | Phase 6 | Pending |
 | CODE-03 | Phase 6 | Pending |

@@ -206,7 +206,7 @@ Plans:
 | 2. Extension skeleton + change picker | 3/3 | Complete    | 2026-11-04 |
 | 3. Small-change rule | 1/1 | Complete    | 2026-11-04 |
 | 4. CLI runner, Writing progress, tour cache | 3/3 | Complete    | 2026-11-04 |
-| 5. Document layout, outline tree, tour state | 0/TBD | Not started | - |
+| 5. Document layout, outline tree, tour state | 3/3 | Complete    | 2026-11-04 |
 | 6. difftour: read-only provider + side-by-side diff | 0/TBD | Not started | - |
 | 7. Webview tour blocks | 0/TBD | Not started | - |
 | 8. Flow bar | 0/TBD | Not started | - |
