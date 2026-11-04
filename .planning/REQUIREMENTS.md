@@ -76,10 +76,10 @@
 
 ### FLOW: flow bar
 
-- [ ] **FLOW-01**: During a tour, a flow bar of the request-flow paths stays visible, also when a diff editor is focused
-- [ ] **FLOW-02**: Each node shows its kind (new / changed / same / external); the current node is highlighted and never truncated; visited nodes are muted; the tooltip shows the full label, "you are here" and which steps show its file
-- [ ] **FLOW-03**: Clicking a node goes to the next step that shows code of that node's file; if none, or already there, it opens that file read-only at the node's lines
-- [ ] **FLOW-04**: The FLOW label is accented when the current step maps to a flow node
+- [x] **FLOW-01**: During a tour, a flow bar of the request-flow paths stays visible, also when a diff editor is focused
+- [x] **FLOW-02**: Each node shows its kind (new / changed / same / external); the current node is highlighted and never truncated; visited nodes are muted; the tooltip shows the full label, "you are here" and which steps show its file
+- [x] **FLOW-03**: Clicking a node goes to the next step that shows code of that node's file; if none, or already there, it opens that file read-only at the node's lines
+- [x] **FLOW-04**: The FLOW label is accented when the current step maps to a flow node
 
 ## v2 Requirements
 
@@ -169,10 +169,10 @@
 | BLOCK-05 | Phase 7 | Complete |
 | BLOCK-06 | Phase 7 | Complete |
 | BLOCK-07 | Phase 7 | Complete |
-| FLOW-01 | Phase 8 | Pending |
-| FLOW-02 | Phase 8 | Pending |
-| FLOW-03 | Phase 8 | Pending |
-| FLOW-04 | Phase 8 | Pending |
+| FLOW-01 | Phase 8 | Complete |
+| FLOW-02 | Phase 8 | Complete |
+| FLOW-03 | Phase 8 | Complete |
+| FLOW-04 | Phase 8 | Complete |
 
 **Coverage:**
 - v1 requirements: 52 total

@@ -14,7 +14,7 @@ v1 delivers the core value: a reviewer walks an LLM-written tour of a git change
 - [x] **Phase 6: difftour: read-only provider + side-by-side diff** - Every code reference opens read-only at the toured SHAs
  (completed 2026-11-04)
 - [x] **Phase 7: Webview tour blocks** - Render all block types, including side-by-side code blocks with LCS alignment (completed 2026-11-04)
-- [ ] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
+- [x] **Phase 8: Flow bar** - Persistent clickable request-flow strip tied to steps and files
 
 ## Phase Details
 
@@ -88,7 +88,7 @@ Plans:
   2. User sees the changed-file list (M/A/D) and can open each file in the standard diff
   3. User sees "3 files changed. Changes under 10 files open in the standard diff, without a tour." with a link to the setting, and the status bar shows `No tour · 3 files (under 10)`
 
-**Plans**: TBD
+**Plans**: 1/1 plans complete
 
 ### Phase 4: CLI runner, Writing progress, tour cache
 
@@ -209,7 +209,7 @@ Plans:
   3. Clicking a node jumps to the next step showing that node's file; if none, or already there, it opens the file read-only at the node's lines
   4. The FLOW label is accented when the current step maps to a flow node
 
-**Plans**: TBD
+**Plans**: 1/1 plans complete
 **UI hint**: yes
 
 ## Progress
@@ -223,4 +223,4 @@ Plans:
 | 5. Document layout, outline tree, tour state | 3/3 | Complete    | 2026-11-04 |
 | 6. difftour: read-only provider + side-by-side diff | 2/2 | Complete    | 2026-11-04 |
 | 7. Webview tour blocks | 3/3 | Complete    | 2026-11-04 |
-| 8. Flow bar | 0/TBD | Not started | - |
+| 8. Flow bar | 1/1 | Complete | 2026-11-04 |
